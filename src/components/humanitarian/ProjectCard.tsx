@@ -15,7 +15,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const Icon = getProjectIcon(project.icon, project.category)
 
   return (
-    <Card className="flex flex-col h-full transition-shadow duration-200 hover:shadow-md">
+    <Card className="flex flex-col h-full transition-all duration-200 hover:shadow-md hover:ring-1 hover:ring-primary/20">
       <CardHeader className="pt-5">
         <div className="flex items-start justify-between gap-3 mb-2">
           <Icon className="size-7 text-primary shrink-0" />

@@ -64,40 +64,50 @@ function SermonPage() {
   const { sermon } = Route.useLoaderData()
 
   return (
-    <Container size="narrow">
-      <div className="py-8">
-        <Link
-          to="/sermons"
-          className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="size-4" />
-          Back to Sermons
-        </Link>
+    <>
+      <section className="bg-gradient-to-b from-accent/50 to-background py-10 md:py-14">
+        <Container size="narrow">
+          <Link
+            to="/sermons"
+            className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="size-4" />
+            Back to Sermons
+          </Link>
 
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {sermon.title}
-        </h1>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {sermon.title}
+          </h1>
 
-        {sermon.date && (
-          <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="size-4" />
-            <time>{formatDate(sermon.date)}</time>
+          {sermon.date && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="size-4" />
+              <time>{formatDate(sermon.date)}</time>
+            </div>
+          )}
+
+          {sermon.description && (
+            <p className="mt-4 text-lg text-muted-foreground">
+              {sermon.description}
+            </p>
+          )}
+
+          <div className="mt-8 flex items-center gap-3 opacity-40">
+            <div className="h-px w-16 bg-secondary" />
+            <div className="size-1.5 rounded-full bg-secondary" />
+            <div className="h-px w-16 bg-secondary" />
           </div>
-        )}
+        </Container>
+      </section>
 
-        {sermon.description && (
-          <p className="mt-4 text-lg text-muted-foreground">
-            {sermon.description}
-          </p>
-        )}
-
-        <hr className="my-8 border-border" />
-
-        <SermonContent
-          blocks={sermon.content}
-          youtubeLink={sermon.youtubeLink}
-        />
-      </div>
-    </Container>
+      <section className="py-10">
+        <Container size="narrow">
+          <SermonContent
+            blocks={sermon.content}
+            youtubeLink={sermon.youtubeLink}
+          />
+        </Container>
+      </section>
+    </>
   )
 }

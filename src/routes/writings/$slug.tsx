@@ -140,7 +140,11 @@ function ArticlePage() {
           )}
 
           {/* Divider */}
-          <hr className="my-8 border-border" />
+          <div className="my-8 flex items-center justify-center gap-3 opacity-40">
+            <div className="h-px w-16 bg-secondary" />
+            <div className="size-1.5 rounded-full bg-secondary" />
+            <div className="h-px w-16 bg-secondary" />
+          </div>
 
           {/* Content */}
           <ArticleContent

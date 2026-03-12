@@ -12,7 +12,7 @@ export function Footer({ settings }: FooterProps) {
   const facebookUrl = settings?.facebook_url?.value || 'https://www.facebook.com/shamsan.aljabi.2025'
   const instagramUrl = settings?.instagram_url?.value || 'https://www.instagram.com/dr.sham_san/'
   return (
-    <footer className="mt-auto border-t border-border bg-muted/30 py-8">
+    <footer className="mt-auto border-t-2 border-secondary/30 bg-muted/30 py-8">
       <Container>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Brand */}
@@ -102,7 +102,12 @@ export function Footer({ settings }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-border pt-4 text-center text-sm text-muted-foreground">
+        <div className="mt-8 flex items-center justify-center gap-3 opacity-30">
+          <div className="h-px w-16 bg-secondary" />
+          <div className="size-1.5 rounded-full bg-secondary" />
+          <div className="h-px w-16 bg-secondary" />
+        </div>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
           &copy; {new Date().getFullYear()} Imam Dr. Shamsan Al-Jabi. All
           rights reserved.
         </div>

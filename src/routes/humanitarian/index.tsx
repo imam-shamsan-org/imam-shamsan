@@ -30,7 +30,7 @@ function HumanitarianPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-gradient-to-b from-accent/30 to-background py-14 md:py-20">
+      <section className="bg-gradient-to-b from-primary/20 via-accent/30 to-background py-14 md:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <Badge variant="secondary" className="mb-5 px-3 py-1 text-xs font-medium">
@@ -69,6 +69,12 @@ function HumanitarianPage() {
               For anyone who wishes to support or contribute to these initiatives —
               helping hands for those in need.
             </p>
+
+            <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
           </div>
         </Container>
       </section>
@@ -105,9 +111,14 @@ function HumanitarianPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-primary/5 border-t border-primary/10 py-12">
+      <section className="bg-primary/5 border-t border-secondary/20 py-12">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-6 flex items-center justify-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
             <h3 className="text-xl font-bold text-foreground">
               Want to Contribute Directly?
             </h3>

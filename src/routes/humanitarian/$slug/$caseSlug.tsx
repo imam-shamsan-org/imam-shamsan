@@ -86,7 +86,7 @@ function CaseDetailPage() {
         </div>
       )}
 
-      <section className={c.patientPhoto ? 'pt-6 pb-4' : 'pt-12 pb-4 bg-gradient-to-b from-accent/30 to-background'}>
+      <section className={c.patientPhoto ? 'pt-6 pb-4' : 'pt-12 pb-4 bg-gradient-to-b from-primary/15 via-accent/30 to-background'}>
         <Container size="narrow">
           <Breadcrumbs
             items={[

@@ -49,7 +49,7 @@ function ProjectDetailPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/30 to-background py-10 md:py-14">
+      <section className="bg-gradient-to-b from-primary/15 via-accent/30 to-background py-10 md:py-14">
         <Container>
           <Breadcrumbs
             items={[
@@ -81,6 +81,12 @@ function ProjectDetailPage() {
                 </p>
               )}
             </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+            <div className="h-px w-16 bg-secondary" />
+            <div className="size-1.5 rounded-full bg-secondary" />
+            <div className="h-px w-16 bg-secondary" />
           </div>
         </Container>
       </section>

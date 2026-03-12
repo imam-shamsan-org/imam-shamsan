@@ -54,7 +54,7 @@ export function CaseCard({ case_: c, projectSlug }: CaseCardProps) {
       params={{ slug: projectSlug, caseSlug: c.slug }}
       className="group block h-full"
     >
-      <Card className={`relative flex flex-col h-full border-l-4 ${urgency.borderClass} transition-shadow duration-200 group-hover:shadow-md`}>
+      <Card className={`relative flex flex-col h-full border-l-4 ${urgency.borderClass} transition-all duration-200 group-hover:shadow-md group-hover:ring-1 group-hover:ring-primary/20`}>
         {/* Photo */}
         {c.patientPhoto && (
           <div className="relative h-44 w-full overflow-hidden">

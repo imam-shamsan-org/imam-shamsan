@@ -49,9 +49,14 @@ function HomePage() {
       <MediaHighlight settings={settings} />
 
       {/* Contact CTA */}
-      <section className="border-t border-border bg-primary/5 py-16">
+      <section className="border-t border-secondary/20 bg-primary/5 py-16">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-6 flex items-center justify-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
             <h2 className="text-2xl font-bold text-foreground md:text-3xl">
               Write to Imam Shamsan
             </h2>

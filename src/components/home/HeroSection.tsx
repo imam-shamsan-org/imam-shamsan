@@ -13,7 +13,7 @@ interface HeroSectionProps {
 export function HeroSection({ settings }: HeroSectionProps) {
   const profileImage = settings.profile_img?.value
   return (
-    <section className="bg-gradient-to-b from-accent/30 to-background py-16 md:py-24">
+    <section className="bg-gradient-to-b from-primary/15 via-accent/40 to-background py-16 md:py-24">
       <Container>
         <div className="mx-auto max-w-3xl text-center">
           {profileImage && (
@@ -22,7 +22,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 src={profileImage}
                 alt="Imam Dr. Shamsan Al-Jabi"
                 preset="avatar"
-                className="size-32 rounded-full ring-2 ring-primary/20 sm:size-40"
+                className="size-32 rounded-full ring-2 ring-secondary/50 sm:size-40"
               />
             </div>
           )}
@@ -54,6 +54,11 @@ export function HeroSection({ settings }: HeroSectionProps) {
           </div>
         </div>
       </Container>
+      <div className="mt-10 flex items-center justify-center gap-3 opacity-40">
+        <div className="h-px w-16 bg-secondary" />
+        <div className="size-1.5 rounded-full bg-secondary" />
+        <div className="h-px w-16 bg-secondary" />
+      </div>
     </section>
   )
 }

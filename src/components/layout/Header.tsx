@@ -74,7 +74,7 @@ function MobileMenu() {
                   key={link.to}
                   to={link.to}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors [&.active]:text-foreground [&.active]:bg-muted"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors [&.active]:text-primary [&.active]:bg-primary/10 [&.active]:font-semibold"
                 >
                   <Icon className="size-4" />
                   {link.label}
@@ -143,7 +143,7 @@ export function Header({ logoUrl }: HeaderProps) {
               <Link
                 key={link.to}
                 to={link.to}
-                className="hidden md:flex items-center h-8 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted [&.active]:text-foreground"
+                className="hidden md:flex items-center h-8 px-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted [&.active]:text-primary [&.active]:bg-primary/10 [&.active]:font-semibold"
               >
                 {link.label}
               </Link>

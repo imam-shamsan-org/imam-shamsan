@@ -44,7 +44,7 @@ function WritingsPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/30 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
@@ -53,6 +53,11 @@ function WritingsPage() {
             <p className="mt-4 text-lg text-muted-foreground">
               Reflections and Islamic insights by Imam Shamsan
             </p>
+            <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
           </div>
         </Container>
       </section>
