@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import {
   BookOpen,
   FileText,
+  Heart,
   Home,
   Image,
   Mail,
@@ -27,6 +28,7 @@ const navLinks = [
   { to: '/sermons', label: 'Sermons' },
   { to: '/media', label: 'Media' },
   { to: '/gallery', label: 'Gallery' },
+  { to: '/humanitarian', label: 'Humanitarian Aid' },
   { to: '/contact', label: 'Contact' },
 ] as const
 
@@ -38,6 +40,7 @@ const mobileIcons: Record<string, React.ElementType> = {
   '/sermons': Mic,
   '/media': Play,
   '/gallery': Image,
+  '/humanitarian': Heart,
   '/contact': Mail,
 }
 

@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import { slugify } from '@/lib/utils'
 import type {
   BlockObjectResponse,
   PageObjectResponse,
@@ -19,6 +20,7 @@ import type { GalleryImage } from '@/types/gallery'
 import type { Recitation } from '@/types/recitation'
 import type { SiteSettings } from '@/types/settings'
 import type { AboutPage } from '@/types/about'
+import type { HumanitarianProject, HumanitarianCase } from '@/types/humanitarian'
 import { parseBlocksToContent } from './parsers'
 
 const NOTION_API_VERSION = '2022-06-28'
@@ -629,3 +631,158 @@ export const getAboutPage = createServerFn({
 }).handler(async () => {
   return fetchAboutPage()
 })
+
+// ── Humanitarian Projects ──────────────────────────────────────
+
+function pageToHumanitarianProject(page: PageObjectResponse): HumanitarianProject {
+  const props = page.properties
+  return {
+    id: page.id,
+    slug: (getPropertyValue(props['Slug']) as string) || '',
+    title: (getPropertyValue(props['Name']) as string) || '',
+    titleAr: (getPropertyValue(props['Name (Arabic)']) as string) || '',
+    description: (getPropertyValue(props['Description']) as string) || '',
+    descriptionAr: (getPropertyValue(props['Description (Arabic)']) as string) || '',
+    category: ((getPropertyValue(props['Category']) as string) || 'Medical') as HumanitarianProject['category'],
+    icon: (getPropertyValue(props['Icon']) as string) || '',
+    coverImage: getImageUrl(props, 'Cover Image URL'),
+    hasCases: (getPropertyValue(props['Has Cases']) as boolean) || false,
+    sortOrder: (getPropertyValue(props['Sort Order']) as number) || 0,
+    status: ((getPropertyValue(props['Status']) as string) || 'Active') as HumanitarianProject['status'],
+  }
+}
+
+function pageToHumanitarianCaseMeta(page: PageObjectResponse): Omit<HumanitarianCase, 'content'> {
+  const props = page.properties
+  const needsRaw = (getPropertyValue(props['Needs Items']) as string) || ''
+  const needsItems = needsRaw
+    .split(/[|\n]/)
+    .map((s) => s.replace(/^[-–•]\s*/, '').trim())
+    .filter(Boolean)
+
+  const projectId = (getPropertyValue(props['Project Slug']) as string) || ''
+
+  const patientPhoto =
+    getImageUrl(props, 'Patient Photo URL') ||
+    (getPropertyValue(props['Patient Photo URL']) as string) ||
+    ''
+
+  const caseNumber = (getPropertyValue(props['Case Number']) as number) || 0
+  const title = (getPropertyValue(props['Name']) as string) || ''
+
+  return {
+    id: page.id,
+    slug: `case-${caseNumber}-${slugify(title).slice(0, 60)}`,
+    caseNumber,
+    title,
+    projectId,
+    needsItems,
+    urgency: ((getPropertyValue(props['Urgency']) as string) || 'Ongoing') as HumanitarianCase['urgency'],
+    targetAmount: (getPropertyValue(props['Target Amount']) as number | null) ?? null,
+    monthlyAmount: (getPropertyValue(props['Monthly Amount']) as number | null) ?? null,
+    familySize: (getPropertyValue(props['Family Size']) as number | null) ?? null,
+    patientPhoto,
+    status: ((getPropertyValue(props['Status']) as string) || 'Published') as HumanitarianCase['status'],
+  }
+}
+
+async function pageToHumanitarianCase(page: PageObjectResponse): Promise<HumanitarianCase> {
+  const meta = pageToHumanitarianCaseMeta(page)
+  const blocks = await getAllBlockChildren(page.id)
+  const content = parseBlocksToContent(blocks)
+  return { ...meta, content }
+}
+
+async function fetchActiveHumanitarianProjects(): Promise<HumanitarianProject[]> {
+  const databaseId = getDbId('NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID')
+  if (!isNotionConfigured() || !databaseId) return []
+
+  return withCache('humanitarian:projects', async () => {
+    try {
+      const response = await queryDatabase(databaseId, {
+        filter: { property: 'Status', select: { equals: 'Active' } },
+        sorts: [{ property: 'Sort Order', direction: 'ascending' }],
+      })
+
+      return response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map(pageToHumanitarianProject)
+    } catch (error) {
+      console.error('Error fetching humanitarian projects:', error)
+      return []
+    }
+  })
+}
+
+async function fetchHumanitarianProjectBySlug(slug: string): Promise<HumanitarianProject | null> {
+  const databaseId = getDbId('NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID')
+  if (!isNotionConfigured() || !databaseId) return null
+
+  try {
+    const response = await queryDatabase(databaseId, {
+      filter: {
+        and: [
+          { property: 'Slug', rich_text: { equals: slug } },
+          { property: 'Status', select: { equals: 'Active' } },
+        ],
+      },
+      page_size: 1,
+    })
+
+    const page = response.results[0]
+    if (!page || !('properties' in page)) return null
+    return pageToHumanitarianProject(page as PageObjectResponse)
+  } catch (error) {
+    console.error('Error fetching humanitarian project:', error)
+    return null
+  }
+}
+
+async function fetchHumanitarianCasesByProject(projectTitle: string): Promise<HumanitarianCase[]> {
+  const databaseId = getDbId('NOTION_HUMANITARIAN_CASES_DATABASE_ID')
+  if (!isNotionConfigured() || !databaseId) return []
+
+  return withCache(`humanitarian:cases:${projectTitle}`, async () => {
+    try {
+      const response = await queryDatabase(databaseId, {
+        filter: {
+          and: [
+            { property: 'Project Slug', rich_text: { equals: projectTitle } },
+            { property: 'Status', select: { equals: 'Published' } },
+          ],
+        },
+        sorts: [{ property: 'Case Number', direction: 'ascending' }],
+      })
+
+      const pages = response.results.filter(
+        (page): page is PageObjectResponse => 'properties' in page,
+      )
+      return Promise.all(pages.map(pageToHumanitarianCase))
+    } catch (error) {
+      console.error('Error fetching humanitarian cases:', error)
+      return []
+    }
+  })
+}
+
+export const getHumanitarianProjects = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return fetchActiveHumanitarianProjects()
+})
+
+export const getHumanitarianProjectBySlug = createServerFn({
+  method: 'GET',
+})
+  .inputValidator(z.string().min(1).max(500))
+  .handler(async ({ data: slug }) => {
+    return fetchHumanitarianProjectBySlug(slug)
+  })
+
+export const getHumanitarianCasesByProject = createServerFn({
+  method: 'GET',
+})
+  .inputValidator(z.string().min(1))
+  .handler(async ({ data: projectId }) => {
+    return fetchHumanitarianCasesByProject(projectId)
+  })

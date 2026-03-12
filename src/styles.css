@@ -219,3 +219,23 @@ code {
   height: 1px;
   background: var(--border);
 }
+
+/* ── MagicUI component keyframes ─────────────────────────────── */
+
+/* BorderBeam: beam travels along the border path */
+@keyframes border-beam {
+  0% { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+
+/* ShimmerButton: sweep shimmer across the button */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-200%); }
+  100% { transform: translateX(200%); }
+}
+
+/* Marquee: infinite horizontal scroll */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

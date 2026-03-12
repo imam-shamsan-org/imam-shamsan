@@ -1,0 +1,7 @@
+Name,Name (Arabic),Slug,Description,Description (Arabic),Category,Cover Image URL,Has Cases,Sort Order,Status
+Medical Intervention Appeal,مبادرة التدخل الطبي,medical-cases,Providing urgent medical care and surgical interventions for those who cannot afford treatment.,توفير الرعاية الطبية العاجلة والتدخلات الجراحية لمن لا يستطيعون تحمل تكاليف العلاج.,Medical,,true,1,Active
+Clean Water Initiative,مبادرة المياه النظيفة,water-wells,Drilling wells and installing water purification systems in underserved communities.,حفر الآبار وتركيب أنظمة تنقية المياه في المجتمعات المحرومة.,Water,,false,2,Active
+Family Food Support,دعم الأسر الغذائي,food-baskets,Monthly food baskets for families living below the poverty line.,سلال غذائية شهرية للأسر التي تعيش تحت خط الفقر.,Food,,true,3,Active
+Education for Orphans,تعليم الأيتام,orphan-education,Sponsoring schooling and educational materials for orphaned children.,دعم التعليم والمواد الدراسية للأطفال الأيتام.,Education,,true,4,Active
+Family Emergency Relief,إغاثة الأسر في حالات الطوارئ,family-relief,Emergency financial relief for families facing sudden hardship or displacement.,إغاثة مالية طارئة للأسر التي تواجه أزمات مفاجئة أو تشريدًا.,Family,,false,5,Active
+Ramadan Iftar Program,برنامج إفطار رمضان,ramadan-iftar,Providing daily iftar meals during Ramadan for those in need.,توفير وجبات الإفطار اليومية خلال شهر رمضان للمحتاجين.,Religious,,false,6,Paused
