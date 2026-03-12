@@ -119,10 +119,13 @@ function ProjectDetailPage() {
             <>
               <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    {cases.length} Active Case{cases.length !== 1 ? 's' : ''}
-                  </h2>
-                  <p className="mt-0.5 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3 mb-0.5">
+                    <div className="h-5 w-[3px] rounded-full bg-secondary opacity-70" />
+                    <h2 className="text-lg font-semibold text-foreground">
+                      {cases.length} Active Case{cases.length !== 1 ? 's' : ''}
+                    </h2>
+                  </div>
+                  <p className="mt-0.5 text-sm text-muted-foreground pl-[18px]">
                     Click a case to read the full story and contribute.
                   </p>
                 </div>
@@ -151,7 +154,7 @@ function ProjectDetailPage() {
         </Container>
       </section>
 
-      <section className="bg-muted/40 border-t border-border py-8">
+      <section className="bg-muted/40 border-t border-secondary/20 py-8">
         <Container>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">

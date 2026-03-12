@@ -17,11 +17,12 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
   const { isLive, timeAgo } = getStreamStatus(settings.live_stream_url?.updatedAt)
 
   return (
-    <section className="border-t border-border py-16">
+    <section className="border-t border-secondary/20 py-16">
       <Container>
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
               <h2 className="text-2xl font-bold text-foreground md:text-3xl">
                 {embedUrl ? 'Live Stream' : 'Media'}
               </h2>
@@ -40,7 +41,7 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
                 </span>
               )}
             </div>
-            <p className="mt-2 text-muted-foreground">
+            <p className="mt-1 text-muted-foreground pl-[18px]">
               {embedUrl && isLive
                 ? 'Watch the current live broadcast'
                 : embedUrl
@@ -71,23 +72,25 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
           </div>
         ) : (
           <div className="mx-auto max-w-3xl text-center">
-            <div className="rounded-xl bg-muted/50 p-12">
-              <Youtube className="mx-auto size-12 text-muted-foreground" />
-              <h3 className="mt-4 text-lg font-semibold text-foreground">
+            <div className="rounded-xl bg-gradient-to-b from-accent/40 to-muted/30 ring-1 ring-border p-12">
+              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
+                <Youtube className="size-8 text-primary" />
+              </div>
+              <h3 className="mt-5 text-lg font-semibold text-foreground">
                 Visit Our YouTube Channel
               </h3>
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Watch sermons, recitations, and educational content
               </p>
-              <div className="mt-4">
+              <div className="mt-6">
                 <a
                   href={youtubeChannelUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button variant="outline" className="gap-2">
+                  <Button className="gap-2">
                     <Youtube className="size-4" />
-                    YouTube Channel
+                    Watch on YouTube
                   </Button>
                 </a>
               </div>

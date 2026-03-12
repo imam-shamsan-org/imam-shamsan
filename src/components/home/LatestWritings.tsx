@@ -12,14 +12,17 @@ export function LatestWritings({ articles }: LatestWritingsProps) {
   if (!articles.length) return null
 
   return (
-    <section className="border-t border-border bg-muted/30 py-16">
+    <section className="border-t border-secondary/20 bg-muted/50 py-16">
       <Container>
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground md:text-3xl">
-              Latest Writings
-            </h2>
-            <p className="mt-2 text-muted-foreground">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
+              <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                Latest Writings
+              </h2>
+            </div>
+            <p className="mt-1 text-muted-foreground pl-[18px]">
               Recent writings and reflections
             </p>
           </div>

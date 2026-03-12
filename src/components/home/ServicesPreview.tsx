@@ -16,10 +16,13 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
       <Container>
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground md:text-3xl">
-              Services
-            </h2>
-            <p className="mt-2 text-muted-foreground">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
+              <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                Services
+              </h2>
+            </div>
+            <p className="mt-1 text-muted-foreground pl-[18px]">
               Book Islamic services with Imam Shamsan
             </p>
           </div>

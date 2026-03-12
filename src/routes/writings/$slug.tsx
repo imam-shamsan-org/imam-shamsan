@@ -82,77 +82,77 @@ function ArticlePage() {
         </div>
       )}
 
-      <Container size="narrow">
-        <div className="py-8">
-          {/* Back link */}
-          <Link
-            to="/writings"
-            className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="size-4" />
-            Back to Writings
-          </Link>
-
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            {article.category && (
-              <Badge variant="muted">{article.category}</Badge>
-            )}
-            {article.language !== 'English' && (
-              <Badge variant="secondary">{article.language}</Badge>
-            )}
-            {article.tags.map((tag) => (
-              <Badge key={tag} variant="outline">
-                <Tag className="size-3 mr-1" />
-                {tag}
-              </Badge>
-            ))}
-          </div>
-
-          {/* Title */}
-          {isArabic ? (
-            <ArabicText
-              as="h1"
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
+      {/* Header — gradient only when no cover image */}
+      <section className={article.coverImage ? 'pt-2' : 'bg-gradient-to-b from-accent/50 to-background pt-10 pb-2'}>
+        <Container size="narrow">
+          <div className="py-6">
+            <Link
+              to="/writings"
+              className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              {article.title}
-            </ArabicText>
-          ) : (
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {article.title}
-            </h1>
-          )}
+              <ArrowLeft className="size-4" />
+              Back to Writings
+            </Link>
 
-          {/* Date */}
-          <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="size-4" />
-            <time>{formatDate(article.createdAt)}</time>
+            <div className="flex flex-wrap items-center gap-2 mb-4 mt-4">
+              {article.category && (
+                <Badge variant="muted">{article.category}</Badge>
+              )}
+              {article.language !== 'English' && (
+                <Badge variant="secondary">{article.language}</Badge>
+              )}
+              {article.tags.map((tag) => (
+                <Badge key={tag} variant="outline">
+                  <Tag className="size-3 mr-1" />
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+
+            {isArabic ? (
+              <ArabicText
+                as="h1"
+                className="text-3xl font-bold tracking-tight sm:text-4xl"
+              >
+                {article.title}
+              </ArabicText>
+            ) : (
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                {article.title}
+              </h1>
+            )}
+
+            <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="size-4" />
+              <time>{formatDate(article.createdAt)}</time>
+            </div>
+
+            {article.description && (
+              <p
+                className="mt-4 text-lg text-muted-foreground"
+                dir={isArabic ? 'rtl' : undefined}
+              >
+                {article.description}
+              </p>
+            )}
+
+            <div className="mt-8 flex items-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
           </div>
+        </Container>
+      </section>
 
-          {/* Description */}
-          {article.description && (
-            <p
-              className="mt-4 text-lg text-muted-foreground"
-              dir={isArabic ? 'rtl' : undefined}
-            >
-              {article.description}
-            </p>
-          )}
-
-          {/* Divider */}
-          <div className="my-8 flex items-center justify-center gap-3 opacity-40">
-            <div className="h-px w-16 bg-secondary" />
-            <div className="size-1.5 rounded-full bg-secondary" />
-            <div className="h-px w-16 bg-secondary" />
-          </div>
-
-          {/* Content */}
+      <section className="py-8">
+        <Container size="narrow">
           <ArticleContent
             blocks={article.content}
             isArabic={isArabic}
           />
-        </div>
-      </Container>
+        </Container>
+      </section>
     </article>
   )
 }

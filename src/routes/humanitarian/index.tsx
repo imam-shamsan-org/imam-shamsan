@@ -89,7 +89,11 @@ function HumanitarianPage() {
       <section className="py-14">
         <Container>
           <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold text-foreground">Ongoing Initiatives</h2>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
+              <h2 className="text-2xl font-bold text-foreground">Ongoing Initiatives</h2>
+              <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
+            </div>
             <p className="mt-2 text-sm text-muted-foreground">
               Click any project with <span className="text-primary font-medium">"View Cases"</span> to
               see individual sponsorable cases
