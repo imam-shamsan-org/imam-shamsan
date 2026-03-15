@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '@/components/layout/Container'
 import { ServiceGrid } from '@/components/services/ServiceGrid'
+import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveServices } from '@/lib/notion'
 import { getServicesMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
 
@@ -35,6 +36,7 @@ function ServicesPage() {
     <>
       <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
         <Container>
+          <FadeIn>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
               <span className="text-primary">Services</span>
@@ -49,6 +51,7 @@ function ServicesPage() {
               <div className="h-px w-16 bg-secondary" />
             </div>
           </div>
+          </FadeIn>
         </Container>
       </section>
 

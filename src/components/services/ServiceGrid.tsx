@@ -1,4 +1,5 @@
 import { ServiceCard } from './ServiceCard'
+import { FadeIn } from '@/components/shared/FadeIn'
 import type { Service } from '@/types/service'
 
 interface ServiceGridProps {
@@ -16,8 +17,10 @@ export function ServiceGrid({ services }: ServiceGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {services.map((service) => (
-        <ServiceCard key={service.id} service={service} />
+      {services.map((service, i) => (
+        <FadeIn key={service.id} delay={i * 80}>
+          <ServiceCard service={service} />
+        </FadeIn>
       ))}
     </div>
   )

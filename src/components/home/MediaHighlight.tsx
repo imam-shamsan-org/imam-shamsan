@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ArrowRight, Youtube } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { Button } from '@/components/ui/button'
+import { FadeIn } from '@/components/shared/FadeIn'
 import { getYouTubeEmbedUrl, getStreamStatus } from '@/lib/youtube'
 import type { SiteSettings } from '@/types/settings'
 
@@ -19,7 +20,7 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
   return (
     <section className="border-t border-secondary/20 py-16">
       <Container>
-        <div className="mb-8 flex items-center justify-between">
+        <FadeIn className="mb-8 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
@@ -56,21 +57,24 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
             View all
             <ArrowRight className="size-4" />
           </Link>
-        </div>
+        </FadeIn>
 
         {embedUrl ? (
-          <div className="mx-auto max-w-3xl">
-            <div className="aspect-video overflow-hidden rounded-xl ring-1 ring-foreground/10">
-              <iframe
-                src={embedUrl}
-                title={liveStreamTitle}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+          <FadeIn delay={100} distance={16}>
+            <div className="mx-auto max-w-3xl">
+              <div className="aspect-video overflow-hidden rounded-xl ring-1 ring-foreground/10">
+                <iframe
+                  src={embedUrl}
+                  title={liveStreamTitle}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
             </div>
-          </div>
+          </FadeIn>
         ) : (
+          <FadeIn delay={100} distance={16}>
           <div className="mx-auto max-w-3xl text-center">
             <div className="rounded-xl bg-gradient-to-b from-accent/40 to-muted/30 ring-1 ring-border p-12">
               <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
@@ -96,6 +100,7 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
               </div>
             </div>
           </div>
+          </FadeIn>
         )}
       </Container>
     </section>

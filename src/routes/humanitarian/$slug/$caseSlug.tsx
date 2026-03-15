@@ -1,10 +1,9 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { Phone, Mail, AlertCircle, CheckCircle2, Users, DollarSign } from 'lucide-react'
+import { Phone, Mail, AlertCircle, CheckCircle2, Users, DollarSign, Heart } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
-import { NumberTicker } from '@/components/ui/number-ticker'
-import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { ArticleContent } from '@/components/articles/ArticleContent'
 import { ContributeDialog } from '@/components/humanitarian/ContributeDialog'
@@ -73,21 +72,9 @@ function CaseDetailPage() {
 
   return (
     <>
-      {/* Hero image */}
-      {c.patientPhoto && (
-        <div className="relative h-72 w-full overflow-hidden md:h-96">
-          <CloudinaryImage
-            src={c.patientPhoto}
-            alt={c.title}
-            preset="hero"
-            className="w-full h-full object-cover object-top"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-        </div>
-      )}
-
-      <section className={c.patientPhoto ? 'pt-6 pb-4' : 'pt-12 pb-4 bg-gradient-to-b from-primary/15 via-accent/30 to-background'}>
-        <Container size="narrow">
+      {/* Hero — side-by-side layout */}
+      <section className="bg-gradient-to-b from-primary/15 via-accent/30 to-background py-10 md:py-14">
+        <Container>
           <Breadcrumbs
             items={[
               { label: 'Humanitarian Aid', to: '/humanitarian' },
@@ -96,18 +83,68 @@ function CaseDetailPage() {
             ]}
           />
 
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            <Badge className={`text-xs border-0 ${urgency.className}`}>
-              <UrgencyIcon className="size-3 mr-1" />
-              {urgency.label}
-            </Badge>
-            <Badge variant="muted" className="text-xs">Case #{c.caseNumber}</Badge>
-            <Badge variant="secondary" className="text-xs">Zakat Eligible</Badge>
-          </div>
+          <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
+            {/* Photo — stacks above on mobile, right column on desktop */}
+            {c.patientPhoto && (
+              <div className="order-1 mx-auto shrink-0 md:order-2 md:mx-0 md:w-64">
+                <div className="aspect-[3/4] w-48 overflow-hidden rounded-2xl ring-1 ring-border shadow-lg md:w-64">
+                  <CloudinaryImage
+                    src={c.patientPhoto}
+                    alt={c.title}
+                    preset="card"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
 
-          <h1 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            {c.title}
-          </h1>
+            {/* Text */}
+            <div className="order-2 flex-1 md:order-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className={`text-xs border-0 ${urgency.className}`}>
+                  <UrgencyIcon className="size-3 mr-1" />
+                  {urgency.label}
+                </Badge>
+                <Badge variant="muted" className="text-xs">Case #{c.caseNumber}</Badge>
+                <Badge variant="secondary" className="text-xs">Zakat Eligible</Badge>
+              </div>
+
+              <h1 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                {c.title}
+              </h1>
+
+              {/* Key stats inline */}
+              {(c.targetAmount !== null || c.monthlyAmount !== null || c.familySize !== null) && (
+                <div className="mt-5 flex flex-wrap gap-4">
+                  {c.targetAmount !== null && (
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <DollarSign className="size-4 text-secondary" />
+                      <span className="font-semibold text-foreground">${c.targetAmount.toLocaleString()}</span>
+                      <span className="text-muted-foreground">needed</span>
+                    </div>
+                  )}
+                  {c.monthlyAmount !== null && (
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <DollarSign className="size-4 text-secondary" />
+                      <span className="font-semibold text-foreground">${c.monthlyAmount.toLocaleString()}/mo</span>
+                    </div>
+                  )}
+                  {c.familySize !== null && (
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <Users className="size-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">{c.familySize} family members</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="mt-6 flex items-center gap-3 opacity-40">
+                <div className="h-px w-16 bg-secondary" />
+                <div className="size-1.5 rounded-full bg-secondary" />
+                <div className="h-px w-16 bg-secondary" />
+              </div>
+            </div>
+          </div>
         </Container>
       </section>
 
@@ -138,38 +175,6 @@ function CaseDetailPage() {
               </div>
             )}
 
-            {/* Amount stats */}
-            {(c.targetAmount !== null || c.monthlyAmount !== null || c.familySize !== null) && (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {c.targetAmount !== null && (
-                  <div className="rounded-lg bg-card ring-1 ring-foreground/10 p-4 text-center">
-                    <DollarSign className="size-5 text-secondary mx-auto mb-1" />
-                    <p className="text-xl font-bold text-foreground">
-                      $<NumberTicker value={c.targetAmount} />
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Target Amount</p>
-                  </div>
-                )}
-                {c.monthlyAmount !== null && (
-                  <div className="rounded-lg bg-card ring-1 ring-foreground/10 p-4 text-center">
-                    <DollarSign className="size-5 text-secondary mx-auto mb-1" />
-                    <p className="text-xl font-bold text-foreground">
-                      $<NumberTicker value={c.monthlyAmount} />
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Monthly Need</p>
-                  </div>
-                )}
-                {c.familySize !== null && (
-                  <div className="rounded-lg bg-card ring-1 ring-foreground/10 p-4 text-center">
-                    <Users className="size-5 text-muted-foreground mx-auto mb-1" />
-                    <p className="text-xl font-bold text-foreground">
-                      <NumberTicker value={c.familySize} />
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Family Members</p>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Sponsor CTA */}
             <div className="rounded-xl bg-card ring-1 ring-foreground/10 p-6 text-center space-y-4">
@@ -182,9 +187,10 @@ function CaseDetailPage() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <ContributeDialog
                   trigger={
-                    <ShimmerButton className="gap-2 px-6 py-2.5" borderRadius="8px">
+                    <Button className="gap-2 px-6">
+                      <Heart className="size-4" />
                       Sponsor This Case
-                    </ShimmerButton>
+                    </Button>
                   }
                   projectTitle={project.title}
                   caseTitle={c.title}

@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/humanitarian/ProjectCard'
 import { StatsBar } from '@/components/humanitarian/StatsBar'
 import { CharityMarquee } from '@/components/humanitarian/CharityMarquee'
+import { FadeIn } from '@/components/shared/FadeIn'
 import { getHumanitarianProjects } from '@/lib/notion'
 
 export const Route = createFileRoute('/humanitarian/')({
@@ -32,6 +33,7 @@ function HumanitarianPage() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-primary/20 via-accent/30 to-background py-14 md:py-20">
         <Container>
+          <FadeIn>
           <div className="mx-auto max-w-3xl text-center">
             <Badge variant="secondary" className="mb-5 px-3 py-1 text-xs font-medium">
               Eligible for Zakat &amp; Sadaqah
@@ -76,6 +78,7 @@ function HumanitarianPage() {
               <div className="h-px w-16 bg-secondary" />
             </div>
           </div>
+          </FadeIn>
         </Container>
       </section>
 
@@ -106,8 +109,10 @@ function HumanitarianPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+              {projects.map((project, i) => (
+                <FadeIn key={project.id} delay={i * 80}>
+                  <ProjectCard project={project} />
+                </FadeIn>
               ))}
             </div>
           )}

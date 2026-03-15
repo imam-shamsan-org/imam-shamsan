@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '@/components/layout/Container'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
 import { GalleryLightbox } from '@/components/gallery/GalleryLightbox'
+import { FadeIn } from '@/components/shared/FadeIn'
 import { getGalleryImages } from '@/lib/notion'
 import { getGalleryMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { GALLERY_CATEGORIES } from '@/lib/constants'
@@ -52,19 +53,21 @@ function GalleryPage() {
     <>
       <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
         <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-              <span className="text-primary">Gallery</span>
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Photos from events, conferences, and community programs
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
-              <div className="h-px w-16 bg-secondary" />
-              <div className="size-1.5 rounded-full bg-secondary" />
-              <div className="h-px w-16 bg-secondary" />
+          <FadeIn>
+            <div className="mx-auto max-w-3xl text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+                <span className="text-primary">Gallery</span>
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Photos from events, conferences, and community programs
+              </p>
+              <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+                <div className="h-px w-16 bg-secondary" />
+                <div className="size-1.5 rounded-full bg-secondary" />
+                <div className="h-px w-16 bg-secondary" />
+              </div>
             </div>
-          </div>
+          </FadeIn>
         </Container>
       </section>
 

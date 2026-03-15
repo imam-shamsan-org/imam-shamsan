@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { ServiceCard } from '@/components/services/ServiceCard'
+import { FadeIn } from '@/components/shared/FadeIn'
 import type { Service } from '@/types/service'
 
 interface ServicesPreviewProps {
@@ -14,7 +15,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
   return (
     <section className="py-16">
       <Container>
-        <div className="mb-8 flex items-center justify-between">
+        <FadeIn className="mb-8 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
               <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
@@ -33,11 +34,13 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
             View all
             <ArrowRight className="size-4" />
           </Link>
-        </div>
+        </FadeIn>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.slice(0, 6).map((service) => (
-            <ServiceCard key={service.id} service={service} />
+          {services.slice(0, 6).map((service, i) => (
+            <FadeIn key={service.id} delay={i * 80}>
+              <ServiceCard service={service} />
+            </FadeIn>
           ))}
         </div>
 

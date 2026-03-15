@@ -1,4 +1,5 @@
 import { ArticleCard } from './ArticleCard'
+import { FadeIn } from '@/components/shared/FadeIn'
 import type { ArticleSummary } from '@/types/article'
 
 interface ArticleGridProps {
@@ -16,8 +17,10 @@ export function ArticleGrid({ articles }: ArticleGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {articles.map((article) => (
-        <ArticleCard key={article.id} article={article} />
+      {articles.map((article, i) => (
+        <FadeIn key={article.id} delay={i * 80}>
+          <ArticleCard article={article} />
+        </FadeIn>
       ))}
     </div>
   )

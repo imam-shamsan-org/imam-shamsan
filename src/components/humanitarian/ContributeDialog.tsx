@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Phone, Mail, Send, Heart } from 'lucide-react'
+import { Phone, Mail, Send, Heart, Lock } from 'lucide-react'
 import {
   Dialog,
   DialogHeader,
@@ -22,25 +22,33 @@ interface ContributeDialogProps {
 
 export function ContributeDialog({ trigger, projectTitle, caseTitle }: ContributeDialogProps) {
   const [open, setOpen] = useState(false)
-  const subject = caseTitle
-    ? `Contribution Interest: ${caseTitle} (${projectTitle})`
-    : `Contribution Interest: ${projectTitle}`
-
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [caseInput, setCaseInput] = useState('')
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+
+  const resolvedCase = caseTitle ?? caseInput.trim()
+
+  const subject = resolvedCase
+    ? `Contribution Interest: ${resolvedCase} (${projectTitle})`
+    : `Contribution Interest: ${projectTitle}`
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus('sending')
     try {
+      const contextLine = resolvedCase
+        ? `Initiative: ${projectTitle}\nCase: ${resolvedCase}`
+        : `Initiative: ${projectTitle}`
       const result = await submitContactForm({
         data: {
           name,
           email,
           service: subject,
-          message: message || `I am interested in contributing to: ${subject}`,
+          message: message
+            ? `${contextLine}\n\n${message}`
+            : `I am interested in contributing to:\n${contextLine}`,
         },
       })
       setStatus(result.success ? 'sent' : 'error')
@@ -49,9 +57,18 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
     }
   }
 
+  function handleClose() {
+    setOpen(false)
+    // reset editable fields only — keep pre-filled ones intact
+    if (!caseTitle) setCaseInput('')
+    setName('')
+    setEmail('')
+    setMessage('')
+    setStatus('idle')
+  }
+
   return (
     <>
-      {/* Trigger — clone with onClick */}
       <span
         onClick={() => setOpen(true)}
         className="contents"
@@ -62,27 +79,19 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
         {trigger}
       </span>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={open} onClose={handleClose}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Heart className="size-5 text-primary" />
             Contribute to This Initiative
           </DialogTitle>
           <DialogDescription>
-            {caseTitle ? (
-              <>
-                <span className="font-medium text-foreground">{caseTitle}</span>
-                {' — '}
-                {projectTitle}
-              </>
-            ) : (
-              projectTitle
-            )}
+            Fill in your details and Imam Shamsan will be in touch, insha'Allah.
           </DialogDescription>
         </DialogHeader>
 
         <DialogContent>
-          {/* Direct contact info */}
+          {/* Direct contact */}
           <div className="rounded-lg bg-primary/5 border border-primary/20 p-4 mb-5 space-y-2">
             <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">
               Contact Imam Directly
@@ -103,7 +112,6 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
             </a>
           </div>
 
-          {/* Inline form */}
           {status === 'sent' ? (
             <div className="py-6 text-center">
               <div className="inline-flex size-12 items-center justify-center rounded-full bg-primary/10 mb-3">
@@ -117,6 +125,40 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <p className="text-xs text-muted-foreground">Or send a message directly:</p>
+
+              {/* Initiative (always locked) */}
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5">
+                  Initiative
+                  <Lock className="size-3 text-muted-foreground" />
+                </Label>
+                <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground">
+                  {projectTitle}
+                </div>
+              </div>
+
+              {/* Case — locked if pre-filled, editable otherwise */}
+              <div className="space-y-1.5">
+                <Label htmlFor="contrib-case" className="flex items-center gap-1.5">
+                  Specific Case
+                  {caseTitle && <Lock className="size-3 text-muted-foreground" />}
+                  {!caseTitle && <span className="text-muted-foreground font-normal">(optional)</span>}
+                </Label>
+                {caseTitle ? (
+                  <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground">
+                    {caseTitle}
+                  </div>
+                ) : (
+                  <Input
+                    id="contrib-case"
+                    value={caseInput}
+                    onChange={(e) => setCaseInput(e.target.value)}
+                    placeholder="e.g. Case #3 — Ahmad's family"
+                  />
+                )}
+              </div>
+
+              {/* Name */}
               <div className="space-y-1.5">
                 <Label htmlFor="contrib-name">Your Name</Label>
                 <Input
@@ -127,6 +169,8 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
                   required
                 />
               </div>
+
+              {/* Email */}
               <div className="space-y-1.5">
                 <Label htmlFor="contrib-email">Email Address</Label>
                 <Input
@@ -138,8 +182,10 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
                   required
                 />
               </div>
+
+              {/* Message */}
               <div className="space-y-1.5">
-                <Label htmlFor="contrib-message">Message (optional)</Label>
+                <Label htmlFor="contrib-message">Message <span className="text-muted-foreground font-normal">(optional)</span></Label>
                 <Textarea
                   id="contrib-message"
                   value={message}
@@ -148,13 +194,15 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
                   rows={3}
                 />
               </div>
+
               {status === 'error' && (
                 <p className="text-sm text-destructive">
                   Something went wrong. Please contact us directly.
                 </p>
               )}
+
               <DialogFooter className="px-0 pb-0 pt-2">
-                <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+                <Button variant="outline" type="button" onClick={handleClose}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={status === 'sending'}>

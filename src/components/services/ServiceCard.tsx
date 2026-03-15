@@ -17,7 +17,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
     <Link
       to="/contact"
       search={{ service: serviceSlug }}
-      className="group flex flex-col rounded-xl ring-1 ring-foreground/10 bg-card p-5 transition-all hover:ring-primary/30 hover:shadow-md"
+      className="group flex flex-col rounded-xl ring-1 ring-foreground/10 bg-card p-5 transition-all hover:ring-primary/30 hover:shadow-md h-full min-h-[160px]"
     >
       <div className="mb-3">
         <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">

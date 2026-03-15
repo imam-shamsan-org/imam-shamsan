@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '@/components/layout/Container'
 import { ArticleGrid } from '@/components/articles/ArticleGrid'
 import { LanguageFilter } from '@/components/articles/LanguageFilter'
+import { FadeIn } from '@/components/shared/FadeIn'
 import { getPublishedArticles } from '@/lib/notion'
 import { getWritingsListMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { ARTICLE_CATEGORIES } from '@/lib/constants'
@@ -46,6 +47,7 @@ function WritingsPage() {
     <>
       <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
         <Container>
+          <FadeIn>
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
               <span className="text-primary">Writings</span>
@@ -59,6 +61,7 @@ function WritingsPage() {
               <div className="h-px w-16 bg-secondary" />
             </div>
           </div>
+          </FadeIn>
         </Container>
       </section>
 
