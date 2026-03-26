@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Select } from '@/components/ui/select'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Send, Loader2, CheckCircle } from 'lucide-react'
 import { submitContactForm } from '@/lib/email'
@@ -168,17 +168,21 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
           <Label htmlFor="service">Service</Label>
           <Select
             id="service"
-            value={formState.service}
-            onChange={(e) =>
-              setFormState((s) => ({ ...s, service: e.target.value }))
+            value={formState.service || null}
+            onValueChange={(value) =>
+              setFormState((s) => ({ ...s, service: value ?? '' }))
             }
           >
-            <option value="">Select a service...</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.nameEn}>
-                {s.nameEn}
-              </option>
-            ))}
+            <SelectTrigger>
+              <SelectValue placeholder="Select a service..." />
+            </SelectTrigger>
+            <SelectContent>
+              {services.map((s) => (
+                <SelectItem key={s.id} value={s.nameEn}>
+                  {s.nameEn}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
       </div>

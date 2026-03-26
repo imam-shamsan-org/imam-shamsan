@@ -3,7 +3,6 @@ import { Container } from '@/components/layout/Container'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/humanitarian/ProjectCard'
 import { StatsBar } from '@/components/humanitarian/StatsBar'
-import { CharityMarquee } from '@/components/humanitarian/CharityMarquee'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getHumanitarianProjects } from '@/lib/notion'
 
@@ -85,9 +84,6 @@ function HumanitarianPage() {
       {/* Animated stats */}
       <StatsBar />
 
-      {/* Hadith marquee */}
-      <CharityMarquee />
-
       {/* Projects grid */}
       <section className="py-14">
         <Container>
@@ -109,10 +105,8 @@ function HumanitarianPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project, i) => (
-                <FadeIn key={project.id} delay={i * 80}>
-                  <ProjectCard project={project} />
-                </FadeIn>
+              {projects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           )}

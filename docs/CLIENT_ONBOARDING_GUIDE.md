@@ -13,6 +13,7 @@ Welcome! This guide walks you through the accounts needed for your website and s
   - [Adding & Editing Sermon Summaries](#adding--editing-sermon-summaries)
   - [Managing Gallery Photos](#managing-gallery-photos)
   - [Managing Recitations](#managing-recitations)
+  - [Managing Humanitarian Aid](#managing-humanitarian-aid)
   - [Updating Site Settings (Live Stream, Profile Image, Logo)](#updating-site-settings-live-stream-profile-image-logo)
   - [Uploading Images to Cloudinary](#uploading-images-to-cloudinary)
 - [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
@@ -131,17 +132,19 @@ Once the website is built, you will manage content through **two tools**:
 - **Notion** — for all text content, metadata, and links
 - **Cloudinary** — for uploading photos and images
 
-Your website has **7 Notion databases**:
+Your website has **9 Notion databases**:
 
-| Database           | What It Controls                                    |
-|--------------------|-----------------------------------------------------|
-| Articles           | Writings/articles on the Writings page              |
-| Services           | Services listed on the Services page                |
-| Sermon Summaries   | Written khutbah summaries on the Sermons page       |
-| Gallery            | Individual photos on the Gallery page               |
-| Recitations        | Qur'anic recitation videos on the Media page        |
-| About Page         | Your biography, education, and background           |
-| Site Settings      | Live stream URL, profile image, logo                |
+| Database                    | What It Controls                                    |
+|-----------------------------|-----------------------------------------------------|
+| Articles                    | Writings/articles on the Writings page              |
+| Services                    | Services listed on the Services page                |
+| Sermon Summaries            | Written khutbah summaries on the Sermons page       |
+| Gallery                     | Individual photos on the Gallery page               |
+| Recitations                 | Qur'anic recitation videos on the Media page        |
+| About Page                  | Your biography, education, and background           |
+| Site Settings               | Live stream URL, profile image, logo                |
+| Humanitarian Projects       | Initiative categories on the Humanitarian Aid page  |
+| Humanitarian Cases          | Individual sponsorable cases within each initiative |
 
 ### Arabic & English
 
@@ -279,6 +282,53 @@ The Media page displays Qur'anic recitation videos. Each entry is one YouTube vi
 
 ---
 
+### Managing Humanitarian Aid
+
+The Humanitarian Aid page has two levels: **Projects** (the initiative categories, e.g., "Medical Aid") and **Cases** (individual families or people within a project).
+
+#### Adding a new Humanitarian Project
+
+1. Open Notion and go to the **"Humanitarian Projects"** database
+2. Click **"+ New"** to create a new entry
+3. Fill in the properties:
+   - **Title** — Name of the initiative in English (e.g., "Medical Aid for Displaced Families")
+   - **Title AR** — Name in Arabic (optional)
+   - **Description** — A short explanation of what this initiative covers (2-3 sentences)
+   - **Category** — Select one: `Medical`, `Food`, `Water`, `Education`, `Family`, or `Religious`
+   - **Icon** — A short keyword describing the icon to use (e.g., `heart`, `stethoscope`, `book`). Ask your developer for the full list.
+   - **Has Cases** — Check this box if individual sponsorable cases will be listed under this project. Leave unchecked for general donation initiatives.
+   - **Sort Order** — A number that controls display order on the page (lower numbers appear first)
+   - **Status** — Set to `Active` to show on the website (`Completed` or `Paused` hides it)
+
+**To hide a project:** Change Status to `Paused` or `Completed`.
+
+---
+
+#### Adding a new Humanitarian Case
+
+Cases appear under a specific project when "Has Cases" is checked. Each case represents one family or individual.
+
+1. First, upload the patient/family photo to Cloudinary in the `humanitarian/` folder
+2. Open Notion and go to the **"Humanitarian Cases"** database
+3. Click **"+ New"** to create a new entry
+4. Fill in the properties:
+   - **Title** — Name of the case (e.g., "Um Khalid — Single Mother of 5")
+   - **Slug** — URL-friendly identifier (e.g., `um-khalid`). Lowercase, hyphens only.
+   - **Case Number** — A unique number for this case (e.g., `1`, `2`, `3`)
+   - **Project** — Link to the parent project (click the field and select from the list)
+   - **Urgency** — Select `Urgent`, `High`, or `Ongoing`
+   - **Target Amount** — Total amount needed (numbers only, e.g., `5000`). Leave blank if not applicable.
+   - **Monthly Amount** — Monthly support needed (e.g., `400`). Leave blank if not applicable.
+   - **Family Size** — Number of family members (e.g., `6`). Leave blank if not applicable.
+   - **Patient Photo** — Paste a Cloudinary URL from the `humanitarian/` folder
+   - **Needs** — List specific needs as bullet points in this field (e.g., "Rent assistance", "Medical prescriptions")
+   - **Status** — Set to `Published` to show on the website (`Funded` or `Draft` hides it)
+5. **Write the case story in the page body** — explain the family's situation in detail. This is what visitors will read before deciding to contribute. You can write in Arabic, English, or both.
+
+**To mark a case as fully funded:** Change Status to `Funded` — it will be removed from the live site.
+
+---
+
 ### Updating Site Settings (Live Stream, Profile Image, Logo, Social Links)
 
 The Site Settings database contains key-value pairs that control parts of the website. You update these by editing the **"Value"** field of the relevant row.
@@ -327,11 +377,27 @@ The Site Settings database contains key-value pairs that control parts of the we
 2. Click the **link/chain icon** or look for **"Copy URL"**
 3. Paste this URL into the relevant Notion property or page body
 
+**Which folder to upload to:**
+
+Your Cloudinary account is organized into folders that match the sections of your website. Always upload to the correct folder:
+
+| Folder          | What goes here                                              |
+|-----------------|-------------------------------------------------------------|
+| `gallery/`      | Public gallery photos (events, community, conferences)      |
+| `writings/`     | Cover images for articles                                   |
+| `sermons/`      | Cover images for sermon summaries                           |
+| `humanitarian/` | Patient and family photos for humanitarian cases            |
+| `profile/`      | Your personal portraits and photos of yourself              |
+| `site/`         | Logo and other website brand assets (rarely changes)        |
+
+To upload into a specific folder: in the Media Library, click into that folder first, then click **"Upload"**.
+
 **Tips for photos:**
 - Use clear, well-lit photos
 - Landscape orientation (horizontal) works best for galleries and cover images
 - Photos are automatically optimized — no need to resize before uploading
 - Give photos descriptive names before uploading (e.g., `eid-prayer-hall.jpg` instead of `IMG_4523.jpg`)
+- Lowercase only, hyphens instead of spaces (e.g., `friday-khutbah-jan-2025.jpg`)
 
 **Important:** When adding images inside a Notion page body (writings or sermons), always use **"Embed link"** and paste a **Cloudinary URL**. Never use Notion's "Upload" option — uploaded images break after 1 hour.
 
@@ -367,6 +433,26 @@ The Site Settings database contains key-value pairs that control parts of the we
 1. Open Notion > Recitations database
 2. Click "+ New"
 3. Fill in Title, paste the YouTube link, set the Order number
+
+### "I want to add a new humanitarian initiative (project)"
+1. Open Notion > Humanitarian Projects database
+2. Click "+ New"
+3. Fill in Title, Description, Category, Sort Order
+4. Set "Has Cases" if individual cases will be listed
+5. Set Status to "Active"
+
+### "I want to add a new humanitarian case"
+1. Upload the family/patient photo to Cloudinary > `humanitarian/` folder, copy the URL
+2. Open Notion > Humanitarian Cases database
+3. Click "+ New"
+4. Fill in Title, Slug, Case Number, link to the Project, set Urgency and amounts
+5. Paste the Cloudinary URL in "Patient Photo"
+6. Write the case story in the page body
+7. Set Status to "Published"
+
+### "I want to mark a case as fully funded"
+- Open Notion > Humanitarian Cases database
+- Find the case and change Status to `Funded`
 
 ### "I want to update the About page"
 1. Open Notion > About Page database

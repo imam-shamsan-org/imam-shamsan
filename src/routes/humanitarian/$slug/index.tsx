@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { CaseCard } from '@/components/humanitarian/CaseCard'
 import { ContributeDialog } from '@/components/humanitarian/ContributeDialog'
-import { FadeIn } from '@/components/shared/FadeIn'
 import { getProjectIcon } from '@/lib/humanitarian-icons'
 import { getHumanitarianProjectBySlug, getHumanitarianCasesByProject } from '@/lib/notion'
 
@@ -141,14 +140,13 @@ function ProjectDetailPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {cases.map((c, i) => (
-                  <FadeIn key={c.id} delay={i * 80}>
-                    <CaseCard
-                      case_={c}
-                      projectSlug={project.slug}
-                      projectTitle={project.title}
-                    />
-                  </FadeIn>
+                {cases.map((c) => (
+                  <CaseCard
+                    key={c.id}
+                    case_={c}
+                    projectSlug={project.slug}
+                    projectTitle={project.title}
+                  />
                 ))}
               </div>
             </>
