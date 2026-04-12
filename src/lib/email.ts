@@ -8,6 +8,13 @@ const contactFormSchema = z.object({
   service: z.string().max(200).optional(),
   eventLocation: z.string().max(500).optional(),
   message: z.string().min(1).max(5000),
+  attachment: z
+    .object({
+      filename: z.string().max(255),
+      content: z.string(), // base64
+      mimeType: z.enum(['application/pdf', 'image/png']),
+    })
+    .optional(),
 })
 
 type ContactFormData = z.infer<typeof contactFormSchema>
@@ -41,7 +48,7 @@ async function sendContactEmail(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Imam Shamsan Website <onboarding@resend.dev>',
+        from: `${process.env.SITE_PERSON_NAME || 'Imam Shamsan'} Website <onboarding@resend.dev>`,
         to: contactEmail,
         subject: data.service
           ? `New Inquiry: ${escapeHtml(data.service)} - from ${escapeHtml(data.name)}`
@@ -55,8 +62,19 @@ async function sendContactEmail(
           ${data.eventLocation ? `<p><strong>Event Location:</strong> ${escapeHtml(data.eventLocation)}</p>` : ''}
           <p><strong>Message:</strong></p>
           <p>${escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
+          ${data.attachment ? `<p><em>Attachment: ${escapeHtml(data.attachment.filename)}</em></p>` : ''}
         `,
         reply_to: data.email,
+        ...(data.attachment
+          ? {
+              attachments: [
+                {
+                  filename: data.attachment.filename,
+                  content: data.attachment.content,
+                },
+              ],
+            }
+          : {}),
       }),
     })
 
