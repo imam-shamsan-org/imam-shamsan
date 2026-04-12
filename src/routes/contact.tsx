@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Mail, Youtube, Facebook, Instagram } from 'lucide-react'
+import { Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveServices, getSiteSettings } from '@/lib/notion'
-import { getContactMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getBreadcrumbSchema, getContactMeta, siteConfig } from '@/lib/seo'
 
 interface ContactSearch {
   service?: string
@@ -44,9 +44,14 @@ function ContactPage() {
   const { services, settings } = Route.useLoaderData()
   const { service } = Route.useSearch()
 
-  const youtubeUrl = settings.youtube_url?.value || 'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
-  const facebookUrl = settings.facebook_url?.value || 'https://www.facebook.com/shamsan.aljabi.2025'
-  const instagramUrl = settings.instagram_url?.value || 'https://www.instagram.com/dr.sham_san/'
+  const youtubeUrl =
+    settings.youtube_url?.value ||
+    'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
+  const facebookUrl =
+    settings.facebook_url?.value ||
+    'https://www.facebook.com/shamsan.aljabi.2025'
+  const instagramUrl =
+    settings.instagram_url?.value || 'https://www.instagram.com/dr.sham_san/'
 
   return (
     <>
@@ -76,10 +81,7 @@ function ContactPage() {
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-12 lg:grid-cols-5">
             {/* Form */}
             <div className="lg:col-span-3">
-              <ContactForm
-                services={services}
-                preselectedService={service}
-              />
+              <ContactForm services={services} preselectedService={service} />
             </div>
 
             {/* Contact Info Sidebar */}

@@ -1,13 +1,18 @@
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { Phone, Mail } from 'lucide-react'
+import { useState } from 'react'
+import { Link, createFileRoute, notFound } from '@tanstack/react-router'
+import type { HumanitarianCase } from '@/types/humanitarian'
 import { Container } from '@/components/layout/Container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { CaseCard } from '@/components/humanitarian/CaseCard'
+import { CaseDetailModal } from '@/components/humanitarian/CaseDetailModal'
 import { ContributeDialog } from '@/components/humanitarian/ContributeDialog'
 import { getProjectIcon } from '@/lib/humanitarian-icons'
-import { getHumanitarianProjectBySlug, getHumanitarianCasesByProject } from '@/lib/notion'
+import {
+  getHumanitarianCasesByProject,
+  getHumanitarianProjectBySlug,
+} from '@/lib/notion'
 
 export const Route = createFileRoute('/humanitarian/$slug/')({
   loader: async ({ params }) => {
@@ -32,8 +37,13 @@ export const Route = createFileRoute('/humanitarian/$slug/')({
   notFoundComponent: () => (
     <Container size="narrow">
       <div className="py-24 text-center">
-        <p className="text-xl font-semibold text-foreground">Initiative Not Found</p>
-        <Link to="/humanitarian" className="mt-4 inline-block text-primary hover:underline text-sm">
+        <p className="text-xl font-semibold text-foreground">
+          Initiative Not Found
+        </p>
+        <Link
+          to="/humanitarian"
+          className="mt-4 inline-block text-primary hover:underline text-sm"
+        >
           ← Back to Humanitarian Aid
         </Link>
       </div>
@@ -44,6 +54,9 @@ export const Route = createFileRoute('/humanitarian/$slug/')({
 function ProjectDetailPage() {
   const { project, cases } = Route.useLoaderData()
   const Icon = getProjectIcon(project.icon, project.category)
+  const [selectedCase, setSelectedCase] = useState<HumanitarianCase | null>(
+    null,
+  )
 
   return (
     <>
@@ -62,14 +75,22 @@ function ProjectDetailPage() {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-xs">{project.category}</Badge>
-                <Badge variant="secondary" className="text-xs">Zakat Eligible</Badge>
+                <Badge variant="outline" className="text-xs">
+                  {project.category}
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Zakat Eligible
+                </Badge>
               </div>
               <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 {project.title}
               </h1>
               {project.titleAr && (
-                <p dir="rtl" lang="ar" className="font-arabic text-muted-foreground mt-1">
+                <p
+                  dir="rtl"
+                  lang="ar"
+                  className="font-arabic text-muted-foreground mt-1"
+                >
                   {project.titleAr}
                 </p>
               )}
@@ -94,24 +115,12 @@ function ProjectDetailPage() {
           {cases.length === 0 ? (
             <div className="mx-auto max-w-lg text-center py-12">
               <p className="text-muted-foreground mb-6">
-                This initiative accepts general contributions. Contact Imam Shamsan to participate.
+                This initiative accepts general contributions. Contact Imam
+                Shamsan to participate.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href="tel:6613800334"
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  <Phone className="size-4" />
-                  661-380-0334
-                </a>
-                <a
-                  href="mailto:MCCGPImamShamsan@gmail.com"
-                  className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                >
-                  <Mail className="size-4" />
-                  Email Imam
-                </a>
-              </div>
+              <Button asChild>
+                <Link to="/contact">Contact Us</Link>
+              </Button>
             </div>
           ) : (
             <>
@@ -124,7 +133,7 @@ function ProjectDetailPage() {
                     </h2>
                   </div>
                   <p className="mt-0.5 text-sm text-muted-foreground pl-[18px]">
-                    Click a case to read the full story and contribute.
+                    Click a case to view the poster and contribute.
                   </p>
                 </div>
                 <ContributeDialog
@@ -144,6 +153,7 @@ function ProjectDetailPage() {
                     case_={c}
                     projectSlug={project.slug}
                     projectTitle={project.title}
+                    onClick={() => setSelectedCase(c)}
                   />
                 ))}
               </div>
@@ -158,25 +168,19 @@ function ProjectDetailPage() {
             <p className="text-sm text-muted-foreground">
               100% of contributions go directly to beneficiaries.
             </p>
-            <div className="flex gap-3 shrink-0">
-              <a
-                href="tel:6613800334"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                <Phone className="size-4" />
-                Call Imam
-              </a>
-              <a
-                href="mailto:MCCGPImamShamsan@gmail.com"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
-              >
-                <Mail className="size-4" />
-                Email
-              </a>
-            </div>
+            <Button asChild size="sm">
+              <Link to="/contact">Contact Us</Link>
+            </Button>
           </div>
         </Container>
       </section>
+
+      <CaseDetailModal
+        case_={selectedCase}
+        projectTitle={project.title}
+        open={selectedCase !== null}
+        onClose={() => setSelectedCase(null)}
+      />
     </>
   )
 }

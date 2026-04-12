@@ -1,11 +1,18 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { ContributeDialog } from './ContributeDialog'
+import type { HumanitarianProject } from '@/types/humanitarian'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ContributeDialog } from './ContributeDialog'
 import { getProjectIcon } from '@/lib/humanitarian-icons'
-import type { HumanitarianProject } from '@/types/humanitarian'
 
 interface ProjectCardProps {
   project: HumanitarianProject
@@ -29,7 +36,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </CardTitle>
 
         {project.titleAr && (
-          <p dir="rtl" lang="ar" className="font-arabic text-sm text-muted-foreground mt-0.5">
+          <p
+            dir="rtl"
+            lang="ar"
+            className="font-arabic text-sm text-muted-foreground mt-0.5"
+          >
             {project.titleAr}
           </p>
         )}
@@ -37,12 +48,24 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <CardDescription className="mt-1 text-sm leading-relaxed">
           {project.description}
         </CardDescription>
+
+        {project.descriptionAr && (
+          <p
+            dir="rtl"
+            lang="ar"
+            className="font-arabic text-sm text-muted-foreground mt-1 leading-relaxed"
+          >
+            {project.descriptionAr}
+          </p>
+        )}
       </CardHeader>
 
       <CardContent className="flex-1" />
 
       <CardFooter className="flex items-center gap-2 bg-transparent border-t border-border/50 pt-3 pb-4 px-4">
-        <Badge variant="secondary" className="text-xs">Zakat Eligible</Badge>
+        <Badge variant="secondary" className="text-xs">
+          Zakat Eligible
+        </Badge>
 
         {project.hasCases ? (
           <Link

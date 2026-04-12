@@ -1,41 +1,60 @@
 import { useState } from 'react'
+import { CheckCircle, Loader2, Send } from 'lucide-react'
+import type { Service } from '@/types/service'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { Send, Loader2, CheckCircle } from 'lucide-react'
 import { submitContactForm } from '@/lib/email'
-import type { Service } from '@/types/service'
 
 interface ContactFormProps {
-  services: Service[]
+  services: Array<Service>
   preselectedService?: string
 }
 
 type FieldErrors = Partial<Record<'name' | 'email' | 'message', string>>
 
-function validateForm(state: { name: string; email: string; message: string }): FieldErrors {
+function validateForm(state: {
+  name: string
+  email: string
+  message: string
+}): FieldErrors {
   const errors: FieldErrors = {}
   if (!state.name.trim()) errors.name = 'Name is required'
   else if (state.name.trim().length > 200) errors.name = 'Name is too long'
 
   if (!state.email.trim()) errors.email = 'Email is required'
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) errors.email = 'Please enter a valid email'
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email))
+    errors.email = 'Please enter a valid email'
 
   if (!state.message.trim()) errors.message = 'Message is required'
-  else if (state.message.length > 5000) errors.message = 'Message is too long (max 5000 characters)'
+  else if (state.message.length > 5000)
+    errors.message = 'Message is too long (max 5000 characters)'
 
   return errors
 }
 
 function toSlug(name: string): string {
-  return name.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+  return name
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
 }
 
-export function ContactForm({ services, preselectedService }: ContactFormProps) {
+export function ContactForm({
+  services,
+  preselectedService,
+}: ContactFormProps) {
   const matchedService = preselectedService
-    ? services.find((s) => toSlug(s.nameEn) === preselectedService)?.nameEn ?? ''
+    ? (services.find((s) => toSlug(s.nameEn) === preselectedService)?.nameEn ??
+      '')
     : ''
 
   const [formState, setFormState] = useState({
@@ -46,7 +65,9 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
     eventLocation: '',
     message: '',
   })
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle',
+  )
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
@@ -101,8 +122,8 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
           Message Sent!
         </h3>
         <p className="mt-2 text-muted-foreground">
-          Thank you for reaching out. Imam Shamsan will respond to your
-          inquiry soon, insha'Allah.
+          Thank you for reaching out. Imam Shamsan will respond to your inquiry
+          soon, insha'Allah.
         </p>
         <Button
           variant="outline"
@@ -126,12 +147,15 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
             value={formState.name}
             onChange={(e) => {
               setFormState((s) => ({ ...s, name: e.target.value }))
-              if (fieldErrors.name) setFieldErrors((f) => ({ ...f, name: undefined }))
+              if (fieldErrors.name)
+                setFieldErrors((f) => ({ ...f, name: undefined }))
             }}
             placeholder="Your full name"
             aria-invalid={!!fieldErrors.name}
           />
-          {fieldErrors.name && <p className="text-xs text-destructive">{fieldErrors.name}</p>}
+          {fieldErrors.name && (
+            <p className="text-xs text-destructive">{fieldErrors.name}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email *</Label>
@@ -142,12 +166,15 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
             value={formState.email}
             onChange={(e) => {
               setFormState((s) => ({ ...s, email: e.target.value }))
-              if (fieldErrors.email) setFieldErrors((f) => ({ ...f, email: undefined }))
+              if (fieldErrors.email)
+                setFieldErrors((f) => ({ ...f, email: undefined }))
             }}
             placeholder="your@email.com"
             aria-invalid={!!fieldErrors.email}
           />
-          {fieldErrors.email && <p className="text-xs text-destructive">{fieldErrors.email}</p>}
+          {fieldErrors.email && (
+            <p className="text-xs text-destructive">{fieldErrors.email}</p>
+          )}
         </div>
       </div>
 
@@ -165,7 +192,7 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="service">Service</Label>
+          <Label htmlFor="service">Service (optional)</Label>
           <Select
             id="service"
             value={formState.service || null}
@@ -207,13 +234,16 @@ export function ContactForm({ services, preselectedService }: ContactFormProps) 
           value={formState.message}
           onChange={(e) => {
             setFormState((s) => ({ ...s, message: e.target.value }))
-            if (fieldErrors.message) setFieldErrors((f) => ({ ...f, message: undefined }))
+            if (fieldErrors.message)
+              setFieldErrors((f) => ({ ...f, message: undefined }))
           }}
           placeholder="How can Imam Shamsan help you?"
           rows={5}
           aria-invalid={!!fieldErrors.message}
         />
-        {fieldErrors.message && <p className="text-xs text-destructive">{fieldErrors.message}</p>}
+        {fieldErrors.message && (
+          <p className="text-xs text-destructive">{fieldErrors.message}</p>
+        )}
       </div>
 
       {status === 'error' && (

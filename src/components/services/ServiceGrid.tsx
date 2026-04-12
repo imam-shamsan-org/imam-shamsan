@@ -1,9 +1,9 @@
 import { ServiceCard } from './ServiceCard'
-import { FadeIn } from '@/components/shared/FadeIn'
 import type { Service } from '@/types/service'
+import { FadeIn } from '@/components/shared/FadeIn'
 
 interface ServiceGridProps {
-  services: Service[]
+  services: Array<Service>
 }
 
 export function ServiceGrid({ services }: ServiceGridProps) {

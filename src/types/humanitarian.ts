@@ -7,13 +7,10 @@ export interface HumanitarianProject {
   descriptionAr: string
   category: 'Medical' | 'Food' | 'Water' | 'Education' | 'Family' | 'Religious'
   icon: string
-  coverImage: string
   hasCases: boolean
   sortOrder: number
   status: 'Active' | 'Completed' | 'Paused'
 }
-
-import type { ContentBlock } from '@/types/article'
 
 export interface HumanitarianCase {
   id: string
@@ -21,12 +18,7 @@ export interface HumanitarianCase {
   caseNumber: number
   title: string
   projectId: string
-  content: ContentBlock[]
-  needsItems: string[]
   urgency: 'Urgent' | 'High' | 'Ongoing'
-  targetAmount: number | null
-  monthlyAmount: number | null
-  familySize: number | null
-  patientPhoto: string
+  posterUrl: string | null
   status: 'Published' | 'Funded' | 'Draft'
 }

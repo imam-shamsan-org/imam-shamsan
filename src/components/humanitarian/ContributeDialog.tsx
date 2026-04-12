@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Phone, Mail, Send, Heart, Lock } from 'lucide-react'
+import { Heart, Send } from 'lucide-react'
 import {
   Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogContent,
-  DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,13 +20,19 @@ interface ContributeDialogProps {
   caseTitle?: string
 }
 
-export function ContributeDialog({ trigger, projectTitle, caseTitle }: ContributeDialogProps) {
+export function ContributeDialog({
+  trigger,
+  projectTitle,
+  caseTitle,
+}: ContributeDialogProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [caseInput, setCaseInput] = useState('')
   const [message, setMessage] = useState('')
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle',
+  )
 
   const resolvedCase = caseTitle ?? caseInput.trim()
 
@@ -91,27 +97,6 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
         </DialogHeader>
 
         <DialogContent>
-          {/* Direct contact */}
-          <div className="rounded-lg bg-primary/5 border border-primary/20 p-4 mb-5 space-y-2">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">
-              Contact Imam Directly
-            </p>
-            <a
-              href="tel:6613800334"
-              className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors"
-            >
-              <Phone className="size-4 text-primary" />
-              661-380-0334
-            </a>
-            <a
-              href="mailto:MCCGPImamShamsan@gmail.com"
-              className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors"
-            >
-              <Mail className="size-4 text-primary" />
-              MCCGPImamShamsan@gmail.com
-            </a>
-          </div>
-
           {status === 'sent' ? (
             <div className="py-6 text-center">
               <div className="inline-flex size-12 items-center justify-center rounded-full bg-primary/10 mb-3">
@@ -124,39 +109,45 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <p className="text-xs text-muted-foreground">Or send a message directly:</p>
-
-              {/* Initiative (always locked) */}
+              {/* Initiative — shown as gold pill */}
               <div className="space-y-1.5">
-                <Label className="flex items-center gap-1.5">
-                  Initiative
-                  <Lock className="size-3 text-muted-foreground" />
-                </Label>
-                <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground">
-                  {projectTitle}
+                <p className="text-xs text-muted-foreground">Initiative</p>
+                <div>
+                  <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-medium text-secondary">
+                    {projectTitle}
+                  </span>
                 </div>
               </div>
 
-              {/* Case — locked if pre-filled, editable otherwise */}
-              <div className="space-y-1.5">
-                <Label htmlFor="contrib-case" className="flex items-center gap-1.5">
-                  Specific Case
-                  {caseTitle && <Lock className="size-3 text-muted-foreground" />}
-                  {!caseTitle && <span className="text-muted-foreground font-normal">(optional)</span>}
-                </Label>
-                {caseTitle ? (
-                  <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-foreground">
-                    {caseTitle}
+              {/* Case — gold pill if pre-filled, optional input otherwise */}
+              {caseTitle ? (
+                <div className="space-y-1.5">
+                  <p className="text-xs text-muted-foreground">Case</p>
+                  <div>
+                    <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-medium text-secondary">
+                      {caseTitle}
+                    </span>
                   </div>
-                ) : (
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <Label
+                    htmlFor="contrib-case"
+                    className="flex items-center gap-1.5"
+                  >
+                    Specific Case
+                    <span className="text-muted-foreground font-normal">
+                      (optional)
+                    </span>
+                  </Label>
                   <Input
                     id="contrib-case"
                     value={caseInput}
                     onChange={(e) => setCaseInput(e.target.value)}
                     placeholder="e.g. Case #3 — Ahmad's family"
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Name */}
               <div className="space-y-1.5">
@@ -185,7 +176,12 @@ export function ContributeDialog({ trigger, projectTitle, caseTitle }: Contribut
 
               {/* Message */}
               <div className="space-y-1.5">
-                <Label htmlFor="contrib-message">Message <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                <Label htmlFor="contrib-message">
+                  Message{' '}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
                 <Textarea
                   id="contrib-message"
                   value={message}

@@ -22,7 +22,9 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;')
 }
 
-async function sendContactEmail(data: ContactFormData): Promise<{ success: boolean; error?: string }> {
+async function sendContactEmail(
+  data: ContactFormData,
+): Promise<{ success: boolean; error?: string }> {
   const resendApiKey = process.env.RESEND_API_KEY
   const contactEmail = process.env.CONTACT_EMAIL || 'mccgpimamshamsan@gmail.com'
 

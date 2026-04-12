@@ -1,11 +1,23 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
-import { slugify } from '@/lib/utils'
+import { parseBlocksToContent } from './parsers'
 import type {
   BlockObjectResponse,
-  PageObjectResponse,
   ListBlockChildrenResponse,
+  PageObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints'
+import type { Article, ArticleSummary } from '@/types/article'
+import type { Service } from '@/types/service'
+import type { Sermon, SermonSummary } from '@/types/sermon'
+import type { GalleryImage } from '@/types/gallery'
+import type { Recitation } from '@/types/recitation'
+import type { SiteSettings } from '@/types/settings'
+import type { AboutPage } from '@/types/about'
+import type {
+  HumanitarianCase,
+  HumanitarianProject,
+} from '@/types/humanitarian'
+import { slugify } from '@/lib/utils'
 
 /** Response shape from Notion's POST /databases/{id}/query endpoint */
 interface QueryDatabaseResponse {
@@ -13,15 +25,6 @@ interface QueryDatabaseResponse {
   has_more: boolean
   next_cursor: string | null
 }
-import type { ArticleSummary, Article } from '@/types/article'
-import type { Service } from '@/types/service'
-import type { SermonSummary, Sermon } from '@/types/sermon'
-import type { GalleryImage } from '@/types/gallery'
-import type { Recitation } from '@/types/recitation'
-import type { SiteSettings } from '@/types/settings'
-import type { AboutPage } from '@/types/about'
-import type { HumanitarianProject, HumanitarianCase } from '@/types/humanitarian'
-import { parseBlocksToContent } from './parsers'
 
 const NOTION_API_VERSION = '2022-06-28'
 
@@ -72,7 +75,10 @@ function isNotionConfigured(): boolean {
   return Boolean(process.env.NOTION_API_KEY)
 }
 
-async function notionFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function notionFetch<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
   const apiKey = getApiKey()
   const response = await fetch(`https://api.notion.com/v1${endpoint}`, {
     ...options,
@@ -92,17 +98,25 @@ async function notionFetch<T>(endpoint: string, options: RequestInit = {}): Prom
   return response.json() as Promise<T>
 }
 
-async function queryDatabase(databaseId: string, body: object): Promise<QueryDatabaseResponse> {
+async function queryDatabase(
+  databaseId: string,
+  body: object,
+): Promise<QueryDatabaseResponse> {
   return notionFetch<QueryDatabaseResponse>(`/databases/${databaseId}/query`, {
     method: 'POST',
     body: JSON.stringify(body),
   })
 }
 
-async function getBlockChildren(blockId: string, startCursor?: string): Promise<ListBlockChildrenResponse> {
+async function getBlockChildren(
+  blockId: string,
+  startCursor?: string,
+): Promise<ListBlockChildrenResponse> {
   const params = new URLSearchParams({ page_size: '100' })
   if (startCursor) params.set('start_cursor', startCursor)
-  return notionFetch<ListBlockChildrenResponse>(`/blocks/${blockId}/children?${params}`)
+  return notionFetch<ListBlockChildrenResponse>(
+    `/blocks/${blockId}/children?${params}`,
+  )
 }
 
 function getPropertyValue(
@@ -142,7 +156,10 @@ function getPropertyValue(
   }
 }
 
-function getImageUrl(props: PageObjectResponse['properties'], propertyName: string): string {
+function getImageUrl(
+  props: PageObjectResponse['properties'],
+  propertyName: string,
+): string {
   const prop = props[propertyName]
   if (!prop) return ''
 
@@ -157,11 +174,13 @@ function getImageUrl(props: PageObjectResponse['properties'], propertyName: stri
   return ''
 }
 
-async function getAllBlockChildren(pageId: string): Promise<BlockObjectResponse[]> {
+async function getAllBlockChildren(
+  pageId: string,
+): Promise<Array<BlockObjectResponse>> {
   if (!isNotionConfigured()) return []
 
   try {
-    const allBlocks: BlockObjectResponse[] = []
+    const allBlocks: Array<BlockObjectResponse> = []
 
     async function fetchBlocksRecursively(blockId: string): Promise<void> {
       let cursor: string | undefined
@@ -171,7 +190,7 @@ async function getAllBlockChildren(pageId: string): Promise<BlockObjectResponse[
 
         for (const block of response.results) {
           if ('type' in block) {
-            const typedBlock = block as BlockObjectResponse
+            const typedBlock = block
             allBlocks.push(typedBlock)
 
             if ((typedBlock as Record<string, unknown>).has_children) {
@@ -180,7 +199,9 @@ async function getAllBlockChildren(pageId: string): Promise<BlockObjectResponse[
           }
         }
 
-        cursor = response.has_more ? response.next_cursor ?? undefined : undefined
+        cursor = response.has_more
+          ? (response.next_cursor ?? undefined)
+          : undefined
       } while (cursor)
     }
 
@@ -202,9 +223,11 @@ function pageToArticleSummary(page: PageObjectResponse): ArticleSummary {
     title: (getPropertyValue(props['Title']) as string) || '',
     description: (getPropertyValue(props['Description']) as string) || '',
     coverImage: getImageUrl(props, 'Cover Image'),
-    language: (getPropertyValue(props['Language']) as ArticleSummary['language']) || 'English',
+    language:
+      (getPropertyValue(props['Language']) as ArticleSummary['language']) ||
+      'English',
     category: (getPropertyValue(props['Category']) as string) || '',
-    tags: (getPropertyValue(props['Tags']) as string[]) || [],
+    tags: (getPropertyValue(props['Tags']) as Array<string>) || [],
     featured: (getPropertyValue(props['Featured']) as boolean) || false,
     createdAt: (getPropertyValue(props['Created time']) as string) || '',
     updatedAt: (getPropertyValue(props['Last edited time']) as string) || '',
@@ -222,21 +245,27 @@ async function fetchPublishedArticles(options?: {
   language?: string
   category?: string
   limit?: number
-}): Promise<ArticleSummary[]> {
+}): Promise<Array<ArticleSummary>> {
   const databaseId = getDbId('NOTION_ARTICLES_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
   const cacheKey = `articles:${options?.language ?? 'all'}:${options?.category ?? 'all'}:${options?.limit ?? 'all'}`
   return withCache(cacheKey, async () => {
     try {
-      const filters: object[] = [
+      const filters: Array<object> = [
         { property: 'Status', select: { equals: 'Published' } },
       ]
       if (options?.language && options.language !== 'All') {
-        filters.push({ property: 'Language', select: { equals: options.language } })
+        filters.push({
+          property: 'Language',
+          select: { equals: options.language },
+        })
       }
       if (options?.category && options.category !== 'All') {
-        filters.push({ property: 'Category', select: { equals: options.category } })
+        filters.push({
+          property: 'Category',
+          select: { equals: options.category },
+        })
       }
 
       const response = await queryDatabase(databaseId, {
@@ -272,7 +301,7 @@ async function fetchArticleBySlug(slug: string): Promise<Article | null> {
     const page = response.results[0]
     if (!page || !('properties' in page)) return null
 
-    return pageToArticle(page as PageObjectResponse)
+    return pageToArticle(page)
   } catch (error) {
     console.error('Error fetching article:', error)
     return null
@@ -292,11 +321,12 @@ function pageToService(page: PageObjectResponse): Service {
     priceNote: (getPropertyValue(props['Price Note']) as string) || '',
     icon: (getPropertyValue(props['Icon']) as string) || '',
     order: (getPropertyValue(props['Order']) as number) || 0,
-    status: (getPropertyValue(props['Status']) as 'Active' | 'Inactive') || 'Active',
+    status:
+      (getPropertyValue(props['Status']) as 'Active' | 'Inactive') || 'Active',
   }
 }
 
-async function fetchActiveServices(): Promise<Service[]> {
+async function fetchActiveServices(): Promise<Array<Service>> {
   const databaseId = getDbId('NOTION_SERVICES_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
@@ -326,7 +356,8 @@ function pageToSermonSummary(page: PageObjectResponse): SermonSummary {
     title: (getPropertyValue(props['Title']) as string) || '',
     slug: (getPropertyValue(props['Slug']) as string) || '',
     description: (getPropertyValue(props['Description']) as string) || '',
-    youtubeLink: (getPropertyValue(props['YouTube Link']) as string) || undefined,
+    youtubeLink:
+      (getPropertyValue(props['YouTube Link']) as string) || undefined,
     date: (getPropertyValue(props['Date']) as string) || '',
     createdAt: (getPropertyValue(props['Created time']) as string) || '',
   }
@@ -339,7 +370,9 @@ async function pageToSermon(page: PageObjectResponse): Promise<Sermon> {
   return { ...summary, content }
 }
 
-async function fetchPublishedSermons(limit?: number): Promise<SermonSummary[]> {
+async function fetchPublishedSermons(
+  limit?: number,
+): Promise<Array<SermonSummary>> {
   const databaseId = getDbId('NOTION_SERMONS_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
@@ -378,7 +411,7 @@ async function fetchSermonBySlug(slug: string): Promise<Sermon | null> {
     const page = response.results[0]
     if (!page || !('properties' in page)) return null
 
-    return pageToSermon(page as PageObjectResponse)
+    return pageToSermon(page)
   } catch (error) {
     console.error('Error fetching sermon:', error)
     return null
@@ -396,17 +429,20 @@ function pageToGalleryImage(page: PageObjectResponse): GalleryImage {
     category: (getPropertyValue(props['Category']) as string) || '',
     order: (getPropertyValue(props['Order']) as number) || 0,
     featured: (getPropertyValue(props['Featured']) as boolean) || false,
-    status: (getPropertyValue(props['Status']) as 'Active' | 'Inactive') || 'Active',
+    status:
+      (getPropertyValue(props['Status']) as 'Active' | 'Inactive') || 'Active',
   }
 }
 
-async function fetchActiveGalleryImages(category?: string): Promise<GalleryImage[]> {
+async function fetchActiveGalleryImages(
+  category?: string,
+): Promise<Array<GalleryImage>> {
   const databaseId = getDbId('NOTION_GALLERY_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
   return withCache(`gallery:${category ?? 'all'}`, async () => {
     try {
-      const filters: object[] = [
+      const filters: Array<object> = [
         { property: 'Status', select: { equals: 'Active' } },
       ]
       if (category && category !== 'All') {
@@ -440,7 +476,7 @@ function pageToRecitation(page: PageObjectResponse): Recitation {
   }
 }
 
-async function fetchActiveRecitations(): Promise<Recitation[]> {
+async function fetchActiveRecitations(): Promise<Array<Recitation>> {
   const databaseId = getDbId('NOTION_RECITATIONS_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
@@ -473,10 +509,11 @@ async function fetchSiteSettings(): Promise<SiteSettings> {
 
       for (const page of response.results) {
         if (!('properties' in page)) continue
-        const p = page as PageObjectResponse
+        const p = page
         const key = (getPropertyValue(p.properties['Key']) as string) || ''
         const value = (getPropertyValue(p.properties['Value']) as string) || ''
-        const updatedAt = (getPropertyValue(p.properties['Last edited time']) as string) || ''
+        const updatedAt =
+          (getPropertyValue(p.properties['Last edited time']) as string) || ''
         if (key) settings[key] = { value, updatedAt }
       }
 
@@ -504,7 +541,7 @@ async function fetchAboutPage(): Promise<AboutPage | null> {
       const page = response.results[0]
       if (!page || !('properties' in page)) return null
 
-      const p = page as PageObjectResponse
+      const p = page
       const props = p.properties
 
       const blocks = await getAllBlockChildren(p.id)
@@ -529,11 +566,13 @@ export const getPublishedArticles = createServerFn({
   method: 'GET',
 })
   .inputValidator(
-    z.object({
-      language: z.string().optional(),
-      category: z.string().optional(),
-      limit: z.number().int().positive().optional(),
-    }).optional(),
+    z
+      .object({
+        language: z.string().optional(),
+        category: z.string().optional(),
+        limit: z.number().int().positive().optional(),
+      })
+      .optional(),
   )
   .handler(async ({ data }) => {
     return fetchPublishedArticles(data ?? {})
@@ -634,7 +673,9 @@ export const getAboutPage = createServerFn({
 
 // ── Humanitarian Projects ──────────────────────────────────────
 
-function pageToHumanitarianProject(page: PageObjectResponse): HumanitarianProject {
+function pageToHumanitarianProject(
+  page: PageObjectResponse,
+): HumanitarianProject {
   const props = page.properties
   return {
     id: page.id,
@@ -642,31 +683,20 @@ function pageToHumanitarianProject(page: PageObjectResponse): HumanitarianProjec
     title: (getPropertyValue(props['Name']) as string) || '',
     titleAr: (getPropertyValue(props['Name (Arabic)']) as string) || '',
     description: (getPropertyValue(props['Description']) as string) || '',
-    descriptionAr: (getPropertyValue(props['Description (Arabic)']) as string) || '',
-    category: ((getPropertyValue(props['Category']) as string) || 'Medical') as HumanitarianProject['category'],
+    descriptionAr:
+      (getPropertyValue(props['Description (Arabic)']) as string) || '',
+    category: ((getPropertyValue(props['Category']) as string) ||
+      'Medical') as HumanitarianProject['category'],
     icon: (getPropertyValue(props['Icon']) as string) || '',
-    coverImage: getImageUrl(props, 'Cover Image URL'),
     hasCases: (getPropertyValue(props['Has Cases']) as boolean) || false,
     sortOrder: (getPropertyValue(props['Sort Order']) as number) || 0,
-    status: ((getPropertyValue(props['Status']) as string) || 'Active') as HumanitarianProject['status'],
+    status: ((getPropertyValue(props['Status']) as string) ||
+      'Active') as HumanitarianProject['status'],
   }
 }
 
-function pageToHumanitarianCaseMeta(page: PageObjectResponse): Omit<HumanitarianCase, 'content'> {
+function pageToHumanitarianCase(page: PageObjectResponse): HumanitarianCase {
   const props = page.properties
-  const needsRaw = (getPropertyValue(props['Needs Items']) as string) || ''
-  const needsItems = needsRaw
-    .split(/[|\n]/)
-    .map((s) => s.replace(/^[-–•]\s*/, '').trim())
-    .filter(Boolean)
-
-  const projectId = (getPropertyValue(props['Project Slug']) as string) || ''
-
-  const patientPhoto =
-    getImageUrl(props, 'Patient Photo URL') ||
-    (getPropertyValue(props['Patient Photo URL']) as string) ||
-    ''
-
   const caseNumber = (getPropertyValue(props['Case Number']) as number) || 0
   const title = (getPropertyValue(props['Name']) as string) || ''
 
@@ -675,25 +705,18 @@ function pageToHumanitarianCaseMeta(page: PageObjectResponse): Omit<Humanitarian
     slug: `case-${caseNumber}-${slugify(title).slice(0, 60)}`,
     caseNumber,
     title,
-    projectId,
-    needsItems,
-    urgency: ((getPropertyValue(props['Urgency']) as string) || 'Ongoing') as HumanitarianCase['urgency'],
-    targetAmount: (getPropertyValue(props['Target Amount']) as number | null) ?? null,
-    monthlyAmount: (getPropertyValue(props['Monthly Amount']) as number | null) ?? null,
-    familySize: (getPropertyValue(props['Family Size']) as number | null) ?? null,
-    patientPhoto,
-    status: ((getPropertyValue(props['Status']) as string) || 'Published') as HumanitarianCase['status'],
+    projectId: (getPropertyValue(props['Project Slug']) as string) || '',
+    urgency: ((getPropertyValue(props['Urgency']) as string) ||
+      'Ongoing') as HumanitarianCase['urgency'],
+    posterUrl: (getPropertyValue(props['Poster URL']) as string) || null,
+    status: ((getPropertyValue(props['Status']) as string) ||
+      'Published') as HumanitarianCase['status'],
   }
 }
 
-async function pageToHumanitarianCase(page: PageObjectResponse): Promise<HumanitarianCase> {
-  const meta = pageToHumanitarianCaseMeta(page)
-  const blocks = await getAllBlockChildren(page.id)
-  const content = parseBlocksToContent(blocks)
-  return { ...meta, content }
-}
-
-async function fetchActiveHumanitarianProjects(): Promise<HumanitarianProject[]> {
+async function fetchActiveHumanitarianProjects(): Promise<
+  Array<HumanitarianProject>
+> {
   const databaseId = getDbId('NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
@@ -714,7 +737,9 @@ async function fetchActiveHumanitarianProjects(): Promise<HumanitarianProject[]>
   })
 }
 
-async function fetchHumanitarianProjectBySlug(slug: string): Promise<HumanitarianProject | null> {
+async function fetchHumanitarianProjectBySlug(
+  slug: string,
+): Promise<HumanitarianProject | null> {
   const databaseId = getDbId('NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return null
 
@@ -731,14 +756,16 @@ async function fetchHumanitarianProjectBySlug(slug: string): Promise<Humanitaria
 
     const page = response.results[0]
     if (!page || !('properties' in page)) return null
-    return pageToHumanitarianProject(page as PageObjectResponse)
+    return pageToHumanitarianProject(page)
   } catch (error) {
     console.error('Error fetching humanitarian project:', error)
     return null
   }
 }
 
-async function fetchHumanitarianCasesByProject(projectTitle: string): Promise<HumanitarianCase[]> {
+async function fetchHumanitarianCasesByProject(
+  projectTitle: string,
+): Promise<Array<HumanitarianCase>> {
   const databaseId = getDbId('NOTION_HUMANITARIAN_CASES_DATABASE_ID')
   if (!isNotionConfigured() || !databaseId) return []
 
@@ -754,10 +781,9 @@ async function fetchHumanitarianCasesByProject(projectTitle: string): Promise<Hu
         sorts: [{ property: 'Case Number', direction: 'ascending' }],
       })
 
-      const pages = response.results.filter(
-        (page): page is PageObjectResponse => 'properties' in page,
-      )
-      return Promise.all(pages.map(pageToHumanitarianCase))
+      return response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map(pageToHumanitarianCase)
     } catch (error) {
       console.error('Error fetching humanitarian cases:', error)
       return []
