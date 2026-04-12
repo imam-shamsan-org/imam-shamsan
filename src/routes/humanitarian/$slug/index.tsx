@@ -14,9 +14,7 @@ export const Route = createFileRoute('/humanitarian/$slug/')({
     const project = await getHumanitarianProjectBySlug({ data: params.slug })
     if (!project) throw notFound()
 
-    const cases = project.hasCases
-      ? await getHumanitarianCasesByProject({ data: params.slug })
-      : []
+    const cases = await getHumanitarianCasesByProject({ data: params.slug })
 
     return { project, cases }
   },
