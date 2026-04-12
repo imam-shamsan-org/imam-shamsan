@@ -4,18 +4,21 @@ import { Container } from '@/components/layout/Container'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
 import { GalleryLightbox } from '@/components/gallery/GalleryLightbox'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getGalleryImages } from '@/lib/notion'
-import { getGalleryMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getGalleryImages, getSiteSettings } from '@/lib/notion'
+import { getBreadcrumbSchema, getGalleryMeta, siteConfig } from '@/lib/seo'
 import { GALLERY_CATEGORIES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/gallery')({
   loader: async () => {
-    const images = await getGalleryImages()
-    return { images }
+    const [images, settings] = await Promise.all([
+      getGalleryImages(),
+      getSiteSettings(),
+    ])
+    return { images, settings }
   },
-  head: () => {
-    const { meta, links } = getGalleryMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getGalleryMeta(loaderData?.settings)
     return {
       meta,
       links,
@@ -51,7 +54,7 @@ function GalleryPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
         <Container>
           <FadeIn>
             <div className="mx-auto max-w-3xl text-center">
@@ -61,7 +64,7 @@ function GalleryPage() {
               <p className="mt-4 text-lg text-muted-foreground">
                 Photos from events, conferences, and community programs
               </p>
-              <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+              <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
                 <div className="h-px w-16 bg-secondary" />
                 <div className="size-1.5 rounded-full bg-secondary" />
                 <div className="h-px w-16 bg-secondary" />
@@ -71,10 +74,14 @@ function GalleryPage() {
         </Container>
       </section>
 
-      <section className="py-12">
+      <section className="py-8">
         <Container>
           {/* Category filter */}
-          <div role="group" aria-label="Filter by category" className="mb-8 flex flex-wrap gap-2">
+          <div
+            role="group"
+            aria-label="Filter by category"
+            className="mb-8 flex flex-wrap gap-2"
+          >
             {GALLERY_CATEGORIES.map((cat) => (
               <button
                 key={cat}

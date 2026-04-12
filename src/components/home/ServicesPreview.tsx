@@ -1,19 +1,23 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
+import type { Service } from '@/types/service'
+import type { SiteSettings } from '@/types/settings'
 import { Container } from '@/components/layout/Container'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { FadeIn } from '@/components/shared/FadeIn'
-import type { Service } from '@/types/service'
+import { getPersonName } from '@/lib/seo'
 
 interface ServicesPreviewProps {
-  services: Service[]
+  services: Array<Service>
+  settings?: SiteSettings
 }
 
-export function ServicesPreview({ services }: ServicesPreviewProps) {
+export function ServicesPreview({ services, settings }: ServicesPreviewProps) {
   if (!services.length) return null
+  const personName = getPersonName(settings, { short: true })
 
   return (
-    <section className="py-16">
+    <section className="py-10 md:py-16">
       <Container>
         <FadeIn className="mb-8 flex items-center justify-between">
           <div>
@@ -24,7 +28,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
               </h2>
             </div>
             <p className="mt-1 text-muted-foreground pl-[18px]">
-              Book Islamic services with Imam Shamsan
+              Book Islamic services with {personName}
             </p>
           </div>
           <Link
@@ -39,7 +43,7 @@ export function ServicesPreview({ services }: ServicesPreviewProps) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.slice(0, 6).map((service, i) => (
             <FadeIn key={service.id} delay={i * 80}>
-              <ServiceCard service={service} />
+              <ServiceCard service={service} personName={personName} />
             </FadeIn>
           ))}
         </div>

@@ -4,17 +4,25 @@ import { Container } from '@/components/layout/Container'
 import { ArticleGrid } from '@/components/articles/ArticleGrid'
 import { LanguageFilter } from '@/components/articles/LanguageFilter'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getPublishedArticles } from '@/lib/notion'
-import { getWritingsListMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getPublishedArticles, getSiteSettings } from '@/lib/notion'
+import {
+  getBreadcrumbSchema,
+  getPersonName,
+  getWritingsListMeta,
+  siteConfig,
+} from '@/lib/seo'
 import { ARTICLE_CATEGORIES } from '@/lib/constants'
 
 export const Route = createFileRoute('/writings/')({
   loader: async () => {
-    const articles = await getPublishedArticles({ data: {} })
-    return { articles }
+    const [articles, settings] = await Promise.all([
+      getPublishedArticles({ data: {} }),
+      getSiteSettings(),
+    ])
+    return { articles, settings }
   },
-  head: () => {
-    const { meta, links } = getWritingsListMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getWritingsListMeta(loaderData?.settings)
     return {
       meta,
       links,
@@ -33,7 +41,8 @@ export const Route = createFileRoute('/writings/')({
 })
 
 function WritingsPage() {
-  const { articles } = Route.useLoaderData()
+  const { articles, settings } = Route.useLoaderData()
+  const personName = getPersonName(settings, { short: true })
   const [language, setLanguage] = useState('All')
   const [category, setCategory] = useState('All')
 
@@ -45,27 +54,27 @@ function WritingsPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
         <Container>
           <FadeIn>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-              <span className="text-primary">Writings</span>
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Reflections and Islamic insights by Imam Shamsan
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
-              <div className="h-px w-16 bg-secondary" />
-              <div className="size-1.5 rounded-full bg-secondary" />
-              <div className="h-px w-16 bg-secondary" />
+            <div className="mx-auto max-w-3xl text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+                <span className="text-primary">Writings</span>
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Reflections and Islamic insights by {personName}
+              </p>
+              <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
+                <div className="h-px w-16 bg-secondary" />
+                <div className="size-1.5 rounded-full bg-secondary" />
+                <div className="h-px w-16 bg-secondary" />
+              </div>
             </div>
-          </div>
           </FadeIn>
         </Container>
       </section>
 
-      <section className="py-12">
+      <section className="py-8">
         <Container>
           <div className="mb-8">
             <LanguageFilter

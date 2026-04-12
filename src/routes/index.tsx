@@ -11,7 +11,7 @@ import {
   getLatestArticles,
   getSiteSettings,
 } from '@/lib/notion'
-import { getHomeMeta, getPersonSchema } from '@/lib/seo'
+import { getHomeMeta, getPersonName, getPersonSchema } from '@/lib/seo'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
@@ -22,15 +22,15 @@ export const Route = createFileRoute('/')({
     ])
     return { services, latestArticles, settings }
   },
-  head: () => {
-    const { meta, links } = getHomeMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getHomeMeta(loaderData?.settings)
     return {
       meta,
       links,
       scripts: [
         {
           type: 'application/ld+json',
-          children: getPersonSchema(),
+          children: getPersonSchema(loaderData?.settings),
         },
       ],
     }
@@ -40,16 +40,17 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const { services, latestArticles, settings } = Route.useLoaderData()
+  const personName = getPersonName(settings, { short: true })
 
   return (
     <>
       <HeroSection settings={settings} />
-      <ServicesPreview services={services} />
+      <ServicesPreview services={services} settings={settings} />
       <LatestWritings articles={latestArticles} />
       <MediaHighlight settings={settings} />
 
       {/* Contact CTA */}
-      <section className="border-t border-secondary/20 bg-primary/5 py-16">
+      <section className="border-t border-secondary/20 bg-primary/5 py-10 md:py-16">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-6 flex items-center justify-center gap-3 opacity-40">
@@ -58,11 +59,11 @@ function HomePage() {
               <div className="h-px w-16 bg-secondary" />
             </div>
             <h2 className="text-2xl font-bold text-foreground md:text-3xl">
-              Write to Imam Shamsan
+              Write to {personName}
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Have questions, need guidance, or want to book a service?
-              Don't hesitate to reach out.
+              Have questions, need guidance, or want to book a service? Don't
+              hesitate to reach out.
             </p>
             <Link to="/contact" className="mt-6 inline-block">
               <Button size="lg" className="gap-2">

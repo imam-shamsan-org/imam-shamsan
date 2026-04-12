@@ -2,16 +2,19 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '@/components/layout/Container'
 import { SermonCard } from '@/components/sermons/SermonCard'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getPublishedSermons } from '@/lib/notion'
-import { getSermonsListMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getPublishedSermons, getSiteSettings } from '@/lib/notion'
+import { getBreadcrumbSchema, getSermonsListMeta, siteConfig } from '@/lib/seo'
 
 export const Route = createFileRoute('/sermons/')({
   loader: async () => {
-    const sermons = await getPublishedSermons()
-    return { sermons }
+    const [sermons, settings] = await Promise.all([
+      getPublishedSermons(),
+      getSiteSettings(),
+    ])
+    return { sermons, settings }
   },
-  head: () => {
-    const { meta, links } = getSermonsListMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getSermonsListMeta(loaderData?.settings)
     return {
       meta,
       links,
@@ -34,27 +37,27 @@ function SermonsPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
         <Container>
           <FadeIn>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-              <span className="text-primary">Sermon Summaries</span>
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Written summaries of Friday khutbahs and sermons
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
-              <div className="h-px w-16 bg-secondary" />
-              <div className="size-1.5 rounded-full bg-secondary" />
-              <div className="h-px w-16 bg-secondary" />
+            <div className="mx-auto max-w-3xl text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+                <span className="text-primary">Sermon Summaries</span>
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Written summaries of Friday khutbahs and sermons
+              </p>
+              <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
+                <div className="h-px w-16 bg-secondary" />
+                <div className="size-1.5 rounded-full bg-secondary" />
+                <div className="h-px w-16 bg-secondary" />
+              </div>
             </div>
-          </div>
           </FadeIn>
         </Container>
       </section>
 
-      <section className="py-12">
+      <section className="py-8">
         <Container>
           {sermons.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">

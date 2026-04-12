@@ -1,19 +1,19 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
+import type { ArticleSummary } from '@/types/article'
 import { Container } from '@/components/layout/Container'
 import { ArticleCard } from '@/components/articles/ArticleCard'
 import { FadeIn } from '@/components/shared/FadeIn'
-import type { ArticleSummary } from '@/types/article'
 
 interface LatestWritingsProps {
-  articles: ArticleSummary[]
+  articles: Array<ArticleSummary>
 }
 
 export function LatestWritings({ articles }: LatestWritingsProps) {
   if (!articles.length) return null
 
   return (
-    <section className="border-t border-secondary/20 bg-muted/50 py-16">
+    <section className="border-t border-secondary/20 bg-muted/50 py-10 md:py-16">
       <Container>
         <FadeIn className="mb-8 flex items-center justify-between">
           <div>

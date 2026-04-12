@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, Youtube } from 'lucide-react'
+import type { SiteSettings } from '@/types/settings'
 import { Container } from '@/components/layout/Container'
 import { Button } from '@/components/ui/button'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getYouTubeEmbedUrl, getStreamStatus } from '@/lib/youtube'
-import type { SiteSettings } from '@/types/settings'
+import { getStreamStatus, getYouTubeEmbedUrl } from '@/lib/youtube'
 
 interface MediaHighlightProps {
   settings: SiteSettings
@@ -12,13 +12,18 @@ interface MediaHighlightProps {
 
 export function MediaHighlight({ settings }: MediaHighlightProps) {
   const liveStreamUrl = settings.live_stream_url?.value
-  const liveStreamTitle = settings.live_stream_title?.value || 'Weekly Live Stream'
-  const youtubeChannelUrl = settings.youtube_url?.value || 'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
+  const liveStreamTitle =
+    settings.live_stream_title?.value || 'Weekly Live Stream'
+  const youtubeChannelUrl =
+    settings.youtube_url?.value ||
+    'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
   const embedUrl = liveStreamUrl ? getYouTubeEmbedUrl(liveStreamUrl) : null
-  const { isLive, timeAgo } = getStreamStatus(settings.live_stream_url?.updatedAt)
+  const { isLive, timeAgo } = getStreamStatus(
+    settings.live_stream_url?.updatedAt,
+  )
 
   return (
-    <section className="border-t border-secondary/20 py-16">
+    <section className="border-t border-secondary/20 py-10 md:py-16">
       <Container>
         <FadeIn className="mb-8 flex items-center justify-between">
           <div>
@@ -37,9 +42,7 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
                 </span>
               )}
               {embedUrl && !isLive && timeAgo && (
-                <span className="text-sm text-muted-foreground">
-                  {timeAgo}
-                </span>
+                <span className="text-sm text-muted-foreground">{timeAgo}</span>
               )}
             </div>
             <p className="mt-1 text-muted-foreground pl-[18px]">
@@ -75,31 +78,31 @@ export function MediaHighlight({ settings }: MediaHighlightProps) {
           </FadeIn>
         ) : (
           <FadeIn delay={100} distance={16}>
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="rounded-xl bg-gradient-to-b from-accent/40 to-muted/30 ring-1 ring-border p-12">
-              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
-                <Youtube className="size-8 text-primary" />
-              </div>
-              <h3 className="mt-5 text-lg font-semibold text-foreground">
-                Visit Our YouTube Channel
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Watch sermons, recitations, and educational content
-              </p>
-              <div className="mt-6">
-                <a
-                  href={youtubeChannelUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button className="gap-2">
-                    <Youtube className="size-4" />
-                    Watch on YouTube
-                  </Button>
-                </a>
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="rounded-xl bg-gradient-to-b from-accent/40 to-muted/30 ring-1 ring-border p-12">
+                <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
+                  <Youtube className="size-8 text-primary" />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold text-foreground">
+                  Visit Our YouTube Channel
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Watch sermons, recitations, and educational content
+                </p>
+                <div className="mt-6">
+                  <a
+                    href={youtubeChannelUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="gap-2">
+                      <Youtube className="size-4" />
+                      Watch on YouTube
+                    </Button>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
           </FadeIn>
         )}
       </Container>

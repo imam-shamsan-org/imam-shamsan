@@ -4,7 +4,12 @@ import { Container } from '@/components/layout/Container'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveServices, getSiteSettings } from '@/lib/notion'
-import { getBreadcrumbSchema, getContactMeta, siteConfig } from '@/lib/seo'
+import {
+  getBreadcrumbSchema,
+  getContactMeta,
+  getPersonName,
+  siteConfig,
+} from '@/lib/seo'
 
 interface ContactSearch {
   service?: string
@@ -21,8 +26,8 @@ export const Route = createFileRoute('/contact')({
     ])
     return { services, settings }
   },
-  head: () => {
-    const { meta, links } = getContactMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getContactMeta(loaderData?.settings)
     return {
       meta,
       links,
@@ -43,6 +48,7 @@ export const Route = createFileRoute('/contact')({
 function ContactPage() {
   const { services, settings } = Route.useLoaderData()
   const { service } = Route.useSearch()
+  const personName = getPersonName(settings, { short: true })
 
   const youtubeUrl =
     settings.youtube_url?.value ||
@@ -55,7 +61,7 @@ function ContactPage() {
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
         <Container>
           <FadeIn>
             <div className="mx-auto max-w-3xl text-center">
@@ -63,10 +69,10 @@ function ContactPage() {
                 <span className="text-primary">Contact</span>
               </h1>
               <p className="mt-4 text-lg text-muted-foreground">
-                Reach out to Imam Shamsan for bookings, inquiries, or community
+                Reach out to {personName} for bookings, inquiries, or community
                 services
               </p>
-              <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+              <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
                 <div className="h-px w-16 bg-secondary" />
                 <div className="size-1.5 rounded-full bg-secondary" />
                 <div className="h-px w-16 bg-secondary" />
@@ -76,12 +82,16 @@ function ContactPage() {
         </Container>
       </section>
 
-      <section className="py-12">
+      <section className="py-8">
         <Container>
-          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-12 lg:grid-cols-5">
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12">
             {/* Form */}
             <div className="lg:col-span-3">
-              <ContactForm services={services} preselectedService={service} />
+              <ContactForm
+                services={services}
+                preselectedService={service}
+                personName={personName}
+              />
             </div>
 
             {/* Contact Info Sidebar */}

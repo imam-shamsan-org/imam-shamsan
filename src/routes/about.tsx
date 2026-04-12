@@ -5,8 +5,14 @@ import { FadeIn } from '@/components/shared/FadeIn'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { ArticleContent } from '@/components/articles/ArticleContent'
 import { getAboutPage, getSiteSettings } from '@/lib/notion'
-import { getAboutMeta, getPersonSchema, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
-import { splitIntoSections, extractCards, isCompactCards } from '@/lib/content'
+import {
+  getAboutMeta,
+  getBreadcrumbSchema,
+  getPersonName,
+  getPersonSchema,
+  siteConfig,
+} from '@/lib/seo'
+import { extractCards, isCompactCards, splitIntoSections } from '@/lib/content'
 
 export const Route = createFileRoute('/about')({
   loader: async () => {
@@ -16,15 +22,15 @@ export const Route = createFileRoute('/about')({
     ])
     return { settings, aboutPage }
   },
-  head: () => {
-    const { meta, links } = getAboutMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getAboutMeta(loaderData?.settings)
     return {
       meta,
       links,
       scripts: [
         {
           type: 'application/ld+json',
-          children: getPersonSchema(),
+          children: getPersonSchema(loaderData?.settings),
         },
         {
           type: 'application/ld+json',
@@ -42,18 +48,25 @@ export const Route = createFileRoute('/about')({
 function AboutPage() {
   const { settings, aboutPage } = Route.useLoaderData()
   const profileImage = settings.profile_img?.value
+  const personName = getPersonName(settings, { short: true })
 
-  const title = aboutPage?.title || 'About Imam Shamsan'
+  const title = aboutPage?.title || `About ${personName}`
   const subtitleAr = aboutPage?.subtitleAr || 'الدكتور. شمسان الجابي'
 
   if (!aboutPage || aboutPage.content.length === 0) {
     return (
       <>
-        <AboutHero title={title} subtitleAr={subtitleAr} />
-        <section className="py-12">
+        <AboutHero
+          title={title}
+          subtitleAr={subtitleAr}
+          personName={personName}
+        />
+        <section className="py-8">
           <Container size="narrow">
-            {profileImage && <ProfileImage src={profileImage} />}
-            <AboutFallback />
+            {profileImage && (
+              <ProfileImage src={profileImage} personName={personName} />
+            )}
+            <AboutFallback personName={personName} />
           </Container>
         </section>
       </>
@@ -69,9 +82,13 @@ function AboutPage() {
 
   return (
     <>
-      <AboutHero title={title} subtitleAr={subtitleAr} />
+      <AboutHero
+        title={title}
+        subtitleAr={subtitleAr}
+        personName={personName}
+      />
 
-      <section className="py-12">
+      <section className="py-8">
         <Container size="narrow">
           <div className="space-y-8 text-foreground [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_li]:text-muted-foreground">
             {/* Intro text (before any h2) */}
@@ -89,7 +106,12 @@ function AboutPage() {
                     {firstProseSection.heading.content}
                   </h2>
                   <div>
-                    {profileImage && <ProfileImage src={profileImage} />}
+                    {profileImage && (
+                      <ProfileImage
+                        src={profileImage}
+                        personName={personName}
+                      />
+                    )}
                     <ArticleContent blocks={firstProseSection.blocks} />
                   </div>
                 </div>
@@ -182,71 +204,86 @@ function AboutPage() {
   )
 }
 
-function AboutHero({ title, subtitleAr }: { title: string; subtitleAr: string }) {
+function AboutHero({
+  title,
+  subtitleAr,
+  personName,
+}: {
+  title: string
+  subtitleAr: string
+  personName: string
+}) {
+  const isDefaultTitle = title === `About ${personName}`
   return (
-    <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+    <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
       <Container size="narrow">
         <FadeIn>
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            {title.includes('Imam Shamsan') ? (
-              <>
-                About <span className="text-primary">Imam Shamsan</span>
-              </>
-            ) : (
-              <span className="text-primary">{title}</span>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+              {isDefaultTitle ? (
+                <>
+                  About <span className="text-primary">{personName}</span>
+                </>
+              ) : (
+                <span className="text-primary">{title}</span>
+              )}
+            </h1>
+            {subtitleAr && (
+              <ArabicText as="p" className="mt-2 text-xl text-secondary">
+                {subtitleAr}
+              </ArabicText>
             )}
-          </h1>
-          {subtitleAr && (
-            <ArabicText as="p" className="mt-2 text-xl text-secondary">
-              {subtitleAr}
-            </ArabicText>
-          )}
-          <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
-            <div className="h-px w-16 bg-secondary" />
-            <div className="size-1.5 rounded-full bg-secondary" />
-            <div className="h-px w-16 bg-secondary" />
+            <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
+              <div className="h-px w-16 bg-secondary" />
+              <div className="size-1.5 rounded-full bg-secondary" />
+              <div className="h-px w-16 bg-secondary" />
+            </div>
           </div>
-        </div>
         </FadeIn>
       </Container>
     </section>
   )
 }
 
-function ProfileImage({ src }: { src: string }) {
+function ProfileImage({
+  src,
+  personName,
+}: {
+  src: string
+  personName: string
+}) {
   return (
     <div className="mb-6 flex justify-center sm:float-left sm:mr-6 sm:mb-2">
       <CloudinaryImage
         src={src}
-        alt="Imam Dr. Shamsan Al-Jabi"
+        alt={personName}
         preset="avatar"
-        className="size-40 shrink-0 rounded-xl ring-2 ring-primary/20"
+        className="size-48 shrink-0 rounded-xl ring-2 ring-primary/20"
       />
     </div>
   )
 }
 
 /** Hardcoded fallback content shown when the About database is not configured */
-function AboutFallback() {
+function AboutFallback({ personName }: { personName: string }) {
+  const shortName = personName
   return (
     <div className="space-y-8 text-foreground">
       <FadeIn>
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Biography</h2>
           <p className="leading-relaxed text-muted-foreground">
-            Imam Dr. Shamsan Al-Jabi is a distinguished Islamic scholar,
-            educator, and community leader dedicated to spreading authentic
-            Islamic knowledge and fostering unity within the Muslim
-            community. With decades of experience in Islamic education,
-            Quranic studies, and community service, he has touched the lives
-            of thousands.
+            {personName} is a distinguished Islamic scholar, educator, and
+            community leader dedicated to spreading authentic Islamic knowledge
+            and fostering unity within the Muslim community. With decades of
+            experience in Islamic education, Quranic studies, and community
+            service, he has touched the lives of thousands.
           </p>
           <p className="leading-relaxed text-muted-foreground">
-            He serves as the Imam and spiritual leader of the Muslim
-            Community Center of Greater Pittsburgh (MCCGP), where he leads
-            daily prayers, delivers Friday khutbahs, and provides Islamic
-            guidance to the community.
+            He serves as the Imam and spiritual leader of the Muslim Community
+            Center of Greater Pittsburgh (MCCGP), where he leads daily prayers,
+            delivers Friday khutbahs, and provides Islamic guidance to the
+            community.
           </p>
         </div>
       </FadeIn>
@@ -255,10 +292,10 @@ function AboutFallback() {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Education & Ijazaat</h2>
           <p className="leading-relaxed text-muted-foreground">
-            Imam Shamsan holds advanced degrees in Islamic Studies and has
-            received multiple ijazaat (scholarly certifications) from
-            renowned scholars across the Muslim world. His educational
-            journey spans several countries and prestigious institutions.
+            {shortName} holds advanced degrees in Islamic Studies and has
+            received multiple ijazaat (scholarly certifications) from renowned
+            scholars across the Muslim world. His educational journey spans
+            several countries and prestigious institutions.
           </p>
           <ul className="list-disc ml-6 space-y-2 text-muted-foreground">
             <li>Doctorate in Islamic Studies</li>
@@ -277,7 +314,7 @@ function AboutFallback() {
               {
                 title: 'Quranic Sciences',
                 description:
-                  'Expert in Quran recitation (Tajweed), memorization (Hifz), and Tafsir commentary with ijazaat in multiple qira\'at.',
+                  "Expert in Quran recitation (Tajweed), memorization (Hifz), and Tafsir commentary with ijazaat in multiple qira'at.",
               },
               {
                 title: 'Islamic Education',
@@ -294,9 +331,7 @@ function AboutFallback() {
                 key={item.title}
                 className="rounded-xl bg-card p-5 ring-1 ring-foreground/10"
               >
-                <h3 className="font-semibold text-primary">
-                  {item.title}
-                </h3>
+                <h3 className="font-semibold text-primary">{item.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {item.description}
                 </p>
@@ -308,13 +343,12 @@ function AboutFallback() {
 
       <FadeIn delay={240}>
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">What Sets Imam Shamsan Apart</h2>
+          <h2 className="text-2xl font-bold">What Sets {shortName} Apart</h2>
           <div className="space-y-3">
             {[
               {
                 title: 'Bilingual Scholarship',
-                description:
-                  'Fluent in both Arabic and English, Imam Shamsan bridges the gap between classical Islamic texts and contemporary audiences, making knowledge accessible to first-generation and born-in-America Muslims alike.',
+                description: `Fluent in both Arabic and English, ${shortName} bridges the gap between classical Islamic texts and contemporary audiences, making knowledge accessible to first-generation and born-in-America Muslims alike.`,
               },
               {
                 title: 'Practical Guidance',
@@ -323,17 +357,14 @@ function AboutFallback() {
               },
               {
                 title: 'Community-Centered Service',
-                description:
-                  'Beyond the pulpit, Imam Shamsan is deeply invested in the day-to-day lives of his community - from hospital visits and counseling sessions to youth mentoring and interfaith engagement.',
+                description: `Beyond the pulpit, ${shortName} is deeply invested in the day-to-day lives of his community - from hospital visits and counseling sessions to youth mentoring and interfaith engagement.`,
               },
             ].map((item) => (
               <div
                 key={item.title}
                 className="rounded-lg border border-border p-4"
               >
-                <h3 className="font-semibold text-foreground">
-                  {item.title}
-                </h3>
+                <h3 className="font-semibold text-foreground">{item.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {item.description}
                 </p>

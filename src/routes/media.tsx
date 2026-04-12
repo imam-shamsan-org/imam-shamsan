@@ -4,7 +4,7 @@ import { Container } from '@/components/layout/Container'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveRecitations, getSiteSettings } from '@/lib/notion'
 import { getBreadcrumbSchema, getMediaMeta, siteConfig } from '@/lib/seo'
-import { getYouTubeEmbedUrl, getStreamStatus } from '@/lib/youtube'
+import { getStreamStatus, getYouTubeEmbedUrl } from '@/lib/youtube'
 
 export const Route = createFileRoute('/media')({
   loader: async () => {
@@ -14,8 +14,8 @@ export const Route = createFileRoute('/media')({
     ])
     return { settings, recitations }
   },
-  head: () => {
-    const { meta, links } = getMediaMeta()
+  head: ({ loaderData }) => {
+    const { meta, links } = getMediaMeta(loaderData?.settings)
     return {
       meta,
       links,
@@ -37,14 +37,19 @@ function MediaPage() {
   const { settings, recitations } = Route.useLoaderData()
 
   const liveStreamUrl = settings.live_stream_url?.value
-  const liveStreamTitle = settings.live_stream_title?.value || 'Weekly Live Stream'
-  const youtubeChannelUrl = settings.youtube_url?.value || 'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
+  const liveStreamTitle =
+    settings.live_stream_title?.value || 'Weekly Live Stream'
+  const youtubeChannelUrl =
+    settings.youtube_url?.value ||
+    'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
   const embedUrl = liveStreamUrl ? getYouTubeEmbedUrl(liveStreamUrl) : null
-  const { isLive, timeAgo } = getStreamStatus(settings.live_stream_url?.updatedAt)
+  const { isLive, timeAgo } = getStreamStatus(
+    settings.live_stream_url?.updatedAt,
+  )
 
   return (
     <>
-      <section className="bg-gradient-to-b from-accent/50 to-background py-12 md:py-16">
+      <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
         <Container>
           <FadeIn>
             <div className="mx-auto max-w-3xl text-center">
@@ -54,7 +59,7 @@ function MediaPage() {
               <p className="mt-4 text-lg text-muted-foreground">
                 Sermons, recitations, live streams, and more
               </p>
-              <div className="mt-8 flex items-center justify-center gap-3 opacity-40">
+              <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
                 <div className="h-px w-16 bg-secondary" />
                 <div className="size-1.5 rounded-full bg-secondary" />
                 <div className="h-px w-16 bg-secondary" />
@@ -64,9 +69,9 @@ function MediaPage() {
         </Container>
       </section>
 
-      <section className="py-12">
+      <section className="py-8">
         <Container>
-          <div className="space-y-16">
+          <div className="space-y-10 md:space-y-16">
             {/* Live Stream Section */}
             <div>
               <div className="mb-6 flex items-center gap-3">
