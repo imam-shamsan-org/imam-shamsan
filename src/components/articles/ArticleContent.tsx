@@ -1,10 +1,12 @@
+import type { ContentBlock, RichTextItem } from '@/types/article'
 import { cn } from '@/lib/utils'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
-import type { ContentBlock, RichTextItem } from '@/types/article'
 
 /** Check if a string contains Arabic characters (Unicode range 0600-06FF + extended) */
 function containsArabic(text: string): boolean {
-  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text)
+  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(
+    text,
+  )
 }
 
 /** Get the full plain text from a block (including rich text items) */
@@ -15,7 +17,7 @@ function getBlockText(block: ContentBlock): string {
   return block.content || ''
 }
 
-function renderRichText(items: RichTextItem[]): React.ReactNode[] {
+function renderRichText(items: Array<RichTextItem>): Array<React.ReactNode> {
   return items.map((item, i) => {
     let node: React.ReactNode = item.text
 
@@ -61,10 +63,17 @@ function renderBlock(block: ContentBlock): React.ReactNode {
   let arabicClass = ''
   if (isArabicBlock) {
     switch (block.type) {
-      case 'heading_1': arabicClass = 'font-arabic-h2'; break
-      case 'heading_2': arabicClass = 'font-arabic-h3'; break
-      case 'heading_3': arabicClass = 'font-arabic-h4'; break
-      default: arabicClass = 'font-arabic'
+      case 'heading_1':
+        arabicClass = 'font-arabic-h2'
+        break
+      case 'heading_2':
+        arabicClass = 'font-arabic-h3'
+        break
+      case 'heading_3':
+        arabicClass = 'font-arabic-h4'
+        break
+      default:
+        arabicClass = 'font-arabic'
     }
   }
 
@@ -74,7 +83,11 @@ function renderBlock(block: ContentBlock): React.ReactNode {
         return <div key={block.id} className="h-4" />
       }
       return (
-        <p key={block.id} className={cn('leading-relaxed', arabicClass)} dir={arabicDir}>
+        <p
+          key={block.id}
+          className={cn('leading-relaxed', arabicClass)}
+          dir={arabicDir}
+        >
           {richContent}
         </p>
       )
@@ -83,7 +96,10 @@ function renderBlock(block: ContentBlock): React.ReactNode {
       return (
         <h1
           key={block.id}
-          className={cn('text-3xl font-bold tracking-tight mt-8 mb-4', arabicClass)}
+          className={cn(
+            'text-3xl font-bold tracking-tight mt-8 mb-4',
+            arabicClass,
+          )}
           dir={arabicDir}
         >
           {richContent}
@@ -94,7 +110,10 @@ function renderBlock(block: ContentBlock): React.ReactNode {
       return (
         <h2
           key={block.id}
-          className={cn('text-2xl font-bold tracking-tight mt-6 mb-3', arabicClass)}
+          className={cn(
+            'text-2xl font-bold tracking-tight mt-6 mb-3',
+            arabicClass,
+          )}
           dir={arabicDir}
         >
           {richContent}
@@ -125,7 +144,10 @@ function renderBlock(block: ContentBlock): React.ReactNode {
       return (
         <blockquote
           key={block.id}
-          className={cn('border-l-4 border-primary/50 pl-4 italic text-muted-foreground my-4', arabicClass)}
+          className={cn(
+            'border-l-4 border-primary/50 pl-4 italic text-muted-foreground my-4',
+            arabicClass,
+          )}
           dir={arabicDir}
         >
           {richContent}
@@ -136,7 +158,10 @@ function renderBlock(block: ContentBlock): React.ReactNode {
       return (
         <div
           key={block.id}
-          className={cn('my-4 flex gap-3 rounded-lg bg-accent/50 p-4', arabicClass)}
+          className={cn(
+            'my-4 flex gap-3 rounded-lg bg-accent/50 p-4',
+            arabicClass,
+          )}
           dir={arabicDir}
         >
           {block.icon && <span className="text-xl">{block.icon}</span>}
@@ -179,7 +204,10 @@ function renderBlock(block: ContentBlock): React.ReactNode {
       const embedUrl = block.content
       if (!embedUrl) return null
       return (
-        <div key={block.id} className="my-6 aspect-video overflow-hidden rounded-lg">
+        <div
+          key={block.id}
+          className="my-6 aspect-video overflow-hidden rounded-lg"
+        >
           <iframe
             src={embedUrl}
             title="Embedded content"
@@ -207,7 +235,11 @@ function renderBlock(block: ContentBlock): React.ReactNode {
     default:
       if (block.content) {
         return (
-          <p key={block.id} className={cn('leading-relaxed', arabicClass)} dir={arabicDir}>
+          <p
+            key={block.id}
+            className={cn('leading-relaxed', arabicClass)}
+            dir={arabicDir}
+          >
             {richContent}
           </p>
         )
@@ -220,15 +252,15 @@ function renderBlock(block: ContentBlock): React.ReactNode {
  * Group consecutive list items into proper <ul>/<ol> containers.
  * Non-list blocks pass through unchanged.
  */
-function groupBlocks(blocks: ContentBlock[]): React.ReactNode[] {
-  const result: React.ReactNode[] = []
+function groupBlocks(blocks: Array<ContentBlock>): Array<React.ReactNode> {
+  const result: Array<React.ReactNode> = []
   let i = 0
 
   while (i < blocks.length) {
     const block = blocks[i]
 
     if (block.type === 'bulleted_list_item') {
-      const items: ContentBlock[] = []
+      const items: Array<ContentBlock> = []
       while (i < blocks.length && blocks[i].type === 'bulleted_list_item') {
         items.push(blocks[i])
         i++
@@ -239,7 +271,7 @@ function groupBlocks(blocks: ContentBlock[]): React.ReactNode[] {
         </ul>,
       )
     } else if (block.type === 'numbered_list_item') {
-      const items: ContentBlock[] = []
+      const items: Array<ContentBlock> = []
       while (i < blocks.length && blocks[i].type === 'numbered_list_item') {
         items.push(blocks[i])
         i++
@@ -272,14 +304,18 @@ function renderListItem(block: ContentBlock): React.ReactNode {
   if (isArabicBlock) arabicClass = 'font-arabic'
 
   return (
-    <li key={block.id} className={arabicClass || undefined} dir={isArabicBlock ? 'rtl' : undefined}>
+    <li
+      key={block.id}
+      className={arabicClass || undefined}
+      dir={isArabicBlock ? 'rtl' : undefined}
+    >
       {richContent}
     </li>
   )
 }
 
 interface ArticleContentProps {
-  blocks: ContentBlock[]
+  blocks: Array<ContentBlock>
   isArabic?: boolean
 }
 

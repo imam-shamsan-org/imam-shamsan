@@ -6,7 +6,7 @@ interface BreadcrumbItem {
   to?: string
 }
 
-export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+export function Breadcrumbs({ items }: { items: Array<BreadcrumbItem> }) {
   return (
     <nav aria-label="Breadcrumb">
       <ol className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">

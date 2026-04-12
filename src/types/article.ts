@@ -6,14 +6,14 @@ export interface ArticleSummary {
   coverImage: string
   language: 'English' | 'Arabic' | 'Bilingual'
   category: string
-  tags: string[]
+  tags: Array<string>
   featured: boolean
   createdAt: string
   updatedAt: string
 }
 
 export interface Article extends ArticleSummary {
-  content: ContentBlock[]
+  content: Array<ContentBlock>
 }
 
 export interface ContentBlock {
@@ -21,13 +21,13 @@ export interface ContentBlock {
   type: string
   content: string
   language?: string
-  richText?: RichTextItem[]
-  children?: ContentBlock[]
+  richText?: Array<RichTextItem>
+  children?: Array<ContentBlock>
   // For images
   imageUrl?: string
   caption?: string
   // For lists
-  items?: ContentBlock[]
+  items?: Array<ContentBlock>
   // For code blocks
   codeLanguage?: string
   // For callouts

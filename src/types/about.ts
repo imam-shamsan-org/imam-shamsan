@@ -4,5 +4,5 @@ export interface AboutPage {
   id: string
   title: string
   subtitleAr: string
-  content: ContentBlock[]
+  content: Array<ContentBlock>
 }

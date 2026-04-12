@@ -4,7 +4,7 @@ import { ARTICLE_LANGUAGES } from '@/lib/constants'
 interface LanguageFilterProps {
   selected: string
   onSelect: (value: string) => void
-  categories?: string[]
+  categories?: Array<string>
   selectedCategory?: string
   onCategorySelect?: (value: string) => void
 }
@@ -18,7 +18,11 @@ export function LanguageFilter({
 }: LanguageFilterProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div role="group" aria-label="Filter by language" className="flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label="Filter by language"
+        className="flex flex-wrap gap-2"
+      >
         <span className="text-sm font-medium text-muted-foreground self-center mr-1">
           Language:
         </span>
@@ -40,7 +44,11 @@ export function LanguageFilter({
       </div>
 
       {categories && categories.length > 0 && onCategorySelect && (
-        <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2">
+        <div
+          role="group"
+          aria-label="Filter by category"
+          className="flex flex-wrap gap-2"
+        >
           <span className="text-sm font-medium text-muted-foreground self-center mr-1">
             Category:
           </span>

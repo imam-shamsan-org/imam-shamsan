@@ -15,6 +15,7 @@ interface CaseDetailModalProps {
   projectTitle: string
   open: boolean
   onClose: () => void
+  personName?: string
 }
 
 export function CaseDetailModal({
@@ -22,6 +23,7 @@ export function CaseDetailModal({
   projectTitle,
   open,
   onClose,
+  personName,
 }: CaseDetailModalProps) {
   if (!c) return null
 
@@ -70,6 +72,7 @@ export function CaseDetailModal({
             }
             projectTitle={projectTitle}
             caseTitle={c.title}
+            personName={personName}
           />
         </div>
       </DialogContent>

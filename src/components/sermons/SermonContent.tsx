@@ -1,9 +1,9 @@
+import type { ContentBlock } from '@/types/article'
 import { ArticleContent } from '@/components/articles/ArticleContent'
 import { getYouTubeEmbedUrl } from '@/lib/youtube'
-import type { ContentBlock } from '@/types/article'
 
 interface SermonContentProps {
-  blocks: ContentBlock[]
+  blocks: Array<ContentBlock>
   youtubeLink?: string
 }
 

@@ -105,9 +105,20 @@ function MobileMenu() {
 
 interface HeaderProps {
   logoUrl?: string
+  personName?: string
 }
 
-export function Header({ logoUrl }: HeaderProps) {
+export function Header({
+  logoUrl,
+  personName = 'Dr. Imam Shamsan',
+}: HeaderProps) {
+  // Split on last space so prefix ("Imam" / "Dr.") is bold and last name is secondary
+  const lastSpaceIndex = personName.lastIndexOf(' ')
+  const namePrefix =
+    lastSpaceIndex > -1 ? personName.slice(0, lastSpaceIndex) : personName
+  const nameSuffix =
+    lastSpaceIndex > -1 ? personName.slice(lastSpaceIndex + 1) : ''
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container>
@@ -120,20 +131,24 @@ export function Header({ logoUrl }: HeaderProps) {
               <>
                 <img
                   src={logoUrl}
-                  alt="Imam Shamsan"
+                  alt={personName}
                   className="h-18 w-auto object-cover object-center"
                 />
                 <span>
-                  <span className="text-sm font-bold mr-1">IMAM</span>
+                  <span className="text-sm font-bold mr-1">
+                    {namePrefix.toUpperCase()}
+                  </span>
                   <span className="text-sm font-normal text-secondary">
-                    SHAMSAN
+                    {nameSuffix.toUpperCase()}
                   </span>
                 </span>
               </>
             ) : (
               <>
-                <span className="font-bold">IMAM</span>
-                <span className="font-normal text-secondary">SHAMSAN</span>
+                <span className="font-bold">{namePrefix.toUpperCase()}</span>
+                <span className="font-normal text-secondary">
+                  {nameSuffix.toUpperCase()}
+                </span>
               </>
             )}
           </Link>

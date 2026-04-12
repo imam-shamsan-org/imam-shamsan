@@ -1,11 +1,12 @@
-import type { ArticleSummary, Article } from '@/types/article'
+import type { Article, ArticleSummary } from '@/types/article'
+import type { SiteSettings } from '@/types/settings'
+import { PERSON_NAME, PERSON_NAME_FULL } from '@/lib/constants'
 
 export const siteConfig = {
-  name: 'Imam Dr. Shamsan Al-Jabi',
-  description:
-    'Official website of Imam Dr. Shamsan Al-Jabi - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.',
+  name: PERSON_NAME_FULL,
+  description: `Official website of ${PERSON_NAME_FULL} - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.`,
   url: process.env.SITE_URL || 'https://imamshamsan.com',
-  author: 'Imam Dr. Shamsan Al-Jabi',
+  author: PERSON_NAME_FULL,
   locale: 'en_US',
   youtubeChannel: 'UCHsyLCyXVM8L25qwS7h9Gjg',
 }
@@ -93,82 +94,78 @@ export function getPageMeta(options: {
   return { meta, links }
 }
 
-export function getHomeMeta(): HeadConfig {
+export function getHomeMeta(_settings?: SiteSettings): HeadConfig {
+  const description = `Official website of ${PERSON_NAME_FULL} - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.`
   return getPageMeta({
-    title: siteConfig.name,
-    description: siteConfig.description,
+    title: PERSON_NAME_FULL,
+    description,
     canonicalUrl: siteConfig.url,
     ogType: 'website',
   })
 }
 
-export function getAboutMeta(): HeadConfig {
+export function getAboutMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'About',
-    description:
-      'Learn about Imam Dr. Shamsan Al-Jabi - his education, ijazaat, specializations, and journey as an Islamic scholar and community leader.',
+    description: `Learn about ${PERSON_NAME_FULL} - his education, ijazaat, specializations, and journey as an Islamic scholar and community leader.`,
     canonicalUrl: `${siteConfig.url}/about`,
   })
 }
 
-export function getServicesMeta(): HeadConfig {
+export function getServicesMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Services',
-    description:
-      'Book services with Imam Dr. Shamsan Al-Jabi - Nikah ceremonies, funeral services, Quran tutoring, counseling, and more.',
+    description: `Book services with ${PERSON_NAME_FULL} - Nikah ceremonies, funeral services, Quran tutoring, counseling, and more.`,
     canonicalUrl: `${siteConfig.url}/services`,
   })
 }
 
-export function getWritingsListMeta(): HeadConfig {
+export function getWritingsListMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Writings',
-    description:
-      'Writings and reflections by Imam Dr. Shamsan Al-Jabi on Islamic knowledge, Quran commentary, and spiritual guidance.',
+    description: `Writings and reflections by ${PERSON_NAME_FULL} on Islamic knowledge, Quran commentary, and spiritual guidance.`,
     canonicalUrl: `${siteConfig.url}/writings`,
   })
 }
 
-export function getSermonsListMeta(): HeadConfig {
+export function getSermonsListMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Sermon Summaries',
-    description:
-      'Written summaries of Friday khutbahs and sermons by Imam Dr. Shamsan Al-Jabi.',
+    description: `Written summaries of Friday khutbahs and sermons by ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/sermons`,
   })
 }
 
-export function getMediaMeta(): HeadConfig {
+export function getMediaMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Media',
-    description:
-      'Watch sermons, recitations, and live streams from Imam Dr. Shamsan Al-Jabi.',
+    description: `Watch sermons, recitations, and live streams from ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/media`,
   })
 }
 
-export function getGalleryMeta(): HeadConfig {
+export function getGalleryMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Gallery',
-    description:
-      'Photos from events, conferences, community programs, and more with Imam Dr. Shamsan Al-Jabi.',
+    description: `Photos from events, conferences, community programs, and more with ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/gallery`,
   })
 }
 
-export function getContactMeta(): HeadConfig {
+export function getContactMeta(_settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Contact',
-    description:
-      'Get in touch with Imam Dr. Shamsan Al-Jabi for bookings, inquiries, or community services.',
+    description: `Get in touch with ${PERSON_NAME_FULL} for bookings, inquiries, or community services.`,
     canonicalUrl: `${siteConfig.url}/contact`,
   })
 }
 
-export function getArticleMeta(article: Article | ArticleSummary): HeadConfig {
+export function getArticleMeta(
+  article: Article | ArticleSummary,
+  _settings?: SiteSettings,
+): HeadConfig {
   const description =
-    article.description ||
-    `Read "${article.title}" by Imam Dr. Shamsan Al-Jabi.`
+    article.description || `Read "${article.title}" by ${PERSON_NAME_FULL}.`
   const ogImage = article.coverImage || defaultOgImage
   const canonicalUrl = `${siteConfig.url}/writings/${article.slug}`
 
@@ -181,23 +178,24 @@ export function getArticleMeta(article: Article | ArticleSummary): HeadConfig {
   })
 }
 
-export function getPersonSchema(): string {
+export function getPersonSchema(_settings?: SiteSettings): string {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Imam Dr. Shamsan Al-Jabi',
+    name: PERSON_NAME_FULL,
     alternateName: 'الدكتور. شمسان الجابي',
     url: siteConfig.url,
     jobTitle: 'Imam & Islamic Scholar',
     description: siteConfig.description,
-    sameAs: [
-      `https://www.youtube.com/channel/${siteConfig.youtubeChannel}`,
-    ],
+    sameAs: [`https://www.youtube.com/channel/${siteConfig.youtubeChannel}`],
   }
   return JSON.stringify(schema)
 }
 
-export function getArticleSchema(article: Article): string {
+export function getArticleSchema(
+  article: Article,
+  _settings?: SiteSettings,
+): string {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -206,13 +204,13 @@ export function getArticleSchema(article: Article): string {
     image: article.coverImage || undefined,
     author: {
       '@type': 'Person',
-      name: siteConfig.author,
+      name: PERSON_NAME_FULL,
     },
     datePublished: article.createdAt,
     dateModified: article.updatedAt,
     publisher: {
       '@type': 'Person',
-      name: siteConfig.author,
+      name: PERSON_NAME_FULL,
     },
     url: `${siteConfig.url}/writings/${article.slug}`,
     inLanguage: article.language === 'Arabic' ? 'ar' : 'en',

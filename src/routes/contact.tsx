@@ -4,12 +4,8 @@ import { Container } from '@/components/layout/Container'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveServices, getSiteSettings } from '@/lib/notion'
-import {
-  getBreadcrumbSchema,
-  getContactMeta,
-  getPersonName,
-  siteConfig,
-} from '@/lib/seo'
+import { getBreadcrumbSchema, getContactMeta, siteConfig } from '@/lib/seo'
+import { PERSON_NAME } from '@/lib/constants'
 
 interface ContactSearch {
   service?: string
@@ -48,7 +44,7 @@ export const Route = createFileRoute('/contact')({
 function ContactPage() {
   const { services, settings } = Route.useLoaderData()
   const { service } = Route.useSearch()
-  const personName = getPersonName(settings, { short: true })
+  const personName = PERSON_NAME
 
   const youtubeUrl =
     settings.youtube_url?.value ||

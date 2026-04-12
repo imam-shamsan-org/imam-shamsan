@@ -28,10 +28,7 @@ export function CharityMarquee() {
     <div className="bg-muted/50 border-y border-border py-5">
       <Marquee speed={90} pauseOnHover>
         {quotes.map((quote, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-6 px-6 py-1"
-          >
+          <div key={i} className="flex items-center gap-6 px-6 py-1">
             <span
               dir="rtl"
               lang="ar"

@@ -5,13 +5,17 @@ import type { ContentBlock } from '@/types/article'
  * The first section (before any h2) is the "intro" section.
  * Each subsequent section starts with a heading_2 block.
  */
-export function splitIntoSections(blocks: ContentBlock[]): {
-  intro: ContentBlock[]
-  sections: { heading: ContentBlock; blocks: ContentBlock[] }[]
+export function splitIntoSections(blocks: Array<ContentBlock>): {
+  intro: Array<ContentBlock>
+  sections: Array<{ heading: ContentBlock; blocks: Array<ContentBlock> }>
 } {
-  const intro: ContentBlock[] = []
-  const sections: { heading: ContentBlock; blocks: ContentBlock[] }[] = []
-  let current: { heading: ContentBlock; blocks: ContentBlock[] } | null = null
+  const intro: Array<ContentBlock> = []
+  const sections: Array<{
+    heading: ContentBlock
+    blocks: Array<ContentBlock>
+  }> = []
+  let current: { heading: ContentBlock; blocks: Array<ContentBlock> } | null =
+    null
 
   for (const block of blocks) {
     if (block.type === 'heading_2') {
@@ -33,8 +37,8 @@ export function splitIntoSections(blocks: ContentBlock[]): {
  * Returns the pairs if so, null otherwise.
  */
 export function extractCards(
-  blocks: ContentBlock[],
-): { title: string; description: ContentBlock[] }[] | null {
+  blocks: Array<ContentBlock>,
+): Array<{ title: string; description: Array<ContentBlock> }> | null {
   // Filter out empty paragraphs
   const meaningful = blocks.filter(
     (b) => b.type !== 'paragraph' || (b.content && b.content.trim() !== ''),
@@ -43,13 +47,13 @@ export function extractCards(
   if (meaningful.length < 2) return null
 
   // Check if the pattern is h3, then content blocks, then h3, then content blocks...
-  const cards: { title: string; description: ContentBlock[] }[] = []
+  const cards: Array<{ title: string; description: Array<ContentBlock> }> = []
   let i = 0
 
   while (i < meaningful.length) {
     if (meaningful[i].type !== 'heading_3') return null
     const title = meaningful[i].content || ''
-    const descBlocks: ContentBlock[] = []
+    const descBlocks: Array<ContentBlock> = []
     i++
     while (i < meaningful.length && meaningful[i].type !== 'heading_3') {
       descBlocks.push(meaningful[i])
@@ -66,7 +70,9 @@ export function extractCards(
  * Determine if cards should render as a compact grid or full-width stacked blocks.
  * Short descriptions -> grid cards. Longer descriptions -> stacked blocks.
  */
-export function isCompactCards(cards: { title: string; description: ContentBlock[] }[]): boolean {
+export function isCompactCards(
+  cards: Array<{ title: string; description: Array<ContentBlock> }>,
+): boolean {
   const avgLen =
     cards.reduce((sum, c) => {
       const text = c.description.map((b) => b.content || '').join(' ')

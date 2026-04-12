@@ -1,21 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Scheherazade+New:wght@400;500;600;700&display=swap');
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 body {
   @apply m-0;
-  font-family: 'Montserrat', 'Scheherazade New', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family:
+    'Montserrat',
+    'Scheherazade New',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 /* Arabic text — larger size + more line height for readability */
@@ -50,7 +61,7 @@ code {
 }
 
 /* RTL support for Arabic content */
-[dir="rtl"] {
+[dir='rtl'] {
   text-align: right;
 }
 
@@ -92,84 +103,84 @@ code {
   --radius: 0.75rem;
 
   /* Imam Shamsan Light Theme - Islamic Green + Gold */
-  --background: oklch(0.97 0.005 90);              /* Warm cream */
-  --foreground: oklch(0.20 0.02 150);              /* Deep forest text */
+  --background: oklch(0.97 0.005 90); /* Warm cream */
+  --foreground: oklch(0.2 0.02 150); /* Deep forest text */
 
-  --card: oklch(0.99 0.003 90);                    /* Near-white cards */
-  --card-foreground: oklch(0.20 0.02 150);
+  --card: oklch(0.99 0.003 90); /* Near-white cards */
+  --card-foreground: oklch(0.2 0.02 150);
 
   --popover: oklch(0.99 0.003 90);
-  --popover-foreground: oklch(0.20 0.02 150);
+  --popover-foreground: oklch(0.2 0.02 150);
 
   /* Islamic Green as Primary */
-  --primary: oklch(0.45 0.12 155);                 /* Deep emerald green */
-  --primary-foreground: oklch(0.99 0.005 90);      /* Light text on green */
+  --primary: oklch(0.45 0.12 155); /* Deep emerald green */
+  --primary-foreground: oklch(0.99 0.005 90); /* Light text on green */
 
   /* Gold/Warm Brown as Secondary */
-  --secondary: oklch(0.72 0.12 75);                /* Rich gold */
-  --secondary-foreground: oklch(0.20 0.02 75);     /* Dark text on gold */
+  --secondary: oklch(0.72 0.12 75); /* Rich gold */
+  --secondary-foreground: oklch(0.2 0.02 75); /* Dark text on gold */
 
   /* Muted tones - soft warm */
-  --muted: oklch(0.93 0.01 90);                    /* Light warm gray */
-  --muted-foreground: oklch(0.50 0.02 150);        /* Medium green-gray */
+  --muted: oklch(0.93 0.01 90); /* Light warm gray */
+  --muted-foreground: oklch(0.5 0.02 150); /* Medium green-gray */
 
   /* Accent - lighter green for highlights */
-  --accent: oklch(0.90 0.04 155);                  /* Light sage-green */
-  --accent-foreground: oklch(0.20 0.02 150);
+  --accent: oklch(0.9 0.04 155); /* Light sage-green */
+  --accent-foreground: oklch(0.2 0.02 150);
 
   /* Destructive */
-  --destructive: oklch(0.52 0.20 25);
+  --destructive: oklch(0.52 0.2 25);
   --destructive-foreground: oklch(0.99 0.005 90);
 
-  --border: oklch(0.88 0.015 90);                  /* Soft warm border */
-  --input: oklch(0.90 0.015 90);                   /* Warm input bg */
-  --ring: oklch(0.45 0.12 155);                    /* Green focus ring */
+  --border: oklch(0.88 0.015 90); /* Soft warm border */
+  --input: oklch(0.9 0.015 90); /* Warm input bg */
+  --ring: oklch(0.45 0.12 155); /* Green focus ring */
 
   /* Charts */
-  --chart-1: oklch(0.45 0.12 155);                 /* Emerald */
-  --chart-2: oklch(0.72 0.12 75);                  /* Gold */
-  --chart-3: oklch(0.55 0.10 45);                  /* Warm brown */
-  --chart-4: oklch(0.52 0.20 25);                  /* Red */
-  --chart-5: oklch(0.65 0.08 125);                 /* Olive */
+  --chart-1: oklch(0.45 0.12 155); /* Emerald */
+  --chart-2: oklch(0.72 0.12 75); /* Gold */
+  --chart-3: oklch(0.55 0.1 45); /* Warm brown */
+  --chart-4: oklch(0.52 0.2 25); /* Red */
+  --chart-5: oklch(0.65 0.08 125); /* Olive */
 }
 
 .dark {
   /* Dark Theme - Deep & Elegant */
-  --background: oklch(0.15 0.01 155);              /* Deep green-tinted dark */
-  --foreground: oklch(0.95 0.005 90);              /* Soft cream text */
+  --background: oklch(0.15 0.01 155); /* Deep green-tinted dark */
+  --foreground: oklch(0.95 0.005 90); /* Soft cream text */
 
-  --card: oklch(0.19 0.012 155);                   /* Slightly lighter */
+  --card: oklch(0.19 0.012 155); /* Slightly lighter */
   --card-foreground: oklch(0.95 0.005 90);
 
   --popover: oklch(0.19 0.012 155);
   --popover-foreground: oklch(0.95 0.005 90);
 
   /* Brighter green for dark mode */
-  --primary: oklch(0.65 0.15 155);                 /* Vibrant emerald */
-  --primary-foreground: oklch(0.15 0.01 155);      /* Dark on green */
+  --primary: oklch(0.65 0.15 155); /* Vibrant emerald */
+  --primary-foreground: oklch(0.15 0.01 155); /* Dark on green */
 
   /* Muted gold for dark mode */
-  --secondary: oklch(0.68 0.12 75);                /* Soft gold */
+  --secondary: oklch(0.68 0.12 75); /* Soft gold */
   --secondary-foreground: oklch(0.15 0.01 155);
 
-  --muted: oklch(0.24 0.015 155);                  /* Dark muted */
-  --muted-foreground: oklch(0.65 0.02 90);         /* Soft gray text */
+  --muted: oklch(0.24 0.015 155); /* Dark muted */
+  --muted-foreground: oklch(0.65 0.02 90); /* Soft gray text */
 
-  --accent: oklch(0.28 0.03 155);                  /* Dark green accent */
+  --accent: oklch(0.28 0.03 155); /* Dark green accent */
   --accent-foreground: oklch(0.95 0.005 90);
 
-  --destructive: oklch(0.60 0.20 25);
+  --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.95 0.005 90);
 
-  --border: oklch(0.27 0.015 155);                 /* Subtle border */
-  --input: oklch(0.22 0.012 155);                  /* Dark input */
-  --ring: oklch(0.65 0.15 155);                    /* Bright green ring */
+  --border: oklch(0.27 0.015 155); /* Subtle border */
+  --input: oklch(0.22 0.012 155); /* Dark input */
+  --ring: oklch(0.65 0.15 155); /* Bright green ring */
 
   /* Charts */
   --chart-1: oklch(0.65 0.15 155);
   --chart-2: oklch(0.68 0.12 75);
-  --chart-3: oklch(0.60 0.08 200);
-  --chart-4: oklch(0.60 0.20 25);
+  --chart-3: oklch(0.6 0.08 200);
+  --chart-4: oklch(0.6 0.2 25);
   --chart-5: oklch(0.68 0.12 105);
 }
 
@@ -224,18 +235,30 @@ code {
 
 /* BorderBeam: beam travels along the border path */
 @keyframes border-beam {
-  0% { offset-distance: 0%; }
-  100% { offset-distance: 100%; }
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
 }
 
 /* ShimmerButton: sweep shimmer across the button */
 @keyframes shimmer-sweep {
-  0% { transform: translateX(-200%); }
-  100% { transform: translateX(200%); }
+  0% {
+    transform: translateX(-200%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
 }
 
 /* Marquee: infinite horizontal scroll */
 @keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

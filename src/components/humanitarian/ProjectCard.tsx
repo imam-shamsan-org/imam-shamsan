@@ -16,9 +16,10 @@ import { getProjectIcon } from '@/lib/humanitarian-icons'
 
 interface ProjectCardProps {
   project: HumanitarianProject
+  personName?: string
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, personName }: ProjectCardProps) {
   const Icon = getProjectIcon(project.icon, project.category)
 
   return (
@@ -87,6 +88,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 </Button>
               }
               projectTitle={project.title}
+              personName={personName}
             />
           </div>
         )}

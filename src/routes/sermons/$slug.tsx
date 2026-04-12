@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft, Calendar } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SermonContent } from '@/components/sermons/SermonContent'
 import { formatDate } from '@/lib/utils'
 import { getSermonBySlug } from '@/lib/notion'
-import { getPageMeta, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getBreadcrumbSchema, getPageMeta, siteConfig } from '@/lib/seo'
 
 export const Route = createFileRoute('/sermons/$slug')({
   loader: async ({ params }) => {
@@ -32,7 +32,10 @@ export const Route = createFileRoute('/sermons/$slug')({
           children: getBreadcrumbSchema([
             { name: 'Home', url: siteConfig.url },
             { name: 'Sermons', url: `${siteConfig.url}/sermons` },
-            { name: sermon.title, url: `${siteConfig.url}/sermons/${sermon.slug}` },
+            {
+              name: sermon.title,
+              url: `${siteConfig.url}/sermons/${sermon.slug}`,
+            },
           ]),
         },
       ],

@@ -16,10 +16,13 @@ export function ArabicText({
       dir="rtl"
       lang="ar"
       className={cn(
-        Tag === 'h1' ? 'font-arabic-h1'
-          : Tag === 'h2' ? 'font-arabic-h2'
-          : Tag === 'h3' ? 'font-arabic-h3'
-          : 'font-arabic',
+        Tag === 'h1'
+          ? 'font-arabic-h1'
+          : Tag === 'h2'
+            ? 'font-arabic-h2'
+            : Tag === 'h3'
+              ? 'font-arabic-h3'
+              : 'font-arabic',
         className,
       )}
       {...props}

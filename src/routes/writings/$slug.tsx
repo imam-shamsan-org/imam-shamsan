@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft, Calendar, Tag } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { ArticleContent } from '@/components/articles/ArticleContent'
@@ -7,7 +7,12 @@ import { Badge } from '@/components/ui/badge'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { formatDate } from '@/lib/utils'
 import { getArticleBySlug } from '@/lib/notion'
-import { getArticleMeta, getArticleSchema, getBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import {
+  getArticleMeta,
+  getArticleSchema,
+  getBreadcrumbSchema,
+  siteConfig,
+} from '@/lib/seo'
 
 export const Route = createFileRoute('/writings/$slug')({
   loader: async ({ params }) => {
@@ -46,7 +51,9 @@ export const Route = createFileRoute('/writings/$slug')({
   errorComponent: ({ error }) => (
     <Container size="narrow">
       <div className="py-24 text-center">
-        <h1 className="text-3xl font-bold text-foreground">Article Not Found</h1>
+        <h1 className="text-3xl font-bold text-foreground">
+          Article Not Found
+        </h1>
         <p className="mt-4 text-muted-foreground">
           {error instanceof Error && error.message === 'Article not found'
             ? "This article doesn't exist or has been removed."
@@ -83,7 +90,13 @@ function ArticlePage() {
       )}
 
       {/* Header — gradient only when no cover image */}
-      <section className={article.coverImage ? 'pt-2' : 'bg-gradient-to-b from-accent/50 to-background pt-10 pb-2'}>
+      <section
+        className={
+          article.coverImage
+            ? 'pt-2'
+            : 'bg-gradient-to-b from-accent/50 to-background pt-10 pb-2'
+        }
+      >
         <Container size="narrow">
           <div className="py-6">
             <Link
@@ -147,10 +160,7 @@ function ArticlePage() {
 
       <section className="py-8">
         <Container size="narrow">
-          <ArticleContent
-            blocks={article.content}
-            isArabic={isArabic}
-          />
+          <ArticleContent blocks={article.content} isArabic={isArabic} />
         </Container>
       </section>
     </article>

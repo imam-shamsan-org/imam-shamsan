@@ -5,13 +5,8 @@ import { ArticleGrid } from '@/components/articles/ArticleGrid'
 import { LanguageFilter } from '@/components/articles/LanguageFilter'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getPublishedArticles, getSiteSettings } from '@/lib/notion'
-import {
-  getBreadcrumbSchema,
-  getPersonName,
-  getWritingsListMeta,
-  siteConfig,
-} from '@/lib/seo'
-import { ARTICLE_CATEGORIES } from '@/lib/constants'
+import { getBreadcrumbSchema, getWritingsListMeta, siteConfig } from '@/lib/seo'
+import { ARTICLE_CATEGORIES, PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/writings/')({
   loader: async () => {
@@ -41,8 +36,8 @@ export const Route = createFileRoute('/writings/')({
 })
 
 function WritingsPage() {
-  const { articles, settings } = Route.useLoaderData()
-  const personName = getPersonName(settings, { short: true })
+  const { articles, settings: _settings } = Route.useLoaderData()
+  const personName = PERSON_NAME
   const [language, setLanguage] = useState('All')
   const [category, setCategory] = useState('All')
 

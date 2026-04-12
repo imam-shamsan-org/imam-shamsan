@@ -18,12 +18,14 @@ interface ContributeDialogProps {
   trigger: React.ReactNode
   projectTitle: string
   caseTitle?: string
+  personName?: string
 }
 
 export function ContributeDialog({
   trigger,
   projectTitle,
   caseTitle,
+  personName = 'Dr. Imam Shamsan',
 }: ContributeDialogProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
@@ -92,7 +94,7 @@ export function ContributeDialog({
             Contribute to This Initiative
           </DialogTitle>
           <DialogDescription>
-            Fill in your details and Imam Shamsan will be in touch, insha'Allah.
+            Fill in your details and {personName} will be in touch, insha'Allah.
           </DialogDescription>
         </DialogHeader>
 
@@ -104,7 +106,7 @@ export function ContributeDialog({
               </div>
               <p className="font-medium text-foreground">Message Sent</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Imam Shamsan will be in touch with you soon, insha'Allah.
+                {personName} will be in touch with you soon, insha'Allah.
               </p>
             </div>
           ) : (

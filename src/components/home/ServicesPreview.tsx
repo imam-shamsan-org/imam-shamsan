@@ -5,16 +5,19 @@ import type { SiteSettings } from '@/types/settings'
 import { Container } from '@/components/layout/Container'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getPersonName } from '@/lib/seo'
+import { PERSON_NAME } from '@/lib/constants'
 
 interface ServicesPreviewProps {
   services: Array<Service>
   settings?: SiteSettings
 }
 
-export function ServicesPreview({ services, settings }: ServicesPreviewProps) {
+export function ServicesPreview({
+  services,
+  settings: _settings,
+}: ServicesPreviewProps) {
   if (!services.length) return null
-  const personName = getPersonName(settings, { short: true })
+  const personName = PERSON_NAME
 
   return (
     <section className="py-10 md:py-16">

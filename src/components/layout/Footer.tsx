@@ -1,29 +1,36 @@
 import { Link } from '@tanstack/react-router'
-import { Youtube, Facebook, Instagram, Mail } from 'lucide-react'
+import { Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import { Container } from './Container'
 import type { SiteSettings } from '@/types/settings'
+import { PERSON_NAME_FULL } from '@/lib/constants'
 
 interface FooterProps {
   settings?: SiteSettings
 }
 
 export function Footer({ settings }: FooterProps) {
-  const youtubeUrl = settings?.youtube_url?.value || 'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
-  const facebookUrl = settings?.facebook_url?.value || 'https://www.facebook.com/shamsan.aljabi.2025'
-  const instagramUrl = settings?.instagram_url?.value || 'https://www.instagram.com/dr.sham_san/'
+  const personName = PERSON_NAME_FULL
+  const youtubeUrl =
+    settings?.youtube_url?.value ||
+    'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
+  const facebookUrl =
+    settings?.facebook_url?.value ||
+    'https://www.facebook.com/shamsan.aljabi.2025'
+  const instagramUrl =
+    settings?.instagram_url?.value || 'https://www.instagram.com/dr.sham_san/'
   return (
     <footer className="mt-auto border-t-2 border-secondary/30 bg-muted/30 py-8">
       <Container>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Brand */}
           <div>
-            <Link
-              to="/"
-              className="text-lg font-semibold text-primary"
-            >
-              Imam Dr. Shamsan Al-Jabi
+            <Link to="/" className="text-lg font-semibold text-primary">
+              {personName}
             </Link>
-            <p className="mt-1 font-arabic text-sm text-muted-foreground" dir="rtl">
+            <p
+              className="mt-1 font-arabic text-sm text-muted-foreground"
+              dir="rtl"
+            >
               الدكتور. شمسان الجابي
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -57,9 +64,7 @@ export function Footer({ settings }: FooterProps) {
 
           {/* Social / Contact */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">
-              Connect
-            </h3>
+            <h3 className="text-sm font-semibold text-foreground">Connect</h3>
             <div className="mt-2 flex gap-3">
               <a
                 href={youtubeUrl}
@@ -108,8 +113,7 @@ export function Footer({ settings }: FooterProps) {
           <div className="h-px w-16 bg-secondary" />
         </div>
         <div className="mt-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Imam Dr. Shamsan Al-Jabi. All
-          rights reserved.
+          &copy; {new Date().getFullYear()} {personName}. All rights reserved.
         </div>
       </Container>
     </footer>

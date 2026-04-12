@@ -5,28 +5,37 @@ import { Button } from '@/components/ui/button'
 import { ProjectCard } from '@/components/humanitarian/ProjectCard'
 import { StatsBar } from '@/components/humanitarian/StatsBar'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getHumanitarianProjects } from '@/lib/notion'
+import { getHumanitarianProjects, getSiteSettings } from '@/lib/notion'
+import { PERSON_NAME, PERSON_NAME_FULL } from '@/lib/constants'
 
 export const Route = createFileRoute('/humanitarian/')({
   loader: async () => {
-    const projects = await getHumanitarianProjects()
-    return { projects }
+    const [projects, settings] = await Promise.all([
+      getHumanitarianProjects(),
+      getSiteSettings(),
+    ])
+    return { projects, settings }
   },
-  head: () => ({
-    meta: [
-      { title: 'Humanitarian Initiatives — Imam Shamsan' },
-      {
-        name: 'description',
-        content:
-          'Humanitarian initiatives led by Imam Dr. Shamsan Aljabi — supporting displaced families, medical cases, orphans, and more. Eligible for Zakat and Sadaqah.',
-      },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const personName = PERSON_NAME
+    const fullName = PERSON_NAME_FULL
+    return {
+      meta: [
+        { title: `Humanitarian Initiatives — ${personName}` },
+        {
+          name: 'description',
+          content: `Humanitarian initiatives led by ${fullName} — supporting displaced families, medical cases, orphans, and more. Eligible for Zakat and Sadaqah.`,
+        },
+      ],
+    }
+  },
   component: HumanitarianPage,
 })
 
 function HumanitarianPage() {
-  const { projects } = Route.useLoaderData()
+  const { projects, settings: _settings } = Route.useLoaderData()
+  const personName = PERSON_NAME
+  const fullName = PERSON_NAME_FULL
 
   return (
     <>
@@ -56,7 +65,7 @@ function HumanitarianPage() {
               </h1>
 
               <p className="mt-3 text-base text-muted-foreground">
-                Led by Imam Dr. Shamsan Aljabi
+                Led by {fullName}
               </p>
 
               {/* Hadith quote */}
@@ -113,7 +122,11 @@ function HumanitarianPage() {
           ) : (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  personName={personName}
+                />
               ))}
             </div>
           )}
@@ -133,7 +146,7 @@ function HumanitarianPage() {
               Want to Contribute Directly?
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Contact Imam Shamsan to discuss contributions, sponsorships, or to
+              Contact {personName} to discuss contributions, sponsorships, or to
               learn more about any of these initiatives.
             </p>
             <div className="mt-5">

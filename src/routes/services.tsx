@@ -3,12 +3,8 @@ import { Container } from '@/components/layout/Container'
 import { ServiceGrid } from '@/components/services/ServiceGrid'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { getActiveServices, getSiteSettings } from '@/lib/notion'
-import {
-  getBreadcrumbSchema,
-  getPersonName,
-  getServicesMeta,
-  siteConfig,
-} from '@/lib/seo'
+import { getBreadcrumbSchema, getServicesMeta, siteConfig } from '@/lib/seo'
+import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/services')({
   loader: async () => {
@@ -38,8 +34,8 @@ export const Route = createFileRoute('/services')({
 })
 
 function ServicesPage() {
-  const { services, settings } = Route.useLoaderData()
-  const personName = getPersonName(settings, { short: true })
+  const { services, settings: _settings } = Route.useLoaderData()
+  const personName = PERSON_NAME
 
   return (
     <>

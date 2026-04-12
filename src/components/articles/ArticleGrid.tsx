@@ -1,9 +1,9 @@
 import { ArticleCard } from './ArticleCard'
-import { FadeIn } from '@/components/shared/FadeIn'
 import type { ArticleSummary } from '@/types/article'
+import { FadeIn } from '@/components/shared/FadeIn'
 
 interface ArticleGridProps {
-  articles: ArticleSummary[]
+  articles: Array<ArticleSummary>
 }
 
 export function ArticleGrid({ articles }: ArticleGridProps) {

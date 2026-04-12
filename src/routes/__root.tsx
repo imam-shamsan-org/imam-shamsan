@@ -1,22 +1,22 @@
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRoute,
-  Link,
   useRouter,
 } from '@tanstack/react-router'
 
+import appCss from '../styles.css?url'
+import type { SiteSettings } from '@/types/settings'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Container } from '@/components/layout/Container'
 import { ThemeProvider } from '@/lib/theme'
 import { getSiteSettings } from '@/lib/notion'
 import { getOptimizedUrl } from '@/lib/cloudinary'
-import { getBaseMeta, siteConfig } from '@/lib/seo'
-import type { SiteSettings } from '@/types/settings'
-
-import appCss from '../styles.css?url'
+import { getBaseMeta } from '@/lib/seo'
+import { PERSON_NAME, PERSON_NAME_FULL } from '@/lib/constants'
 
 export const Route = createRootRoute({
   loader: async () => {
@@ -25,15 +25,16 @@ export const Route = createRootRoute({
   },
   head: ({ loaderData }) => {
     const logoUrl = loaderData?.settings?.logo?.value
+    const description = `Official website of ${PERSON_NAME_FULL} - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.`
     return {
       meta: [
         ...getBaseMeta(),
         {
-          title: siteConfig.name,
+          title: PERSON_NAME_FULL,
         },
         {
           name: 'description',
-          content: siteConfig.description,
+          content: description,
         },
       ],
       links: [
@@ -43,8 +44,17 @@ export const Route = createRootRoute({
         },
         ...(logoUrl
           ? [
-              { rel: 'icon', type: 'image/png', sizes: '48x48', href: getOptimizedUrl(logoUrl, 'favicon') },
-              { rel: 'apple-touch-icon', sizes: '180x180', href: getOptimizedUrl(logoUrl, 'apple-touch-icon') },
+              {
+                rel: 'icon',
+                type: 'image/png',
+                sizes: '48x48',
+                href: getOptimizedUrl(logoUrl, 'favicon'),
+              },
+              {
+                rel: 'apple-touch-icon',
+                sizes: '180x180',
+                href: getOptimizedUrl(logoUrl, 'apple-touch-icon'),
+              },
             ]
           : []),
       ],
@@ -71,9 +81,10 @@ export const Route = createRootRoute({
 function RootComponent() {
   const { settings } = Route.useLoaderData()
   const logoUrl = settings.logo?.value
+  const personName = PERSON_NAME
 
   return (
-    <RootDocument logoUrl={logoUrl} settings={settings}>
+    <RootDocument logoUrl={logoUrl} personName={personName} settings={settings}>
       <Outlet />
     </RootDocument>
   )
@@ -101,12 +112,15 @@ function NotFound() {
 
 function RootError({ error }: { error: unknown }) {
   const router = useRouter()
-  const message = error instanceof Error ? error.message : 'An unexpected error occurred'
+  const message =
+    error instanceof Error ? error.message : 'An unexpected error occurred'
 
   return (
     <Container size="narrow">
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <h1 className="text-4xl font-bold text-foreground">Something went wrong</h1>
+        <h1 className="text-4xl font-bold text-foreground">
+          Something went wrong
+        </h1>
         <p className="mt-4 text-muted-foreground">{message}</p>
         <div className="mt-6 flex gap-3">
           <button
@@ -127,7 +141,17 @@ function RootError({ error }: { error: unknown }) {
   )
 }
 
-function RootDocument({ children, logoUrl, settings }: { children: React.ReactNode; logoUrl?: string; settings?: SiteSettings }) {
+function RootDocument({
+  children,
+  logoUrl,
+  personName,
+  settings,
+}: {
+  children: React.ReactNode
+  logoUrl?: string
+  personName?: string
+  settings?: SiteSettings
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -135,7 +159,7 @@ function RootDocument({ children, logoUrl, settings }: { children: React.ReactNo
       </head>
       <body className="flex min-h-screen flex-col">
         <ThemeProvider>
-          <Header logoUrl={logoUrl} />
+          <Header logoUrl={logoUrl} personName={personName} />
           <main className="flex-1">{children}</main>
           <Footer settings={settings} />
         </ThemeProvider>

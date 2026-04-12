@@ -48,7 +48,7 @@ async function sendContactEmail(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: `${process.env.SITE_PERSON_NAME || 'Imam Shamsan'} Website <onboarding@resend.dev>`,
+        from: `Dr. Imam Shamsan Website <onboarding@resend.dev>`,
         to: contactEmail,
         subject: data.service
           ? `New Inquiry: ${escapeHtml(data.service)} - from ${escapeHtml(data.name)}`

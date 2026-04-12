@@ -25,7 +25,9 @@ export function Dialog({ open, onClose, children, className }: DialogProps) {
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [open])
 
   if (!open || typeof document === 'undefined') return null
@@ -63,31 +65,57 @@ export function Dialog({ open, onClose, children, className }: DialogProps) {
   )
 }
 
-export function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
+export function DialogHeader({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
   return <div className={cn('p-6 pb-3', className)} {...props} />
 }
 
-export function DialogTitle({ className, ...props }: React.ComponentProps<'h2'>) {
+export function DialogTitle({
+  className,
+  ...props
+}: React.ComponentProps<'h2'>) {
   return (
     <h2
-      className={cn('text-lg font-semibold leading-snug text-foreground', className)}
+      className={cn(
+        'text-lg font-semibold leading-snug text-foreground',
+        className,
+      )}
       {...props}
     />
   )
 }
 
-export function DialogDescription({ className, ...props }: React.ComponentProps<'p'>) {
-  return <p className={cn('mt-1 text-sm text-muted-foreground', className)} {...props} />
+export function DialogDescription({
+  className,
+  ...props
+}: React.ComponentProps<'p'>) {
+  return (
+    <p
+      className={cn('mt-1 text-sm text-muted-foreground', className)}
+      {...props}
+    />
+  )
 }
 
-export function DialogContent({ className, ...props }: React.ComponentProps<'div'>) {
+export function DialogContent({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
   return <div className={cn('px-6 pb-3', className)} {...props} />
 }
 
-export function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
+export function DialogFooter({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
   return (
     <div
-      className={cn('flex items-center justify-end gap-3 px-6 pb-6 pt-2', className)}
+      className={cn(
+        'flex items-center justify-end gap-3 px-6 pb-6 pt-2',
+        className,
+      )}
       {...props}
     />
   )

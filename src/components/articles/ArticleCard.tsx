@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
+import type { ArticleSummary } from '@/types/article'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { Badge } from '@/components/ui/badge'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { formatDate } from '@/lib/utils'
-import type { ArticleSummary } from '@/types/article'
 
 interface ArticleCardProps {
   article: ArticleSummary

@@ -8,10 +8,10 @@ import { getAboutPage, getSiteSettings } from '@/lib/notion'
 import {
   getAboutMeta,
   getBreadcrumbSchema,
-  getPersonName,
   getPersonSchema,
   siteConfig,
 } from '@/lib/seo'
+import { PERSON_NAME } from '@/lib/constants'
 import { extractCards, isCompactCards, splitIntoSections } from '@/lib/content'
 
 export const Route = createFileRoute('/about')({
@@ -48,7 +48,7 @@ export const Route = createFileRoute('/about')({
 function AboutPage() {
   const { settings, aboutPage } = Route.useLoaderData()
   const profileImage = settings.profile_img?.value
-  const personName = getPersonName(settings, { short: true })
+  const personName = PERSON_NAME
 
   const title = aboutPage?.title || `About ${personName}`
   const subtitleAr = aboutPage?.subtitleAr || 'الدكتور. شمسان الجابي'

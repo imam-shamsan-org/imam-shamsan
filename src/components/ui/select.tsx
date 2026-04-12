@@ -6,7 +6,11 @@ function Select(props: SelectPrimitive.Root.Props<string>) {
   return <SelectPrimitive.Root {...props} />
 }
 
-function SelectTrigger({ className, children, ...props }: SelectPrimitive.Trigger.Props) {
+function SelectTrigger({
+  className,
+  children,
+  ...props
+}: SelectPrimitive.Trigger.Props) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -36,7 +40,11 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   )
 }
 
-function SelectContent({ className, children, ...props }: SelectPrimitive.Popup.Props) {
+function SelectContent({
+  className,
+  children,
+  ...props
+}: SelectPrimitive.Popup.Props) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Positioner sideOffset={4}>
@@ -56,7 +64,11 @@ function SelectContent({ className, children, ...props }: SelectPrimitive.Popup.
   )
 }
 
-function SelectItem({ className, children, ...props }: SelectPrimitive.Item.Props<string>) {
+function SelectItem({
+  className,
+  children,
+  ...props
+}: SelectPrimitive.Item.Props<string>) {
   return (
     <SelectPrimitive.Item
       data-slot="select-item"

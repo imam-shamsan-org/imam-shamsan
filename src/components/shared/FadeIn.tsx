@@ -2,8 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 interface FadeInProps {
   children: React.ReactNode
-  delay?: number        // ms stagger delay
-  distance?: number     // px to slide from (default 20)
+  delay?: number // ms stagger delay
+  distance?: number // px to slide from (default 20)
   className?: string
 }
 
@@ -14,7 +14,12 @@ interface FadeInProps {
  * the browser paints — guaranteeing the invisible state is visible on screen.
  * useEffect then fires AFTER that first paint and triggers the transition.
  */
-export function FadeIn({ children, delay = 0, distance = 20, className }: FadeInProps) {
+export function FadeIn({
+  children,
+  delay = 0,
+  distance = 20,
+  className,
+}: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -61,7 +66,9 @@ export function FadeIn({ children, delay = 0, distance = 20, className }: FadeIn
         mounted
           ? {
               opacity: visible ? 1 : 0,
-              transform: visible ? 'translateY(0px)' : `translateY(${distance}px)`,
+              transform: visible
+                ? 'translateY(0px)'
+                : `translateY(${distance}px)`,
               transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms`,
             }
           : undefined

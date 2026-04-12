@@ -11,7 +11,8 @@ import {
   getLatestArticles,
   getSiteSettings,
 } from '@/lib/notion'
-import { getHomeMeta, getPersonName, getPersonSchema } from '@/lib/seo'
+import { getHomeMeta, getPersonSchema } from '@/lib/seo'
+import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
@@ -40,7 +41,7 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const { services, latestArticles, settings } = Route.useLoaderData()
-  const personName = getPersonName(settings, { short: true })
+  const personName = PERSON_NAME
 
   return (
     <>

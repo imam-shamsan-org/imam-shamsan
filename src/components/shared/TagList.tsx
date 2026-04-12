@@ -2,16 +2,12 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 interface TagListProps {
-  tags: string[]
+  tags: Array<string>
   className?: string
   variant?: 'default' | 'secondary' | 'outline' | 'muted'
 }
 
-export function TagList({
-  tags,
-  className,
-  variant = 'muted',
-}: TagListProps) {
+export function TagList({ tags, className, variant = 'muted' }: TagListProps) {
   if (!tags.length) return null
 
   return (

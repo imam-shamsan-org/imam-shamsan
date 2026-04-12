@@ -12,16 +12,21 @@ import { getProjectIcon } from '@/lib/humanitarian-icons'
 import {
   getHumanitarianCasesByProject,
   getHumanitarianProjectBySlug,
+  getSiteSettings,
 } from '@/lib/notion'
+import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/humanitarian/$slug/')({
   loader: async ({ params }) => {
-    const project = await getHumanitarianProjectBySlug({ data: params.slug })
+    const [project, settings] = await Promise.all([
+      getHumanitarianProjectBySlug({ data: params.slug }),
+      getSiteSettings(),
+    ])
     if (!project) throw notFound()
 
     const cases = await getHumanitarianCasesByProject({ data: params.slug })
 
-    return { project, cases }
+    return { project, cases, settings }
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -52,7 +57,8 @@ export const Route = createFileRoute('/humanitarian/$slug/')({
 })
 
 function ProjectDetailPage() {
-  const { project, cases } = Route.useLoaderData()
+  const { project, cases, settings: _settings } = Route.useLoaderData()
+  const personName = PERSON_NAME
   const Icon = getProjectIcon(project.icon, project.category)
   const [selectedCase, setSelectedCase] = useState<HumanitarianCase | null>(
     null,
@@ -115,8 +121,8 @@ function ProjectDetailPage() {
           {cases.length === 0 ? (
             <div className="mx-auto max-w-lg text-center py-12">
               <p className="text-muted-foreground mb-6">
-                This initiative accepts general contributions. Contact Imam
-                Shamsan to participate.
+                This initiative accepts general contributions. Contact{' '}
+                {personName} to participate.
               </p>
               <Button asChild>
                 <Link to="/contact">Contact Us</Link>
@@ -143,6 +149,7 @@ function ProjectDetailPage() {
                     </Button>
                   }
                   projectTitle={project.title}
+                  personName={personName}
                 />
               </div>
 
@@ -180,6 +187,7 @@ function ProjectDetailPage() {
         projectTitle={project.title}
         open={selectedCase !== null}
         onClose={() => setSelectedCase(null)}
+        personName={personName}
       />
     </>
   )

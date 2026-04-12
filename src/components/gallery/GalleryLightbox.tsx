@@ -1,11 +1,11 @@
 import Lightbox from 'yet-another-react-lightbox'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
-import { getOptimizedUrl } from '@/lib/cloudinary'
 import type { GalleryImage } from '@/types/gallery'
+import { getOptimizedUrl } from '@/lib/cloudinary'
 
 interface GalleryLightboxProps {
-  images: GalleryImage[]
+  images: Array<GalleryImage>
   open: boolean
   index: number
   onClose: () => void

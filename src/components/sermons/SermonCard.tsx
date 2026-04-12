@@ -1,15 +1,17 @@
 import { Link } from '@tanstack/react-router'
 import { Calendar, Play } from 'lucide-react'
+import type { SermonSummary } from '@/types/sermon'
 import { formatDate } from '@/lib/utils'
 import { getYouTubeThumbnail } from '@/lib/youtube'
-import type { SermonSummary } from '@/types/sermon'
 
 interface SermonCardProps {
   sermon: SermonSummary
 }
 
 export function SermonCard({ sermon }: SermonCardProps) {
-  const thumbnail = sermon.youtubeLink ? getYouTubeThumbnail(sermon.youtubeLink) : null
+  const thumbnail = sermon.youtubeLink
+    ? getYouTubeThumbnail(sermon.youtubeLink)
+    : null
 
   return (
     <Link

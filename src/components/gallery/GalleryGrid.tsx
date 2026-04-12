@@ -1,8 +1,8 @@
-import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import type { GalleryImage } from '@/types/gallery'
+import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 
 interface GalleryGridProps {
-  images: GalleryImage[]
+  images: Array<GalleryImage>
   onImageClick: (index: number) => void
 }
 

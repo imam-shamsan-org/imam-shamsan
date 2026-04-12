@@ -11,5 +11,5 @@ export interface SermonSummary {
 }
 
 export interface Sermon extends SermonSummary {
-  content: ContentBlock[]
+  content: Array<ContentBlock>
 }

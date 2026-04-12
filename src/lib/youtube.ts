@@ -32,7 +32,10 @@ export function getYouTubeThumbnail(url: string): string | null {
 }
 
 /** Determine live/recent stream status based on when the URL was last updated */
-export function getStreamStatus(dateStr: string | undefined): { isLive: boolean; timeAgo: string | null } {
+export function getStreamStatus(dateStr: string | undefined): {
+  isLive: boolean
+  timeAgo: string | null
+} {
   if (!dateStr) return { isLive: false, timeAgo: null }
 
   const streamDate = new Date(dateStr)
@@ -59,9 +62,11 @@ export function getStreamStatus(dateStr: string | undefined): { isLive: boolean;
   } else if (diffWeeks < 5) {
     timeAgo = `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`
   } else {
-    timeAgo = streamDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    timeAgo = streamDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })
   }
 
   return { isLive: false, timeAgo }
 }
-

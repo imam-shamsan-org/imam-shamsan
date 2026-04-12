@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getTitlePrefix } from '@/lib/seo'
+import { TITLE_PREFIX } from '@/lib/constants'
 
 interface HeroSectionProps {
   settings: SiteSettings
@@ -14,7 +14,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ settings }: HeroSectionProps) {
   const profileImage = settings.profile_img?.value
-  const titlePrefix = getTitlePrefix(settings)
+  const titlePrefix = TITLE_PREFIX
   return (
     <section className="bg-gradient-to-b from-primary/15 via-accent/40 to-background py-10 md:py-16">
       <Container>

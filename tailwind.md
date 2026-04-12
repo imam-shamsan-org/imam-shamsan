@@ -18,7 +18,6 @@ module.exports = {
   },
   plugins: [],
 }
-
 ```
 
 ### 2. Global CSS Strategy
@@ -42,18 +41,17 @@ body {
 }
 
 /* Specific Arabic tuning */
-[dir="rtl"] {
+[dir='rtl'] {
   @apply font-arabic;
   line-height: 1.8; /* Arabic characters need more vertical space */
   letter-spacing: 0; /* Letter spacing usually breaks Arabic script connectivity */
 }
 
 /* Handle punctuation at the end of sentences in RTL */
-[dir="rtl"] p {
+[dir='rtl'] p {
   unicode-bidi: plaintext;
   text-align: right;
 }
-
 ```
 
 ### 3. Usage in your Block Component
@@ -62,20 +60,17 @@ Since you aren't selecting a language manually, your component handles the "flip
 
 ```tsx
 const NotionBlock = ({ text }) => {
-  const isRtl = /[\u0600-\u06FF]/.test(text);
+  const isRtl = /[\u0600-\u06FF]/.test(text)
 
   return (
-    <div 
-      dir={isRtl ? 'rtl' : 'ltr'} 
+    <div
+      dir={isRtl ? 'rtl' : 'ltr'}
       className={`mb-4 ${isRtl ? 'text-right' : 'text-left'}`}
     >
-      <p className="text-lg md:text-xl">
-        {text}
-      </p>
+      <p className="text-lg md:text-xl">{text}</p>
     </div>
-  );
+  )
 }
-
 ```
 
 ### Why this works:
@@ -83,4 +78,3 @@ const NotionBlock = ({ text }) => {
 1. **Logical Properties:** By using Tailwind's `ps` (padding-start) or `ms` (margin-start) instead of `pl` or `ml`, your spacing will automatically shift to the correct side when the `dir` attribute changes.
 2. **Line Height:** Arabic script is naturally taller than Latin. Setting a higher `line-height` for `[dir="rtl"]` prevents "clipped" characters.
 3. **Font Ordering:** In the `sans` stack, the browser will try to find characters in **Inter** first. Since Inter doesn't have Arabic glyphs, it will automatically fall back to **IBM Plex Sans Arabic** for those specific words.
-

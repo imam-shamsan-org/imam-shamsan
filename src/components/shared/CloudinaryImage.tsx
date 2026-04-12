@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import type { ImagePreset } from '@/lib/cloudinary'
 import { cn } from '@/lib/utils'
 import { getOptimizedUrl, getSrcSet } from '@/lib/cloudinary'
-import type { ImagePreset } from '@/lib/cloudinary'
 
-interface CloudinaryImageProps
-  extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
+interface CloudinaryImageProps extends Omit<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  'src'
+> {
   src: string
   alt: string
   preset?: ImagePreset

@@ -8,18 +8,23 @@ import { getPosterFullUrl, isPdfUrl } from '@/lib/cloudinary'
 import {
   getHumanitarianCasesByProject,
   getHumanitarianProjectBySlug,
+  getSiteSettings,
 } from '@/lib/notion'
+import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/humanitarian/$slug/$caseSlug')({
   loader: async ({ params }) => {
-    const project = await getHumanitarianProjectBySlug({ data: params.slug })
+    const [project, settings] = await Promise.all([
+      getHumanitarianProjectBySlug({ data: params.slug }),
+      getSiteSettings(),
+    ])
     if (!project) throw notFound()
 
     const cases = await getHumanitarianCasesByProject({ data: params.slug })
     const case_ = cases.find((c) => c.slug === params.caseSlug)
     if (!case_) throw notFound()
 
-    return { project, case_ }
+    return { project, case_, settings }
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -51,7 +56,8 @@ export const Route = createFileRoute('/humanitarian/$slug/$caseSlug')({
 })
 
 function CaseDetailPage() {
-  const { project, case_: c } = Route.useLoaderData()
+  const { project, case_: c, settings: _settings } = Route.useLoaderData()
+  const personName = PERSON_NAME
   const hasPoster = Boolean(c.posterUrl)
   const pdf = hasPoster && isPdfUrl(c.posterUrl!)
 
@@ -123,6 +129,7 @@ function CaseDetailPage() {
               }
               projectTitle={project.title}
               caseTitle={c.title}
+              personName={personName}
             />
           </div>
         </Container>

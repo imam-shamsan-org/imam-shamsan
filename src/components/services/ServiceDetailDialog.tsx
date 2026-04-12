@@ -49,12 +49,14 @@ interface ServiceDetailDialogProps {
   service: Service
   open: boolean
   onClose: () => void
+  personName?: string
 }
 
 export function ServiceDetailDialog({
   service,
   open,
   onClose,
+  personName = 'Dr. Imam Shamsan',
 }: ServiceDetailDialogProps) {
   const [step, setStep] = useState<Step>('details')
   const [formState, setFormState] = useState({
@@ -352,7 +354,7 @@ export function ServiceDetailDialog({
               Inquiry Sent!
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Thank you for reaching out. Imam Shamsan will respond soon,
+              Thank you for reaching out. {personName} will respond soon,
               insha'Allah.
             </p>
           </div>

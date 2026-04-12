@@ -4,7 +4,9 @@ import type { ContentBlock, RichTextItem } from '@/types/article'
 /**
  * Extract rich text items with formatting from a Notion rich_text array
  */
-function parseRichText(richTexts: Array<Record<string, unknown>>): RichTextItem[] {
+function parseRichText(
+  richTexts: Array<Record<string, unknown>>,
+): Array<RichTextItem> {
   return richTexts.map((rt) => {
     const text = rt as {
       plain_text: string
@@ -26,7 +28,10 @@ function parseRichText(richTexts: Array<Record<string, unknown>>): RichTextItem[
       underline: text.annotations.underline || undefined,
       strikethrough: text.annotations.strikethrough || undefined,
       code: text.annotations.code || undefined,
-      color: text.annotations.color !== 'default' ? text.annotations.color : undefined,
+      color:
+        text.annotations.color !== 'default'
+          ? text.annotations.color
+          : undefined,
       href: text.href || undefined,
     }
   })
@@ -53,7 +58,9 @@ function getBlockPlainText(block: Record<string, unknown>): string {
 
   for (const type of richTextTypes) {
     if (blockType === type) {
-      const data = block[type] as { rich_text?: Array<{ plain_text: string }> } | undefined
+      const data = block[type] as
+        | { rich_text?: Array<{ plain_text: string }> }
+        | undefined
       if (data?.rich_text) {
         return data.rich_text.map((t) => t.plain_text).join('')
       }
@@ -66,22 +73,31 @@ function getBlockPlainText(block: Record<string, unknown>): string {
 /**
  * Get rich text array from a block
  */
-function getBlockRichText(block: Record<string, unknown>): Array<Record<string, unknown>> {
+function getBlockRichText(
+  block: Record<string, unknown>,
+): Array<Record<string, unknown>> {
   const blockType = block.type as string
-  const data = block[blockType] as { rich_text?: Array<Record<string, unknown>> } | undefined
+  const data = block[blockType] as
+    | { rich_text?: Array<Record<string, unknown>> }
+    | undefined
   return data?.rich_text || []
 }
 
 /**
  * Get the image URL from an image block (prefers external/Cloudinary URLs)
  */
-function getImageFromBlock(block: Record<string, unknown>): { url: string; caption: string } {
-  const imageData = block.image as {
-    type: string
-    file?: { url: string }
-    external?: { url: string }
-    caption?: Array<{ plain_text: string }>
-  } | undefined
+function getImageFromBlock(block: Record<string, unknown>): {
+  url: string
+  caption: string
+} {
+  const imageData = block.image as
+    | {
+        type: string
+        file?: { url: string }
+        external?: { url: string }
+        caption?: Array<{ plain_text: string }>
+      }
+    | undefined
 
   if (!imageData) return { url: '', caption: '' }
 
@@ -125,7 +141,9 @@ function parseBlock(block: BlockObjectResponse): ContentBlock {
     }
 
     case 'code': {
-      const codeData = b.code as { language?: string; rich_text?: Array<{ plain_text: string }> } | undefined
+      const codeData = b.code as
+        | { language?: string; rich_text?: Array<{ plain_text: string }> }
+        | undefined
       return {
         ...base,
         content: codeData?.rich_text?.map((t) => t.plain_text).join('') || '',
@@ -134,10 +152,15 @@ function parseBlock(block: BlockObjectResponse): ContentBlock {
     }
 
     case 'callout': {
-      const calloutData = b.callout as { icon?: { type: string; emoji?: string } } | undefined
+      const calloutData = b.callout as
+        | { icon?: { type: string; emoji?: string } }
+        | undefined
       return {
         ...base,
-        icon: calloutData?.icon?.type === 'emoji' ? calloutData.icon.emoji : undefined,
+        icon:
+          calloutData?.icon?.type === 'emoji'
+            ? calloutData.icon.emoji
+            : undefined,
       }
     }
 
@@ -147,10 +170,13 @@ function parseBlock(block: BlockObjectResponse): ContentBlock {
     }
 
     case 'video': {
-      const videoData = b.video as { type: string; external?: { url: string } } | undefined
+      const videoData = b.video as
+        | { type: string; external?: { url: string } }
+        | undefined
       return {
         ...base,
-        content: videoData?.type === 'external' ? videoData.external?.url || '' : '',
+        content:
+          videoData?.type === 'external' ? videoData.external?.url || '' : '',
       }
     }
 
@@ -168,6 +194,8 @@ function parseBlock(block: BlockObjectResponse): ContentBlock {
  * Parse all Notion blocks into ContentBlock array
  * This is the generic block renderer for blog articles, sermon summaries, etc.
  */
-export function parseBlocksToContent(blocks: BlockObjectResponse[]): ContentBlock[] {
+export function parseBlocksToContent(
+  blocks: Array<BlockObjectResponse>,
+): Array<ContentBlock> {
   return blocks.map(parseBlock)
 }

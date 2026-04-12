@@ -6,9 +6,10 @@ import { ArabicText } from '@/components/shared/ArabicText'
 
 interface ServiceCardProps {
   service: Service
+  personName?: string
 }
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export function ServiceCard({ service, personName }: ServiceCardProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -49,6 +50,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         service={service}
         open={open}
         onClose={() => setOpen(false)}
+        personName={personName}
       />
     </>
   )

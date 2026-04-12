@@ -24,13 +24,13 @@ Welcome! This guide walks you through the accounts needed for your website and s
 
 You will need to create **5 accounts**. Each one serves a specific purpose for your website.
 
-| Account     | Purpose                        | Cost       |
-|-------------|--------------------------------|------------|
-| Notion      | Managing your website content  | Free       |
-| Cloudinary  | Hosting your photos            | Free tier  |
-| GitHub      | Storing your website code      | Free       |
-| Vercel      | Hosting your live website      | Free tier  |
-| Namecheap   | Your custom domain name        | ~$10/year  |
+| Account    | Purpose                       | Cost      |
+| ---------- | ----------------------------- | --------- |
+| Notion     | Managing your website content | Free      |
+| Cloudinary | Hosting your photos           | Free tier |
+| GitHub     | Storing your website code     | Free      |
+| Vercel     | Hosting your live website     | Free tier |
+| Namecheap  | Your custom domain name       | ~$10/year |
 
 ---
 
@@ -39,12 +39,14 @@ You will need to create **5 accounts**. Each one serves a specific purpose for y
 Notion is where you will write and update your website content (writings, sermon summaries, gallery captions, recitation entries, and site settings).
 
 **Create your account:**
+
 1. Go to [https://www.notion.so/signup](https://www.notion.so/signup)
 2. Sign up with your email address
 3. Choose the **Free** plan (it has everything you need)
 4. Create a workspace — name it something like "Imam Shamsan Website"
 
 **After creating your account:**
+
 - Share your workspace with the developer by clicking **"Settings & Members"** in the left sidebar
 - Click **"Members"** > **"Invite"** and add: `usmansagemode@gmail.com`
 - Give **"Full access"** permission so the developer can set up your databases
@@ -56,12 +58,14 @@ Notion is where you will write and update your website content (writings, sermon
 Cloudinary stores and delivers all the photos on your website (gallery images, article cover images, profile photo, logo).
 
 **Create your account:**
+
 1. Go to [https://cloudinary.com/users/register/free](https://cloudinary.com/users/register/free)
 2. Sign up with your email
 3. Choose the **Free** plan (25 GB storage, more than enough to start)
 4. Pick a **Cloud Name** — use something recognizable (e.g., `imam-shamsan`)
 
 **After creating your account:**
+
 - Go to **Settings** (gear icon, bottom-left) > **Account** > **Users**
 - Click **"Invite User"**
 - Enter: `usmansagemode@gmail.com`
@@ -75,6 +79,7 @@ Cloudinary stores and delivers all the photos on your website (gallery images, a
 GitHub stores your website's code. You won't need to interact with it day-to-day, but you own the account.
 
 **Create your account:**
+
 1. Go to [https://github.com/join](https://github.com/join)
 2. Sign up with your email address
 3. Choose the **Free** plan
@@ -91,12 +96,14 @@ The developer will create a **GitHub Organization** (a shared space for the code
 Vercel is the service that makes your website available on the internet. It automatically updates your site when changes are made to the code.
 
 **Create your account:**
+
 1. Go to [https://vercel.com/signup](https://vercel.com/signup)
 2. Click **"Continue with GitHub"** (use the GitHub account you just created)
 3. Authorize Vercel to access your GitHub
 4. Choose the **Hobby** (Free) plan
 
 **After the GitHub Organization is set up:**
+
 - The developer will walk you through connecting the repository to your Vercel account
 - Once connected, the website will automatically redeploy whenever code changes are pushed
 
@@ -107,6 +114,7 @@ Vercel is the service that makes your website available on the internet. It auto
 Namecheap is where you purchase your website address (e.g., `www.imamshamsan.com`).
 
 **Purchase your domain:**
+
 1. Go to [https://www.namecheap.com](https://www.namecheap.com)
 2. Create an account
 3. Search for your desired domain name
@@ -114,6 +122,7 @@ Namecheap is where you purchase your website address (e.g., `www.imamshamsan.com
 5. **Important:** Keep **AutoRenew** turned on so your domain doesn't expire
 
 **Share delegate access with the developer:**
+
 1. Log in to Namecheap
 2. Go to **Profile** (top-right) > **Dashboard**
 3. Click on **"Profile"** in the left sidebar > **"Delegate Access"**
@@ -129,26 +138,28 @@ Namecheap is where you purchase your website address (e.g., `www.imamshamsan.com
 ## Managing Your Website Content
 
 Once the website is built, you will manage content through **two tools**:
+
 - **Notion** — for all text content, metadata, and links
 - **Cloudinary** — for uploading photos and images
 
 Your website has **9 Notion databases**:
 
-| Database                    | What It Controls                                    |
-|-----------------------------|-----------------------------------------------------|
-| Articles                    | Writings/articles on the Writings page              |
-| Services                    | Services listed on the Services page                |
-| Sermon Summaries            | Written khutbah summaries on the Sermons page       |
-| Gallery                     | Individual photos on the Gallery page               |
-| Recitations                 | Qur'anic recitation videos on the Media page        |
-| About Page                  | Your biography, education, and background           |
-| Site Settings               | Live stream URL, profile image, logo                |
-| Humanitarian Projects       | Initiative categories on the Humanitarian Aid page  |
-| Humanitarian Cases          | Individual sponsorable cases within each initiative |
+| Database              | What It Controls                                    |
+| --------------------- | --------------------------------------------------- |
+| Articles              | Writings/articles on the Writings page              |
+| Services              | Services listed on the Services page                |
+| Sermon Summaries      | Written khutbah summaries on the Sermons page       |
+| Gallery               | Individual photos on the Gallery page               |
+| Recitations           | Qur'anic recitation videos on the Media page        |
+| About Page            | Your biography, education, and background           |
+| Site Settings         | Live stream URL, profile image, logo                |
+| Humanitarian Projects | Initiative categories on the Humanitarian Aid page  |
+| Humanitarian Cases    | Individual sponsorable cases within each initiative |
 
 ### Arabic & English
 
 Notion fully supports Arabic on the free plan. You can write in Arabic, English, or both in the same page — just type naturally. The website will automatically detect the language direction for each paragraph:
+
 - Arabic paragraphs will display right-to-left
 - English paragraphs will display left-to-right
 - You do not need to do anything special — just write normally
@@ -160,6 +171,7 @@ Notion fully supports Arabic on the free plan. You can write in Arabic, English,
 The Writings section shows your articles, reflections, and Islamic knowledge pieces. You write the full content directly inside each Notion page.
 
 **To add a new article:**
+
 1. Open Notion and go to the **"Articles"** database
 2. Click **"+ New"** at the bottom of the table to create a new entry
 3. Fill in the properties at the top of the page:
@@ -174,7 +186,7 @@ The Writings section shows your articles, reflections, and Islamic knowledge pie
    - **Status** — Set to `Published` when ready to go live (keep as `Draft` while writing)
 4. **Write the article content in the page body below the properties.** Formatting options:
    - **Bold** text: Select text and press `Cmd+B`
-   - *Italic* text: Select text and press `Cmd+I`
+   - _Italic_ text: Select text and press `Cmd+I`
    - Headings: Type `/heading` and select Heading 2 or Heading 3
    - Bullet lists: Type `-` followed by a space
    - Numbered lists: Type `1.` followed by a space
@@ -183,6 +195,7 @@ The Writings section shows your articles, reflections, and Islamic knowledge pie
 5. The website will automatically show the new article once `Status` is set to `Published`
 
 **To add an image inside an article (optional):**
+
 1. First, upload the image to Cloudinary (see "Uploading Images to Cloudinary" below)
 2. Copy the image URL from Cloudinary
 3. In your Notion page, click where you want the image to appear
@@ -191,12 +204,14 @@ The Writings section shows your articles, reflections, and Islamic knowledge pie
 6. Paste the Cloudinary URL and press Enter
 
 **To edit an existing article:**
+
 1. Click on any row in the Articles database
 2. Make your changes directly
 3. Changes save automatically in Notion
 4. The website will reflect the changes on the next update
 
 **To hide an article from the website:**
+
 - Change the **"Status"** to `Draft` — it stays in your database but won't appear on the site
 
 ---
@@ -206,6 +221,7 @@ The Writings section shows your articles, reflections, and Islamic knowledge pie
 The Sermon Summaries section is for written summaries of Friday khutbahs. Each entry can optionally link to a YouTube video recording.
 
 **To add a new sermon summary:**
+
 1. Open Notion and go to the **"Sermon Summaries"** database
 2. Click **"+ New"** to create a new entry
 3. Fill in the properties at the top:
@@ -219,6 +235,7 @@ The Sermon Summaries section is for written summaries of Friday khutbahs. Each e
 5. The website will automatically show the new sermon once `Status` is `Published`
 
 **To hide a sermon from the website:**
+
 - Change the **"Status"** to `Draft`
 
 ---
@@ -228,6 +245,7 @@ The Sermon Summaries section is for written summaries of Friday khutbahs. Each e
 The Gallery section displays individual photos organized by category. Each entry in the Gallery database represents one photo.
 
 **To add a new photo:**
+
 1. First, upload the image to Cloudinary (see "Uploading Images to Cloudinary" below)
 2. Copy the image URL from Cloudinary
 3. Open Notion and go to the **"Gallery"** database
@@ -242,6 +260,7 @@ The Gallery section displays individual photos organized by category. Each entry
 6. The photo will appear in the gallery, filterable by category
 
 **To hide a photo from the gallery:**
+
 - Change the **"Status"** to `Inactive`
 
 ---
@@ -251,6 +270,7 @@ The Gallery section displays individual photos organized by category. Each entry
 The About page shows your biography, education, specializations, and background. It works just like an article — you write the content directly in the Notion page body.
 
 **To edit the About page:**
+
 1. Open Notion and go to the **"About Page"** database
 2. Click on the existing entry (there should be one row)
 3. Edit the page body — use headings, paragraphs, bullet lists, quotes, etc.
@@ -258,6 +278,7 @@ The About page shows your biography, education, specializations, and background.
 5. To add images, use `/image` > **"Embed link"** > paste a Cloudinary URL
 
 **Properties at the top:**
+
 - **Title** — The page heading (e.g., "About Imam Shamsan")
 - **Subtitle AR** — Arabic subtitle shown under the heading (e.g., "الدكتور. شمسان الجابي")
 - **Status** — Set to `Published` to show on the website
@@ -269,6 +290,7 @@ The About page shows your biography, education, specializations, and background.
 The Media page displays Qur'anic recitation videos. Each entry is one YouTube video.
 
 **To add a new recitation:**
+
 1. Open Notion and go to the **"Recitations"** database
 2. Click **"+ New"** to create a new entry
 3. Fill in the properties:
@@ -278,6 +300,7 @@ The Media page displays Qur'anic recitation videos. Each entry is one YouTube vi
 4. The recitation will appear on the Media page
 
 **To remove a recitation:**
+
 - Simply delete the row from the database
 
 ---
@@ -333,23 +356,25 @@ Cases appear under a specific project when "Has Cases" is checked. Each case rep
 
 The Site Settings database contains key-value pairs that control parts of the website. You update these by editing the **"Value"** field of the relevant row.
 
-| Setting             | What It Controls                                          |
-|---------------------|-----------------------------------------------------------|
-| `live_stream_url`   | YouTube link shown on the homepage and Media page         |
+| Setting             | What It Controls                                                                |
+| ------------------- | ------------------------------------------------------------------------------- |
+| `live_stream_url`   | YouTube link shown on the homepage and Media page                               |
 | `live_stream_title` | Title displayed above the live stream (e.g., "Friday Khutbah - Week of Feb 14") |
-| `profile_img`       | Your profile photo shown on the About page                |
-| `logo`              | The logo displayed in the website header                  |
-| `youtube_url`       | Your YouTube channel link (shown in footer, contact, and media pages) |
-| `facebook_url`      | Your Facebook page link (shown in footer and contact page) |
-| `instagram_url`     | Your Instagram profile link (shown in footer and contact page) |
+| `profile_img`       | Your profile photo shown on the About page                                      |
+| `logo`              | The logo displayed in the website header                                        |
+| `youtube_url`       | Your YouTube channel link (shown in footer, contact, and media pages)           |
+| `facebook_url`      | Your Facebook page link (shown in footer and contact page)                      |
+| `instagram_url`     | Your Instagram profile link (shown in footer and contact page)                  |
 
 **To update the weekly live stream:**
+
 1. Open Notion > **Site Settings** database
 2. Find the `live_stream_url` row
 3. Replace the **"Value"** with the new YouTube link
 4. Update `live_stream_title` with the new title
 
 **To update your profile photo or logo:**
+
 1. Upload the new image to Cloudinary
 2. Copy the Cloudinary URL
 3. Open Notion > **Site Settings** database
@@ -357,6 +382,7 @@ The Site Settings database contains key-value pairs that control parts of the we
 5. Replace the **"Value"** with the new Cloudinary URL
 
 **To update your social media links:**
+
 1. Open Notion > **Site Settings** database
 2. Find the row for the platform you want to update (`youtube_url`, `facebook_url`, or `instagram_url`)
 3. Replace the **"Value"** with the new link
@@ -366,6 +392,7 @@ The Site Settings database contains key-value pairs that control parts of the we
 ### Uploading Images to Cloudinary
 
 **To upload photos:**
+
 1. Log in to Cloudinary at [https://console.cloudinary.com](https://console.cloudinary.com)
 2. Click **"Media Library"** in the left sidebar
 3. Click the **"Upload"** button (top-right)
@@ -373,6 +400,7 @@ The Site Settings database contains key-value pairs that control parts of the we
 5. Click **"Upload"** to confirm
 
 **To get an image URL (for pasting into Notion):**
+
 1. In the Media Library, click on any image
 2. Click the **link/chain icon** or look for **"Copy URL"**
 3. Paste this URL into the relevant Notion property or page body
@@ -381,18 +409,19 @@ The Site Settings database contains key-value pairs that control parts of the we
 
 Your Cloudinary account is organized into folders that match the sections of your website. Always upload to the correct folder:
 
-| Folder          | What goes here                                              |
-|-----------------|-------------------------------------------------------------|
-| `gallery/`      | Public gallery photos (events, community, conferences)      |
-| `writings/`     | Cover images for articles                                   |
-| `sermons/`      | Cover images for sermon summaries                           |
-| `humanitarian/` | Patient and family photos for humanitarian cases            |
-| `profile/`      | Your personal portraits and photos of yourself              |
-| `site/`         | Logo and other website brand assets (rarely changes)        |
+| Folder          | What goes here                                         |
+| --------------- | ------------------------------------------------------ |
+| `gallery/`      | Public gallery photos (events, community, conferences) |
+| `writings/`     | Cover images for articles                              |
+| `sermons/`      | Cover images for sermon summaries                      |
+| `humanitarian/` | Patient and family photos for humanitarian cases       |
+| `profile/`      | Your personal portraits and photos of yourself         |
+| `site/`         | Logo and other website brand assets (rarely changes)   |
 
 To upload into a specific folder: in the Media Library, click into that folder first, then click **"Upload"**.
 
 **Tips for photos:**
+
 - Use clear, well-lit photos
 - Landscape orientation (horizontal) works best for galleries and cover images
 - Photos are automatically optimized — no need to resize before uploading
@@ -406,6 +435,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 ## Quick Reference Cheat Sheet
 
 ### "I want to add a new article/writing"
+
 1. Open Notion > Articles database
 2. Click "+ New"
 3. Fill in Title, Slug, Description, Language, Category
@@ -414,6 +444,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 6. Set Status to "Published"
 
 ### "I want to add a new sermon summary"
+
 1. Open Notion > Sermon Summaries database
 2. Click "+ New"
 3. Fill in Title, Slug, Description, Date
@@ -422,6 +453,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 6. Set Status to "Published"
 
 ### "I want to add a photo to the gallery"
+
 1. Upload the photo to Cloudinary
 2. Copy the image URL
 3. Open Notion > Gallery database
@@ -430,11 +462,13 @@ To upload into a specific folder: in the Media Library, click into that folder f
 6. Set Status to "Active"
 
 ### "I want to add a Qur'anic recitation video"
+
 1. Open Notion > Recitations database
 2. Click "+ New"
 3. Fill in Title, paste the YouTube link, set the Order number
 
 ### "I want to add a new humanitarian initiative (project)"
+
 1. Open Notion > Humanitarian Projects database
 2. Click "+ New"
 3. Fill in Title, Description, Category, Sort Order
@@ -442,6 +476,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 5. Set Status to "Active"
 
 ### "I want to add a new humanitarian case"
+
 1. Upload the family/patient photo to Cloudinary > `humanitarian/` folder, copy the URL
 2. Open Notion > Humanitarian Cases database
 3. Click "+ New"
@@ -451,16 +486,19 @@ To upload into a specific folder: in the Media Library, click into that folder f
 7. Set Status to "Published"
 
 ### "I want to mark a case as fully funded"
+
 - Open Notion > Humanitarian Cases database
 - Find the case and change Status to `Funded`
 
 ### "I want to update the About page"
+
 1. Open Notion > About Page database
 2. Click the existing entry
 3. Edit the page body (headings, paragraphs, lists, etc.)
 4. Changes go live automatically
 
 ### "I want to add a photo inside an article or sermon"
+
 1. Upload the image to Cloudinary first
 2. Copy the image URL
 3. In your Notion page, click where the image should go
@@ -468,14 +506,17 @@ To upload into a specific folder: in the Media Library, click into that folder f
 5. **Never use "Upload"** — uploaded images break after 1 hour
 
 ### "I want to update the live stream"
+
 1. Open Notion > Site Settings database
 2. Update `live_stream_url` with the new YouTube link
 3. Update `live_stream_title` with the new title
 
 ### "I want to hide something from the website"
+
 - **Articles/Sermons:** Change Status to `Draft`
 - **Gallery photos:** Change Status to `Inactive`
 - **Recitations:** Delete the row
 
 ### Need help?
+
 Contact your developer at: `usmansagemode@gmail.com`

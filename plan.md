@@ -11,10 +11,11 @@ Great choice. **TanStack Start** is essentially the "spiritual successor" to the
 
 ### Updated Project Documentation (`notion-blog-setup.md`)
 
-```markdown
+````markdown
 # Notion x TanStack Start Blog Setup
 
 ## 🚀 Tech Stack
+
 - **Framework:** TanStack Start (Full-stack React)
 - **Data Fetching:** TanStack Query + `createServerFn`
 - **Routing:** TanStack Router (Type-safe file-based routing)
@@ -22,9 +23,11 @@ Great choice. **TanStack Start** is essentially the "spiritual successor" to the
 - **Styling:** Tailwind CSS (recommended for RTL/LTR utilities)
 
 ## 🔐 Security & Server Logic
+
 We use `createServerFn` from TanStack Start to bridge the frontend and Notion. This keeps the `NOTION_TOKEN` on the server and prevents CORS issues.
 
 ### Server Function Example
+
 ```typescript
 import { createServerFn } from '@tanstack/start'
 import { Client } from '@notionhq/client'
@@ -39,8 +42,8 @@ export const getPostBySlug = createServerFn('GET', async (slug: string) => {
   })
   return response.results[0]
 })
-
 ```
+````
 
 ## 🌍 Language & RTL Support
 
@@ -48,12 +51,10 @@ The writer can mix Arabic and English. The app detects and adjusts automatically
 
 ### Auto-Detection Strategy
 
-* **Function:** `const isArabic = (text) => /[\u0600-\u06FF]/.test(text)`
-* **Implementation:**
-* Wrap blocks in `<div dir={isArabic(content) ? 'rtl' : 'ltr'}>`
-* Use logical CSS properties (e.g., `margin-inline-start` instead of `margin-left`) to ensure margins flip correctly for Arabic text.
-
-
+- **Function:** `const isArabic = (text) => /[\u0600-\u06FF]/.test(text)`
+- **Implementation:**
+- Wrap blocks in `<div dir={isArabic(content) ? 'rtl' : 'ltr'}>`
+- Use logical CSS properties (e.g., `margin-inline-start` instead of `margin-left`) to ensure margins flip correctly for Arabic text.
 
 ## ✍️ Collaborator Workflow (The "Non-Dev" Side)
 
@@ -64,8 +65,8 @@ The writer can mix Arabic and English. The app detects and adjusts automatically
 
 ## ☁️ Deployment
 
-* **Platform:** Vercel
-* **Environment Variables:** `NOTION_TOKEN`, `NOTION_DATABASE_ID`
+- **Platform:** Vercel
+- **Environment Variables:** `NOTION_TOKEN`, `NOTION_DATABASE_ID`
 
 ```
 
@@ -73,7 +74,7 @@ The writer can mix Arabic and English. The app detects and adjusts automatically
 
 ### How to help your collaborator get started right now:
 
-Since you've decided on TanStack Start, you can actually set up their Notion environment before you even finish the code. 
+Since you've decided on TanStack Start, you can actually set up their Notion environment before you even finish the code.
 
 1. **The "Slugifier" Tip:** Tell them: "Always use lowercase letters and dashes for the Slug (e.g., `my-new-post`). No spaces or Arabic characters in the Slug field, even if the title is in Arabic."
 2. **The "Cover Image" Tip:** Remind them to use the "Cover" property in the Notion database for the blog thumbnail, as this is what you'll fetch for the "All Posts" gallery view.
@@ -106,11 +107,10 @@ export const getAllPosts = createServerFn('GET', async () => {
         direction: 'descending', // Show newest first
       },
     ],
-  });
+  })
 
-  return response.results;
-});
-
+  return response.results
+})
 ```
 
 ---
@@ -136,7 +136,6 @@ function BlogList() {
     </div>
   )
 }
-
 ```
 
 ---
@@ -152,11 +151,10 @@ In your `BlogCard` component, you'll want a helper to grab the URL safely:
 
 ```tsx
 const getImageUrl = (post) => {
-  const cover = post.cover;
-  if (!cover) return '/default-placeholder.jpg';
-  return cover.type === 'external' ? cover.external.url : cover.file.url;
+  const cover = post.cover
+  if (!cover) return '/default-placeholder.jpg'
+  return cover.type === 'external' ? cover.external.url : cover.file.url
 }
-
 ```
 
 ---
@@ -167,13 +165,12 @@ Add this to your "Developer Logic" section:
 
 ```markdown
 ## Fetching Logic
+
 - **Archive/Home Page:** Use `notion.databases.query` with a `Status === "Published"` filter.
 - **Single Post:** Use `notion.databases.query` with a `Slug === params.slug` filter to find the ID, then `notion.blocks.children.list` to get the content.
 - **Performance:** Use TanStack Query's `staleTime` (e.g., 10 minutes) to avoid hitting Notion's rate limits on every single page click.
-
 ```
 
 ### Pro-Tip: Pagination
 
 Notion returns **100 items** by default. If your collaborator becomes a prolific writer and hits 100+ posts, you can use the `start_cursor` property in the API to handle pagination, which TanStack Query's `useInfiniteQuery` handles beautifully.
-
