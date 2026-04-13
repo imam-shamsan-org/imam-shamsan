@@ -287,7 +287,7 @@ The About page shows your biography, education, specializations, and background.
 
 ### Managing Recitations
 
-The Media page displays Qur'anic recitation videos. Each entry is one YouTube video.
+The Media page displays Qur'anic recitation videos. Each entry is one YouTube video. You can also pin up to 4 recitations to the homepage.
 
 **To add a new recitation:**
 
@@ -297,7 +297,12 @@ The Media page displays Qur'anic recitation videos. Each entry is one YouTube vi
    - **Title** — Name of the recitation (e.g., "Surah Al-Mulk")
    - **YouTube Link** — Paste the full YouTube video URL
    - **Order** — A number that controls display order (lower numbers appear first)
+   - **Featured** — Check this box to show the recitation in the **"Featured Recitations"** section on the homepage (maximum 4 will appear)
 4. The recitation will appear on the Media page
+
+**To feature a recitation on the homepage:**
+
+- Check the **"Featured"** checkbox on up to 4 recitation rows. They will appear as thumbnail cards on the homepage between the Writings section and the Media section.
 
 **To remove a recitation:**
 
@@ -372,6 +377,9 @@ The Site Settings database contains key-value pairs that control parts of the we
 2. Find the `live_stream_url` row
 3. Replace the **"Value"** with the new YouTube link
 4. Update `live_stream_title` with the new title
+5. *(Optional)* Update the **"Duration"** field with the number of hours you expect the stream to run (e.g., `4` for a regular session, `8` for an all-day event). The website uses this to show the stream as LIVE for that many hours after you paste the link. If left blank, it defaults to 4 hours.
+
+> **Note on homepage order:** When the live stream is active, the website automatically moves it to the top of the homepage (right after the hero section), followed by Featured Recitations, Services, and Writings. When there is no active stream, the order returns to: Services, Writings, Featured Recitations, Media.
 
 **To update your profile photo or logo:**
 
@@ -466,6 +474,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 1. Open Notion > Recitations database
 2. Click "+ New"
 3. Fill in Title, paste the YouTube link, set the Order number
+4. Check **"Featured"** if you want it shown on the homepage (max 4 featured at once)
 
 ### "I want to add a new humanitarian initiative (project)"
 
@@ -510,6 +519,7 @@ To upload into a specific folder: in the Media Library, click into that folder f
 1. Open Notion > Site Settings database
 2. Update `live_stream_url` with the new YouTube link
 3. Update `live_stream_title` with the new title
+4. *(Optional)* Set the **Duration** field to the number of hours the event will run (default is 4)
 
 ### "I want to hide something from the website"
 
