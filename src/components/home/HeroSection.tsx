@@ -41,9 +41,11 @@ export function HeroSection({ settings }: HeroSectionProps) {
               {PERSON_NAME_AR}
             </ArabicText>
             <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-              Islamic Scholar, Educator & Community Leader. Dedicated to
-              spreading authentic Islamic knowledge and serving the Muslim
-              community.
+              Serving the Muslim community as an Imam and religious director for
+              over a decade across MI, IN, CA, and currently PA. A
+              Yemeni-American Imam and classically trained Islamic scholar with
+              deep specialization in Qur'anic sciences and traditional Islamic
+              studies.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link to="/about">

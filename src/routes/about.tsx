@@ -273,17 +273,21 @@ function AboutFallback({ personName }: { personName: string }) {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Biography</h2>
           <p className="leading-relaxed text-muted-foreground">
-            {personName} is a distinguished Islamic scholar, educator, and
-            community leader dedicated to spreading authentic Islamic knowledge
-            and fostering unity within the Muslim community. With decades of
-            experience in Islamic education, Quranic studies, and community
-            service, he has touched the lives of thousands.
+            {personName} has been serving the Muslim community as an Imam and a
+            religious director for over a decade in multiple states — MI, IN,
+            CA, and currently PA.
           </p>
           <p className="leading-relaxed text-muted-foreground">
-            He serves as the Imam and spiritual leader of the Muslim Community
-            Center of Greater Pittsburgh (MCCGP), where he leads daily prayers,
-            delivers Friday khutbahs, and provides Islamic guidance to the
-            community.
+            A Yemeni-American Imam and classically trained Islamic scholar with
+            deep specialization in both Qur'anic sciences and traditional
+            Islamic studies. He holds Ijazaat in six canonical recitations and
+            multiple advanced degrees across diverse disciplines.
+          </p>
+          <p className="leading-relaxed text-muted-foreground">
+            Ranked second nationwide in the international scientific high-school
+            track, he earned a prestigious U.S. medical-school scholarship for
+            academic excellence. He bridges sacred scholarship and modern
+            academia through visionary leadership and community service.
           </p>
         </div>
       </FadeIn>
