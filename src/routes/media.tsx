@@ -45,6 +45,7 @@ function MediaPage() {
   const embedUrl = liveStreamUrl ? getYouTubeEmbedUrl(liveStreamUrl) : null
   const { isLive, timeAgo } = getStreamStatus(
     settings.live_stream_url?.updatedAt,
+    settings.live_stream_url?.duration,
   )
 
   return (

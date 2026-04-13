@@ -514,7 +514,9 @@ async function fetchSiteSettings(): Promise<SiteSettings> {
         const value = (getPropertyValue(p.properties['Value']) as string) || ''
         const updatedAt =
           (getPropertyValue(p.properties['Last edited time']) as string) || ''
-        if (key) settings[key] = { value, updatedAt }
+        const duration =
+          (getPropertyValue(p.properties['Duration']) as string) || undefined
+        if (key) settings[key] = { value, updatedAt, duration }
       }
 
       return settings

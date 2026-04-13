@@ -32,7 +32,10 @@ export function getYouTubeThumbnail(url: string): string | null {
 }
 
 /** Determine live/recent stream status based on when the URL was last updated */
-export function getStreamStatus(dateStr: string | undefined): {
+export function getStreamStatus(
+  dateStr: string | undefined,
+  durationHours?: string | number,
+): {
   isLive: boolean
   timeAgo: string | null
 } {
@@ -45,7 +48,8 @@ export function getStreamStatus(dateStr: string | undefined): {
   const diffMs = now.getTime() - streamDate.getTime()
   if (diffMs < 0) return { isLive: false, timeAgo: null }
 
-  const LIVE_WINDOW_MS = 4 * 60 * 60 * 1000
+  const hours = Number(durationHours) || 4
+  const LIVE_WINDOW_MS = hours * 60 * 60 * 1000
   if (diffMs < LIVE_WINDOW_MS) {
     return { isLive: true, timeAgo: null }
   }
