@@ -14,6 +14,7 @@ import {
   getSiteSettings,
 } from '@/lib/notion'
 import { getHomeMeta, getPersonSchema } from '@/lib/seo'
+import { getStreamStatus } from '@/lib/youtube'
 import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/')({
@@ -48,13 +49,32 @@ function HomePage() {
     Route.useLoaderData()
   const personName = PERSON_NAME
 
+  const liveStreamEntry = settings.live_stream_url as
+    | typeof settings.live_stream_url
+    | undefined
+  const { isLive } = getStreamStatus(
+    liveStreamEntry?.updatedAt,
+    liveStreamEntry?.duration,
+  )
+
   return (
     <>
       <HeroSection settings={settings} />
-      <ServicesPreview services={services} settings={settings} />
-      <LatestWritings articles={latestArticles} />
-      <FeaturedRecitations recitations={featuredRecitations} />
-      <MediaHighlight settings={settings} />
+      {isLive ? (
+        <>
+          <MediaHighlight settings={settings} />
+          <FeaturedRecitations recitations={featuredRecitations} />
+          <ServicesPreview services={services} settings={settings} />
+          <LatestWritings articles={latestArticles} />
+        </>
+      ) : (
+        <>
+          <ServicesPreview services={services} settings={settings} />
+          <LatestWritings articles={latestArticles} />
+          <FeaturedRecitations recitations={featuredRecitations} />
+          <MediaHighlight settings={settings} />
+        </>
+      )}
 
       {/* Contact CTA */}
       <section className="border-t border-secondary/20 bg-primary/5 py-10 md:py-16">
