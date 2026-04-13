@@ -9,9 +9,7 @@ interface FeaturedRecitationsProps {
   recitations: Array<Recitation>
 }
 
-export function FeaturedRecitations({
-  recitations,
-}: FeaturedRecitationsProps) {
+export function FeaturedRecitations({ recitations }: FeaturedRecitationsProps) {
   if (recitations.length === 0) return null
 
   return (

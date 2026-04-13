@@ -29,3 +29,7 @@ coverage/
 # Generated
 src/routeTree.gen.ts
 todos.md
+
+# Claude Code local settings (MCP config, worktrees)
+.claude/settings.local.json
+.claude/worktrees/

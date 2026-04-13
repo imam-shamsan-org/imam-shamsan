@@ -210,11 +210,11 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 > Qur'anic recitation videos displayed on the `/media` page. Each entry is one YouTube video. To remove a recitation, simply delete the row.
 
-| Property Name | Type     | Purpose                                 |
-| ------------- | -------- | --------------------------------------- |
-| Title         | Title    | Recitation name (e.g., "Surah Al-Mulk") |
-| YouTube Link  | URL      | YouTube video link                      |
-| Order         | Number   | Display order (lower numbers first)     |
+| Property Name | Type     | Purpose                                                        |
+| ------------- | -------- | -------------------------------------------------------------- |
+| Title         | Title    | Recitation name (e.g., "Surah Al-Mulk")                        |
+| YouTube Link  | URL      | YouTube video link                                             |
+| Order         | Number   | Display order (lower numbers first)                            |
 | Featured      | Checkbox | Pin to the homepage Featured Recitations section (max 4 shown) |
 
 **How the code uses it:**
@@ -265,15 +265,15 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 **Initial entries to create:**
 
-| Key               | Example Value                                              | Duration  |
-| ----------------- | ---------------------------------------------------------- | --------- |
+| Key               | Example Value                                              | Duration                                                                                                                                                        |
+| ----------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | live_stream_url   | `https://www.youtube.com/watch?v=xxxxx`                    | `4` (hours — how long the stream shows as LIVE after the URL was last updated. Defaults to 4 if blank. Use `8` or `24` for all-day events like Friday khutbah.) |
-| live_stream_title | `Friday Khutbah - Week of Feb 14`                          | —         |
-| profile_img       | `https://res.cloudinary.com/.../profile.jpg`               | —         |
-| logo              | `https://res.cloudinary.com/.../logo.jpg`                  | —         |
-| youtube_url       | `https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg` | —        |
-| facebook_url      | `https://www.facebook.com/shamsan.aljabi.2025`             | —         |
-| instagram_url     | `https://www.instagram.com/dr.sham_san/`                   | —         |
+| live_stream_title | `Friday Khutbah - Week of Feb 14`                          | —                                                                                                                                                               |
+| profile_img       | `https://res.cloudinary.com/.../profile.jpg`               | —                                                                                                                                                               |
+| logo              | `https://res.cloudinary.com/.../logo.jpg`                  | —                                                                                                                                                               |
+| youtube_url       | `https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg` | —                                                                                                                                                               |
+| facebook_url      | `https://www.facebook.com/shamsan.aljabi.2025`             | —                                                                                                                                                               |
+| instagram_url     | `https://www.instagram.com/dr.sham_san/`                   | —                                                                                                                                                               |
 
 **How the code uses it:**
 
@@ -356,61 +356,61 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
 
 The site uses TanStack Router's file-based routing. All routes are in `src/routes/`.
 
-| Route             | Page           | Data Source                           | Key Features                                                          |
-| ----------------- | -------------- | ------------------------------------- | --------------------------------------------------------------------- |
+| Route             | Page           | Data Source                                               | Key Features                                                                                                                                                                              |
+| ----------------- | -------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/`               | Homepage       | Services, Latest Articles, Settings, Featured Recitations | Hero; section order is conditional: when live stream is active → Live Stream → Featured Recitations → Services → Writings; otherwise → Services → Writings → Featured Recitations → Media |
-| `/about`          | About          | About Page + Settings (profile image) | Notion page body rendered with block parser, hardcoded fallback       |
-| `/writings`       | Writings list  | Articles                              | Language + category client-side filtering                             |
-| `/writings/$slug` | Article detail | Article + page blocks                 | Full body rendered from Notion blocks, RTL support                    |
-| `/sermons`        | Sermons list   | Sermon Summaries                      | Grid of sermon cards                                                  |
-| `/sermons/$slug`  | Sermon detail  | Sermon + page blocks                  | YouTube embed + written summary                                       |
-| `/services`       | Services       | Services                              | Service cards with pricing                                            |
-| `/gallery`        | Gallery        | Gallery                               | Category filter, lightbox on click                                    |
-| `/media`          | Media          | Recitations, Settings                 | Live stream embed, recitation grid, YouTube channel link              |
-| `/contact`        | Contact        | Services                              | Contact form (Resend email), service pre-selection via `?service=`    |
+| `/about`          | About          | About Page + Settings (profile image)                     | Notion page body rendered with block parser, hardcoded fallback                                                                                                                           |
+| `/writings`       | Writings list  | Articles                                                  | Language + category client-side filtering                                                                                                                                                 |
+| `/writings/$slug` | Article detail | Article + page blocks                                     | Full body rendered from Notion blocks, RTL support                                                                                                                                        |
+| `/sermons`        | Sermons list   | Sermon Summaries                                          | Grid of sermon cards                                                                                                                                                                      |
+| `/sermons/$slug`  | Sermon detail  | Sermon + page blocks                                      | YouTube embed + written summary                                                                                                                                                           |
+| `/services`       | Services       | Services                                                  | Service cards with pricing                                                                                                                                                                |
+| `/gallery`        | Gallery        | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
+| `/media`          | Media          | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
+| `/contact`        | Contact        | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
 
 ### Key Components
 
-| Component                     | Purpose                                             |
-| ----------------------------- | --------------------------------------------------- |
-| `layout/Header.tsx`           | Navigation + logo (from settings) + theme toggle    |
-| `layout/Footer.tsx`           | Footer with links and social icons                  |
-| `layout/Container.tsx`        | Max-width wrapper                                   |
-| `layout/ThemeToggle.tsx`      | Dark/light mode toggle (uses ThemeProvider context) |
-| `home/HeroSection.tsx`        | Homepage hero with live stream indicator            |
-| `home/ServicesPreview.tsx`    | Homepage services preview                           |
-| `home/LatestWritings.tsx`     | Homepage latest articles                            |
-| `home/MediaHighlight.tsx`        | Homepage media/live stream section                      |
-| `home/FeaturedRecitations.tsx`   | Homepage featured recitations thumbnail grid (up to 4) |
-| `articles/ArticleCard.tsx`    | Article listing card                                |
-| `articles/ArticleGrid.tsx`    | Grid layout for articles                            |
-| `articles/ArticleContent.tsx` | Renders Notion blocks as HTML                       |
-| `articles/LanguageFilter.tsx` | Language + category filter controls                 |
-| `sermons/SermonCard.tsx`      | Sermon listing card                                 |
-| `sermons/SermonContent.tsx`   | Renders sermon page blocks                          |
-| `services/ServiceCard.tsx`    | Service card with pricing                           |
-| `services/ServiceGrid.tsx`    | Grid layout for services                            |
-| `gallery/GalleryGrid.tsx`     | Masonry-style gallery grid                          |
-| `gallery/GalleryLightbox.tsx` | Full-screen image lightbox                          |
-| `contact/ContactForm.tsx`     | Contact form with service dropdown and optional PDF/PNG file upload (max 5MB, forwarded as email attachment) |
-| `shared/CloudinaryImage.tsx`  | Image component with Cloudinary URL transforms      |
-| `shared/ArabicText.tsx`       | Wrapper for Arabic text (RTL + font)                |
-| `shared/TagList.tsx`          | Tag badge list                                      |
+| Component                      | Purpose                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `layout/Header.tsx`            | Navigation + logo (from settings) + theme toggle                                                             |
+| `layout/Footer.tsx`            | Footer with links and social icons                                                                           |
+| `layout/Container.tsx`         | Max-width wrapper                                                                                            |
+| `layout/ThemeToggle.tsx`       | Dark/light mode toggle (uses ThemeProvider context)                                                          |
+| `home/HeroSection.tsx`         | Homepage hero with live stream indicator                                                                     |
+| `home/ServicesPreview.tsx`     | Homepage services preview                                                                                    |
+| `home/LatestWritings.tsx`      | Homepage latest articles                                                                                     |
+| `home/MediaHighlight.tsx`      | Homepage media/live stream section                                                                           |
+| `home/FeaturedRecitations.tsx` | Homepage featured recitations thumbnail grid (up to 4)                                                       |
+| `articles/ArticleCard.tsx`     | Article listing card                                                                                         |
+| `articles/ArticleGrid.tsx`     | Grid layout for articles                                                                                     |
+| `articles/ArticleContent.tsx`  | Renders Notion blocks as HTML                                                                                |
+| `articles/LanguageFilter.tsx`  | Language + category filter controls                                                                          |
+| `sermons/SermonCard.tsx`       | Sermon listing card                                                                                          |
+| `sermons/SermonContent.tsx`    | Renders sermon page blocks                                                                                   |
+| `services/ServiceCard.tsx`     | Service card with pricing                                                                                    |
+| `services/ServiceGrid.tsx`     | Grid layout for services                                                                                     |
+| `gallery/GalleryGrid.tsx`      | Masonry-style gallery grid                                                                                   |
+| `gallery/GalleryLightbox.tsx`  | Full-screen image lightbox                                                                                   |
+| `contact/ContactForm.tsx`      | Contact form with service dropdown and optional PDF/PNG file upload (max 5MB, forwarded as email attachment) |
+| `shared/CloudinaryImage.tsx`   | Image component with Cloudinary URL transforms                                                               |
+| `shared/ArabicText.tsx`        | Wrapper for Arabic text (RTL + font)                                                                         |
+| `shared/TagList.tsx`           | Tag badge list                                                                                               |
 
 ### Key Library Files
 
-| File                | Purpose                                                                                        |
-| ------------------- | ---------------------------------------------------------------------------------------------- |
-| `lib/notion.ts`     | All Notion API queries + server functions (with in-memory TTL cache)                           |
-| `lib/parsers.ts`    | Notion block → `ContentBlock` parser                                                           |
-| `lib/cloudinary.ts` | Cloudinary URL transformation helpers (presets, srcSet, blur placeholders)                     |
+| File                | Purpose                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/notion.ts`     | All Notion API queries + server functions (with in-memory TTL cache)                                                              |
+| `lib/parsers.ts`    | Notion block → `ContentBlock` parser                                                                                              |
+| `lib/cloudinary.ts` | Cloudinary URL transformation helpers (presets, srcSet, blur placeholders)                                                        |
 | `lib/email.ts`      | Resend API integration for contact form (zod-validated). Supports optional PDF/PNG attachment forwarded via Resend `attachments`. |
-| `lib/seo.ts`        | SEO meta tags, Open Graph, JSON-LD schemas                                                     |
-| `lib/youtube.ts`    | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings. |
-| `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                       |
-| `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                  |
-| `lib/constants.ts`  | Shared constants (categories, languages)                                                       |
-| `lib/utils.ts`      | Utility functions (cn, formatDate, slugify)                                                    |
+| `lib/seo.ts`        | SEO meta tags, Open Graph, JSON-LD schemas                                                                                        |
+| `lib/youtube.ts`    | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings.                                    |
+| `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
+| `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                                                     |
+| `lib/constants.ts`  | Shared constants (categories, languages)                                                                                          |
+| `lib/utils.ts`      | Utility functions (cn, formatDate, slugify)                                                                                       |
 
 ---
 
