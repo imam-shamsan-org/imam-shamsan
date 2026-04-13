@@ -78,8 +78,12 @@ function renderBlock(block: ContentBlock): React.ReactNode {
   }
 
   switch (block.type) {
-    case 'paragraph':
-      if (!block.content && (!block.richText || block.richText.length === 0)) {
+    case 'paragraph': {
+      const isEmpty =
+        !block.content?.trim() &&
+        (!block.richText ||
+          block.richText.every((rt) => !rt.text || !rt.text.trim()))
+      if (isEmpty) {
         return <div key={block.id} className="h-4" />
       }
       return (
@@ -91,6 +95,7 @@ function renderBlock(block: ContentBlock): React.ReactNode {
           {richContent}
         </p>
       )
+    }
 
     case 'heading_1':
       return (
