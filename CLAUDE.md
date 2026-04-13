@@ -82,3 +82,24 @@ All in `src/types/` — `article.ts`, `sermon.ts`, `service.ts`, `gallery.ts`, `
 2. Add type in `src/types/`
 3. Add `pageToX()` mapper + `fetchX()` query + `createServerFn` export in `notion.ts`
 4. Create route that calls the server function in its loader
+
+## Workflow Rules
+
+### Pushing to GitHub
+
+- **Never push to GitHub unless the user explicitly confirms a task is done.** Complete the work, commit it, then wait for confirmation before pushing. This avoids multiple small pushes per task.
+- When the user confirms and asks to push, push all pending local commits in one go.
+
+### Documentation
+
+- **Always update `docs/DEVELOPER_SETUP_GUIDE.md` and `docs/CLIENT_ONBOARDING_GUIDE.md` before pushing.** Any feature that touches Notion database schemas, site settings, new components, new routes, or user-facing behaviour must be reflected in both docs.
+- Developer guide: schema changes, new server functions, new components, architectural decisions.
+- Client guide: anything the imam needs to know to manage content in Notion (new fields, new checkboxes, new behaviours).
+
+### Closing GitHub Issues
+
+- When work for an issue is done and committed, close it via CLI:
+  ```bash
+  gh auth switch --user Usmansagemode
+  gh issue close <number> --repo imam-shamsan-org/imam-shamsan --comment "<brief explanation>"
+  ```
