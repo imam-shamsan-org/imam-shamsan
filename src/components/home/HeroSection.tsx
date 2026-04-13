@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { TITLE_PREFIX } from '@/lib/constants'
+import { PERSON_NAME_AR, TITLE_PREFIX } from '@/lib/constants'
 
 interface HeroSectionProps {
   settings: SiteSettings
@@ -38,7 +38,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
               as="h1"
               className="mt-1 text-2xl text-secondary sm:text-3xl"
             >
-              الدكتور. شمسان الجابي
+              {PERSON_NAME_AR}
             </ArabicText>
             <p className="mt-4 text-lg text-muted-foreground md:text-xl">
               Islamic Scholar, Educator & Community Leader. Dedicated to

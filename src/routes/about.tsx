@@ -11,7 +11,7 @@ import {
   getPersonSchema,
   siteConfig,
 } from '@/lib/seo'
-import { PERSON_NAME } from '@/lib/constants'
+import { PERSON_NAME, PERSON_NAME_AR } from '@/lib/constants'
 import { extractCards, isCompactCards, splitIntoSections } from '@/lib/content'
 
 export const Route = createFileRoute('/about')({
@@ -51,7 +51,7 @@ function AboutPage() {
   const personName = PERSON_NAME
 
   const title = aboutPage?.title || `About ${personName}`
-  const subtitleAr = aboutPage?.subtitleAr || 'الدكتور. شمسان الجابي'
+  const subtitleAr = aboutPage?.subtitleAr || PERSON_NAME_AR
 
   if (!aboutPage || aboutPage.content.length === 0) {
     return (

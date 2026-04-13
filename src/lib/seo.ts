@@ -1,6 +1,6 @@
 import type { Article, ArticleSummary } from '@/types/article'
 import type { SiteSettings } from '@/types/settings'
-import { PERSON_NAME, PERSON_NAME_FULL } from '@/lib/constants'
+import { PERSON_NAME, PERSON_NAME_AR, PERSON_NAME_FULL } from '@/lib/constants'
 
 export const siteConfig = {
   name: PERSON_NAME_FULL,
@@ -183,7 +183,7 @@ export function getPersonSchema(_settings?: SiteSettings): string {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: PERSON_NAME_FULL,
-    alternateName: 'الدكتور. شمسان الجابي',
+    alternateName: PERSON_NAME_AR,
     url: siteConfig.url,
     jobTitle: 'Imam & Islamic Scholar',
     description: siteConfig.description,

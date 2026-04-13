@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import { Container } from './Container'
 import type { SiteSettings } from '@/types/settings'
-import { PERSON_NAME_FULL } from '@/lib/constants'
+import { PERSON_NAME_AR, PERSON_NAME_FULL } from '@/lib/constants'
 
 interface FooterProps {
   settings?: SiteSettings
@@ -31,7 +31,7 @@ export function Footer({ settings }: FooterProps) {
               className="mt-1 font-arabic text-sm text-muted-foreground"
               dir="rtl"
             >
-              الدكتور. شمسان الجابي
+              {PERSON_NAME_AR}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
               Islamic Scholar, Educator & Community Leader

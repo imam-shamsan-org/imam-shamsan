@@ -1,6 +1,7 @@
 export const TITLE_PREFIX = 'Dr. Imam'
-export const PERSON_NAME = 'Dr. Imam Shamsan'
-export const PERSON_NAME_FULL = 'Dr. Imam Shamsan Al-Jabi'
+export const PERSON_NAME = `${TITLE_PREFIX} Shamsan`
+export const PERSON_NAME_FULL = `${TITLE_PREFIX} Shamsan Al-Jabi`
+export const PERSON_NAME_AR = 'الشيخ الدكتور شمسان الجعبي'
 
 /** Gallery image categories matching Notion's Category select property */
 export const GALLERY_CATEGORIES = [
