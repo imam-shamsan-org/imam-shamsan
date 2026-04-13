@@ -3,6 +3,7 @@ export type ImagePreset =
   | 'hero'
   | 'card'
   | 'article-cover'
+  | 'article-body'
   | 'gallery-thumb'
   | 'gallery-full'
   | 'avatar'
@@ -20,6 +21,7 @@ const presets: Record<ImagePreset, PresetConfig> = {
   card: { width: 600, height: 400, crop: 'fill' },
   hero: { width: 1200, height: 800, crop: 'fill' },
   'article-cover': { width: 1200, height: 630, crop: 'fill' },
+  'article-body': { width: 720 },
   'gallery-thumb': { width: 400, height: 400, crop: 'fill' },
   'gallery-full': { width: 1400 },
   avatar: { width: 200, height: 200, crop: 'fill' },

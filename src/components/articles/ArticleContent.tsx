@@ -1,12 +1,40 @@
 import type { ContentBlock, RichTextItem } from '@/types/article'
 import { cn } from '@/lib/utils'
-import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
+import { getOptimizedUrl } from '@/lib/cloudinary'
 
-/** Check if a string contains Arabic characters (Unicode range 0600-06FF + extended) */
+/** Map Notion text/background color names to Tailwind classes */
+const notionColorMap: Record<string, string> = {
+  gray: 'text-muted-foreground',
+  brown: 'text-amber-700 dark:text-amber-400',
+  orange: 'text-orange-600 dark:text-orange-400',
+  yellow: 'text-yellow-600 dark:text-yellow-400',
+  green: 'text-green-600 dark:text-green-400',
+  blue: 'text-blue-600 dark:text-blue-400',
+  purple: 'text-purple-600 dark:text-purple-400',
+  pink: 'text-pink-600 dark:text-pink-400',
+  red: 'text-red-600 dark:text-red-400',
+  gray_background: 'bg-muted rounded px-0.5',
+  brown_background: 'bg-amber-100 dark:bg-amber-900/40 rounded px-0.5',
+  orange_background: 'bg-orange-100 dark:bg-orange-900/40 rounded px-0.5',
+  yellow_background: 'bg-yellow-100 dark:bg-yellow-900/40 rounded px-0.5',
+  green_background: 'bg-green-100 dark:bg-green-900/40 rounded px-0.5',
+  blue_background: 'bg-blue-100 dark:bg-blue-900/40 rounded px-0.5',
+  purple_background: 'bg-purple-100 dark:bg-purple-900/40 rounded px-0.5',
+  pink_background: 'bg-pink-100 dark:bg-pink-900/40 rounded px-0.5',
+  red_background: 'bg-red-100 dark:bg-red-900/40 rounded px-0.5',
+}
+
+/**
+ * Returns true only if the block is predominantly Arabic text (>30% of
+ * non-whitespace characters are Arabic). This prevents symbols like ﷺ (U+FDFA)
+ * inside an otherwise-English sentence from triggering RTL layout.
+ */
 function containsArabic(text: string): boolean {
-  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(
-    text,
-  )
+  const arabicChars = (
+    text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []
+  ).length
+  const nonWhitespace = text.replace(/\s/g, '').length
+  return nonWhitespace > 0 && arabicChars / nonWhitespace > 0.3
 }
 
 /** Get the full plain text from a block (including rich text items) */
@@ -44,6 +72,10 @@ function renderRichText(items: Array<RichTextItem>): Array<React.ReactNode> {
           {node}
         </code>
       )
+    }
+
+    if (item.color && notionColorMap[item.color]) {
+      node = <span className={notionColorMap[item.color]}>{node}</span>
     }
 
     return <span key={i}>{node}</span>
@@ -184,14 +216,16 @@ function renderBlock(block: ContentBlock): React.ReactNode {
         </pre>
       )
 
-    case 'image':
+    case 'image': {
+      if (!block.imageUrl) return null
+      const inlineImgUrl = getOptimizedUrl(block.imageUrl, 'article-body')
       return (
-        <figure key={block.id} className="my-6">
-          <CloudinaryImage
-            src={block.imageUrl || ''}
+        <figure key={block.id} className="my-6 flex justify-center">
+          <img
+            src={inlineImgUrl}
             alt={block.caption || ''}
-            preset="hero"
-            className="rounded-lg"
+            className="max-w-full h-auto rounded-lg"
+            loading="lazy"
           />
           {block.caption && (
             <figcaption className="mt-2 text-center text-sm text-muted-foreground">
@@ -200,6 +234,7 @@ function renderBlock(block: ContentBlock): React.ReactNode {
           )}
         </figure>
       )
+    }
 
     case 'divider':
       return <hr key={block.id} className="my-8 border-border" />
