@@ -3,4 +3,5 @@ export interface Recitation {
   title: string
   youtubeLink: string
   order: number
+  featured: boolean
 }

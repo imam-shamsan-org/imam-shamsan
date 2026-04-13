@@ -6,8 +6,10 @@ import { HeroSection } from '@/components/home/HeroSection'
 import { ServicesPreview } from '@/components/home/ServicesPreview'
 import { LatestWritings } from '@/components/home/LatestWritings'
 import { MediaHighlight } from '@/components/home/MediaHighlight'
+import { FeaturedRecitations } from '@/components/home/FeaturedRecitations'
 import {
   getActiveServices,
+  getFeaturedRecitations,
   getLatestArticles,
   getSiteSettings,
 } from '@/lib/notion'
@@ -16,12 +18,14 @@ import { PERSON_NAME } from '@/lib/constants'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
-    const [services, latestArticles, settings] = await Promise.all([
-      getActiveServices(),
-      getLatestArticles({ data: 3 }),
-      getSiteSettings(),
-    ])
-    return { services, latestArticles, settings }
+    const [services, latestArticles, settings, featuredRecitations] =
+      await Promise.all([
+        getActiveServices(),
+        getLatestArticles({ data: 3 }),
+        getSiteSettings(),
+        getFeaturedRecitations(),
+      ])
+    return { services, latestArticles, settings, featuredRecitations }
   },
   head: ({ loaderData }) => {
     const { meta, links } = getHomeMeta(loaderData?.settings)
@@ -40,7 +44,8 @@ export const Route = createFileRoute('/')({
 })
 
 function HomePage() {
-  const { services, latestArticles, settings } = Route.useLoaderData()
+  const { services, latestArticles, settings, featuredRecitations } =
+    Route.useLoaderData()
   const personName = PERSON_NAME
 
   return (
@@ -48,6 +53,7 @@ function HomePage() {
       <HeroSection settings={settings} />
       <ServicesPreview services={services} settings={settings} />
       <LatestWritings articles={latestArticles} />
+      <FeaturedRecitations recitations={featuredRecitations} />
       <MediaHighlight settings={settings} />
 
       {/* Contact CTA */}

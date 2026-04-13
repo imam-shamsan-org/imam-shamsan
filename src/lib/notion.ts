@@ -473,6 +473,7 @@ function pageToRecitation(page: PageObjectResponse): Recitation {
     title: (getPropertyValue(props['Title']) as string) || '',
     youtubeLink: (getPropertyValue(props['YouTube Link']) as string) || '',
     order: (getPropertyValue(props['Order']) as number) || 0,
+    featured: (getPropertyValue(props['Featured']) as boolean) || false,
   }
 }
 
@@ -491,6 +492,28 @@ async function fetchActiveRecitations(): Promise<Array<Recitation>> {
         .map(pageToRecitation)
     } catch (error) {
       console.error('Error fetching recitations:', error)
+      return []
+    }
+  })
+}
+
+async function fetchFeaturedRecitations(): Promise<Array<Recitation>> {
+  const databaseId = getDbId('NOTION_RECITATIONS_DATABASE_ID')
+  if (!isNotionConfigured() || !databaseId) return []
+
+  return withCache('recitations-featured', async () => {
+    try {
+      const response = await queryDatabase(databaseId, {
+        filter: { property: 'Featured', checkbox: { equals: true } },
+        sorts: [{ property: 'Order', direction: 'ascending' }],
+      })
+
+      return response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map(pageToRecitation)
+        .slice(0, 4)
+    } catch (error) {
+      console.error('Error fetching featured recitations:', error)
       return []
     }
   })
@@ -622,6 +645,12 @@ export const getActiveRecitations = createServerFn({
   method: 'GET',
 }).handler(async () => {
   return fetchActiveRecitations()
+})
+
+export const getFeaturedRecitations = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return fetchFeaturedRecitations()
 })
 
 export const getSiteSettings = createServerFn({
