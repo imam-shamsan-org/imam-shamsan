@@ -19,7 +19,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
     <section className="bg-gradient-to-b from-primary/15 via-accent/40 to-background py-10 md:py-16">
       <Container>
         <FadeIn distance={24}>
-          <div className="mx-auto max-w-3xl text-center">
+          <div className="text-center">
             {profileImage && (
               <div className="mb-4 flex justify-center">
                 <CloudinaryImage
@@ -30,16 +30,20 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 />
               </div>
             )}
-            <h1 className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold tracking-tight text-foreground sm:whitespace-nowrap">
+            <h1 className="text-[clamp(1.25rem,2.5vw,2rem)] font-bold tracking-tight text-foreground">
               {titlePrefix}{' '}
               <span className="text-primary">Shamsan&nbsp;Al-Jabi</span>
+              <br className="sm:hidden" />
+              <span
+                className="hidden sm:inline mx-3 text-secondary/40"
+                aria-hidden
+              >
+                |
+              </span>
+              <ArabicText as="span" className="text-secondary">
+                {PERSON_NAME_AR}
+              </ArabicText>
             </h1>
-            <ArabicText
-              as="h1"
-              className="mt-1 text-2xl text-secondary sm:text-3xl"
-            >
-              {PERSON_NAME_AR}
-            </ArabicText>
             <p className="mt-4 text-lg text-muted-foreground md:text-xl">
               Islamic Scholar, Educator & Community Leader. Dedicated to
               spreading authentic Islamic knowledge and serving the Muslim

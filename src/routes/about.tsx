@@ -216,10 +216,10 @@ function AboutHero({
   const isDefaultTitle = title === `About ${personName}`
   return (
     <section className="bg-gradient-to-b from-accent/50 to-background py-8 md:py-12">
-      <Container size="narrow">
+      <Container>
         <FadeIn>
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+            <h1 className="text-[clamp(1.25rem,2.5vw,2rem)] font-bold tracking-tight text-foreground">
               {isDefaultTitle ? (
                 <>
                   About <span className="text-primary">{personName}</span>
@@ -227,12 +227,21 @@ function AboutHero({
               ) : (
                 <span className="text-primary">{title}</span>
               )}
+              {subtitleAr && (
+                <>
+                  <br className="sm:hidden" />
+                  <span
+                    className="hidden sm:inline mx-3 text-secondary/40"
+                    aria-hidden
+                  >
+                    |
+                  </span>
+                  <ArabicText as="span" className="text-secondary">
+                    {subtitleAr}
+                  </ArabicText>
+                </>
+              )}
             </h1>
-            {subtitleAr && (
-              <ArabicText as="p" className="mt-2 text-xl text-secondary">
-                {subtitleAr}
-              </ArabicText>
-            )}
             <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
               <div className="h-px w-16 bg-secondary" />
               <div className="size-1.5 rounded-full bg-secondary" />
