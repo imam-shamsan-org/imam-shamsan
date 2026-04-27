@@ -32,7 +32,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
             )}
             <h1 className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold tracking-tight text-foreground sm:whitespace-nowrap">
               {titlePrefix}{' '}
-              <span className="text-primary">Shamsan&nbsp;Al-Jabi</span>
+              <span className="font-cinzel text-primary">Shamsan&nbsp;Al-Jabi</span>
             </h1>
             <ArabicText
               as="h1"

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Scheherazade+New:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Scheherazade+New:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -58,6 +58,12 @@ code {
   font-family: 'Scheherazade New', 'Traditional Arabic', serif;
   font-size: 1.25em;
   line-height: 2;
+}
+
+/* Cinzel — decorative Roman inscriptional font for name display only */
+.font-cinzel {
+  font-family: 'Cinzel', Georgia, serif;
+  letter-spacing: 0.04em;
 }
 
 /* RTL support for Arabic content */

@@ -222,7 +222,7 @@ function AboutHero({
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
               {isDefaultTitle ? (
                 <>
-                  About <span className="text-primary">{personName}</span>
+                  About <span className="font-cinzel text-primary">{personName}</span>
                 </>
               ) : (
                 <span className="text-primary">{title}</span>
