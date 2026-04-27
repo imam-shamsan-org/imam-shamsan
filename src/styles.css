@@ -60,8 +60,10 @@ code {
   line-height: 2;
 }
 
-/* Cinzel — decorative Roman inscriptional font for name display only */
-.font-cinzel {
+/* Cinzel — Roman inscriptional font for name display and all h1/h2 headings */
+.font-cinzel,
+h1,
+h2 {
   font-family: 'Cinzel', Georgia, serif;
   letter-spacing: 0.04em;
 }
