@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Facebook, Instagram, Mail, Youtube } from 'lucide-react'
+import { Download, Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import { Container } from './Container'
 import type { SiteSettings } from '@/types/settings'
 import { PERSON_NAME_AR, PERSON_NAME_FULL } from '@/lib/constants'
@@ -10,6 +10,10 @@ interface FooterProps {
 
 export function Footer({ settings }: FooterProps) {
   const personName = PERSON_NAME_FULL
+  const cvUrl = settings?.cvUrl?.value
+  const cvDownloadUrl = cvUrl?.includes('res.cloudinary.com')
+    ? cvUrl.replace(/\/upload\//, '/upload/fl_attachment/')
+    : cvUrl
   const youtubeUrl =
     settings?.youtube_url?.value ||
     'https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg'
@@ -59,6 +63,19 @@ export function Footer({ settings }: FooterProps) {
                   </Link>
                 </li>
               ))}
+              {cvDownloadUrl && (
+                <li>
+                  <a
+                    href={cvDownloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Download className="size-3.5" />
+                    Download CV
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
