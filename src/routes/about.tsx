@@ -13,6 +13,7 @@ import {
 } from '@/lib/seo'
 import { PERSON_NAME, PERSON_NAME_AR } from '@/lib/constants'
 import { extractCards, isCompactCards, splitIntoSections } from '@/lib/content'
+import { CvPreview } from '@/components/about/CvPreview'
 
 export const Route = createFileRoute('/about')({
   loader: async () => {
@@ -48,6 +49,7 @@ export const Route = createFileRoute('/about')({
 function AboutPage() {
   const { settings, aboutPage } = Route.useLoaderData()
   const profileImage = settings.profile_img?.value
+  const cvUrl = settings.cvUrl?.value
   const personName = PERSON_NAME
 
   const title = aboutPage?.title || `About ${personName}`
@@ -69,6 +71,13 @@ function AboutPage() {
             <AboutFallback personName={personName} />
           </Container>
         </section>
+        {cvUrl && (
+          <section className="py-8 border-t border-border/50">
+            <Container size="narrow">
+              <CvPreview cvUrl={cvUrl} />
+            </Container>
+          </section>
+        )}
       </>
     )
   }
@@ -200,6 +209,13 @@ function AboutPage() {
           </div>
         </Container>
       </section>
+      {cvUrl && (
+        <section className="py-8 border-t border-border/50">
+          <Container size="narrow">
+            <CvPreview cvUrl={cvUrl} />
+          </Container>
+        </section>
+      )}
     </>
   )
 }
