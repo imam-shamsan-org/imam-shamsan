@@ -198,6 +198,11 @@ h2 {
   }
   body {
     @apply bg-background text-foreground;
+    background-image: url('/patterns/islamic-star.svg');
+    background-size: 160px 160px;
+  }
+  .dark body {
+    background-image: url('/patterns/islamic-star-dark.svg');
   }
 }
 
