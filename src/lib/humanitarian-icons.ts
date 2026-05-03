@@ -19,6 +19,7 @@ import {
   Soup,
   Star,
   Stethoscope,
+  Sunrise,
   Syringe,
   Tent,
   Truck,
@@ -37,7 +38,7 @@ import type { HumanitarianProject } from '@/types/humanitarian'
  *   stethoscope, droplets, utensils, graduation-cap, home, book-open, truck,
  *   heart, users, hand-heart, wheat, chef-hat, shield-alert, baby, moon, star,
  *   building, shirt, syringe, heart-pulse, tent, soup, drill, scroll, rings,
- *   medical-bag
+ *   medical-bag, sunrise
  */
 export const iconRegistry: Record<string, LucideIcon> = {
   stethoscope: Stethoscope,
@@ -66,6 +67,7 @@ export const iconRegistry: Record<string, LucideIcon> = {
   scroll: ScrollText,
   rings: CircleDot,
   'medical-bag': BriefcaseMedical,
+  sunrise: Sunrise,
 }
 
 /** Category-based fallback icons when the Icon field is empty or unrecognised */
@@ -76,6 +78,7 @@ const categoryDefaults: Record<HumanitarianProject['category'], LucideIcon> = {
   Education: GraduationCap,
   Family: Home,
   Religious: BookOpen,
+  Qurbani: Sunrise,
 }
 
 /**

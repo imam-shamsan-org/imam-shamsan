@@ -5,7 +5,14 @@ export interface HumanitarianProject {
   titleAr: string
   description: string
   descriptionAr: string
-  category: 'Medical' | 'Food' | 'Water' | 'Education' | 'Family' | 'Religious'
+  category:
+    | 'Medical'
+    | 'Food'
+    | 'Water'
+    | 'Education'
+    | 'Family'
+    | 'Religious'
+    | 'Qurbani'
   icon: string
   hasCases: boolean
   sortOrder: number

@@ -121,12 +121,14 @@ function ProjectDetailPage() {
           {cases.length === 0 ? (
             <div className="mx-auto max-w-lg text-center py-12">
               <p className="text-muted-foreground mb-6">
-                This initiative accepts general contributions. Contact{' '}
-                {personName} to participate.
+                Support this initiative directly — your contribution goes
+                entirely to this cause.
               </p>
-              <Button asChild>
-                <Link to="/contact">Contact Us</Link>
-              </Button>
+              <ContributeDialog
+                trigger={<Button size="lg">Sponsor This Project</Button>}
+                projectTitle={project.title}
+                personName={personName}
+              />
             </div>
           ) : (
             <>
@@ -145,7 +147,7 @@ function ProjectDetailPage() {
                 <ContributeDialog
                   trigger={
                     <Button variant="outline" size="sm">
-                      Contribute to Any Case
+                      Sponsor This Project
                     </Button>
                   }
                   projectTitle={project.title}
