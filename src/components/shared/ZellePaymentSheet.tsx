@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { submitContactForm } from '@/lib/email'
-import { PERSON_NAME, ZELLE_EMAIL, ZELLE_PHONE } from '@/lib/constants'
+import { PERSON_NAME, ZELLE_EMAIL, ZELLE_PHONE, ZELLE_QR_URL } from '@/lib/constants'
 
 const MAX_FILE_BYTES = 3 * 1024 * 1024
 const ALLOWED_MIME_TYPES = ['application/pdf', 'image/png'] as const
@@ -293,6 +293,16 @@ export function ZellePaymentSheet({
           <h3 className="text-base font-semibold text-foreground mb-4">
             Pay via Zelle
           </h3>
+
+          {/* QR code */}
+          <div className="mb-5 flex flex-col items-center gap-2">
+            <img
+              src={ZELLE_QR_URL}
+              alt="Scan to pay via Zelle"
+              className="w-36 h-36 rounded-lg border border-border object-contain bg-white p-1"
+            />
+            <p className="text-xs text-muted-foreground">Scan with your Zelle app</p>
+          </div>
 
           {/* Email */}
           <div className="mb-3">
