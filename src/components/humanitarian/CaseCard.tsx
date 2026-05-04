@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
 import type { HumanitarianCase } from '@/types/humanitarian'
 import { Card } from '@/components/ui/card'
@@ -10,11 +11,9 @@ import {
 interface CaseCardProps {
   case_: HumanitarianCase
   projectSlug: string
-  projectTitle: string
-  onClick: () => void
 }
 
-export function CaseCard({ case_: c, onClick }: CaseCardProps) {
+export function CaseCard({ case_: c, projectSlug }: CaseCardProps) {
   const hasPoster = Boolean(c.posterUrl)
 
   const thumbnailContent = hasPoster ? (
@@ -52,10 +51,10 @@ export function CaseCard({ case_: c, onClick }: CaseCardProps) {
   )
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group block h-full w-full text-left"
+    <Link
+      to="/humanitarian/$slug/$caseSlug"
+      params={{ slug: projectSlug, caseSlug: c.slug }}
+      className="group block h-full w-full"
     >
       <Card className="relative flex flex-col h-full overflow-hidden transition-all duration-200 group-hover:shadow-md group-hover:ring-1 group-hover:ring-primary/20">
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
@@ -72,6 +71,6 @@ export function CaseCard({ case_: c, onClick }: CaseCardProps) {
           )}
         </div>
       </Card>
-    </button>
+    </Link>
   )
 }

@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
-import type { HumanitarianCase } from '@/types/humanitarian'
 import { Container } from '@/components/layout/Container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs'
 import { CaseCard } from '@/components/humanitarian/CaseCard'
-import { CaseDetailModal } from '@/components/humanitarian/CaseDetailModal'
 import { ContributeDialog } from '@/components/humanitarian/ContributeDialog'
 import { getProjectIcon } from '@/lib/humanitarian-icons'
 import {
@@ -60,9 +57,6 @@ function ProjectDetailPage() {
   const { project, cases, settings: _settings } = Route.useLoaderData()
   const personName = PERSON_NAME
   const Icon = getProjectIcon(project.icon, project.category)
-  const [selectedCase, setSelectedCase] = useState<HumanitarianCase | null>(
-    null,
-  )
 
   return (
     <>
@@ -161,8 +155,6 @@ function ProjectDetailPage() {
                     key={c.id}
                     case_={c}
                     projectSlug={project.slug}
-                    projectTitle={project.title}
-                    onClick={() => setSelectedCase(c)}
                   />
                 ))}
               </div>
@@ -184,13 +176,6 @@ function ProjectDetailPage() {
         </Container>
       </section>
 
-      <CaseDetailModal
-        case_={selectedCase}
-        projectTitle={project.title}
-        open={selectedCase !== null}
-        onClose={() => setSelectedCase(null)}
-        personName={personName}
-      />
     </>
   )
 }
