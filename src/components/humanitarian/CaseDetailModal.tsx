@@ -43,18 +43,18 @@ export function CaseDetailModal({
       <DialogContent className="space-y-5">
         {/* Poster */}
         {hasPoster && (
-          <div className="rounded-lg overflow-hidden border border-border">
+          <div className="rounded-lg overflow-hidden border border-border h-[65vh]">
             {pdf ? (
               <iframe
                 src={c.posterUrl!}
                 title={c.title}
-                className="w-full h-[70vh]"
+                className="w-full h-full"
               />
             ) : (
               <img
                 src={getPosterFullUrl(c.posterUrl!)}
                 alt={c.title}
-                className="w-full h-auto"
+                className="w-full h-full object-contain"
                 loading="lazy"
               />
             )}

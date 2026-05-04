@@ -81,20 +81,22 @@ function CaseDetailPage() {
         <Container>
           <div className="py-6">
             {hasPoster ? (
-              pdf ? (
-                <iframe
-                  src={c.posterUrl!}
-                  title={c.title}
-                  className="w-full h-screen rounded-lg border border-border"
-                />
-              ) : (
-                <img
-                  src={getPosterFullUrl(c.posterUrl!)}
-                  alt={c.title}
-                  className="w-full h-auto rounded-lg shadow-lg"
-                  loading="lazy"
-                />
-              )
+              <div className="h-[88vh] rounded-lg overflow-hidden border border-border shadow-lg">
+                {pdf ? (
+                  <iframe
+                    src={c.posterUrl!}
+                    title={c.title}
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <img
+                    src={getPosterFullUrl(c.posterUrl!)}
+                    alt={c.title}
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                )}
+              </div>
             ) : (
               <div className="flex items-center justify-center h-64 rounded-lg bg-muted border border-border">
                 <svg
