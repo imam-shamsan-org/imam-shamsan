@@ -78,7 +78,7 @@ const categoryDefaults: Record<HumanitarianProject['category'], LucideIcon> = {
   Education: GraduationCap,
   Family: Home,
   Religious: BookOpen,
-  Qurbani: Sunrise,
+  Qurbani: Moon,
 }
 
 /**
