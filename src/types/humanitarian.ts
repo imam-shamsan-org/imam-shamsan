@@ -14,7 +14,6 @@ export interface HumanitarianProject {
     | 'Religious'
     | 'Qurbani'
   icon: string
-  hasCases: boolean
   sortOrder: number
   status: 'Active' | 'Completed' | 'Paused'
 }
@@ -24,7 +23,6 @@ export interface HumanitarianCase {
   slug: string
   caseNumber: number
   title: string
-  projectId: string
   urgency: 'Urgent' | 'High' | 'Ongoing'
   posterUrl: string | null
   status: 'Published' | 'Funded' | 'Draft'

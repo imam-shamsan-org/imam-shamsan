@@ -719,7 +719,6 @@ function pageToHumanitarianProject(
     category: ((getPropertyValue(props['Category']) as string) ||
       'Medical') as HumanitarianProject['category'],
     icon: (getPropertyValue(props['Icon']) as string) || '',
-    hasCases: (getPropertyValue(props['Has Cases']) as boolean) || false,
     sortOrder: (getPropertyValue(props['Sort Order']) as number) || 0,
     status: ((getPropertyValue(props['Status']) as string) ||
       'Active') as HumanitarianProject['status'],
@@ -736,7 +735,6 @@ function pageToHumanitarianCase(page: PageObjectResponse): HumanitarianCase {
     slug: `case-${caseNumber}-${slugify(title).slice(0, 60)}`,
     caseNumber,
     title,
-    projectId: (getPropertyValue(props['Project Slug']) as string) || '',
     urgency: ((getPropertyValue(props['Urgency']) as string) ||
       'Ongoing') as HumanitarianCase['urgency'],
     posterUrl: (getPropertyValue(props['Poster URL']) as string) || null,
@@ -794,21 +792,22 @@ async function fetchHumanitarianProjectBySlug(
   }
 }
 
-async function fetchHumanitarianCasesByProject(
-  projectTitle: string,
+async function fetchHumanitarianCasesByPageId(
+  pageId: string,
 ): Promise<Array<HumanitarianCase>> {
-  const databaseId = getDbId('NOTION_HUMANITARIAN_CASES_DATABASE_ID')
-  if (!isNotionConfigured() || !databaseId) return []
+  if (!isNotionConfigured()) return []
 
-  return withCache(`humanitarian:cases:${projectTitle}`, async () => {
+  return withCache(`humanitarian:cases:${pageId}`, async () => {
     try {
-      const response = await queryDatabase(databaseId, {
-        filter: {
-          and: [
-            { property: 'Project Slug', rich_text: { equals: projectTitle } },
-            { property: 'Status', select: { equals: 'Published' } },
-          ],
-        },
+      const blocks = await getBlockChildren(pageId)
+      const childDb = blocks.results.find(
+        (block): block is BlockObjectResponse =>
+          'type' in block && block.type === 'child_database',
+      )
+      if (!childDb) return []
+
+      const response = await queryDatabase(childDb.id, {
+        filter: { property: 'Status', select: { equals: 'Published' } },
         sorts: [{ property: 'Case Number', direction: 'ascending' }],
       })
 
@@ -840,6 +839,6 @@ export const getHumanitarianCasesByProject = createServerFn({
   method: 'GET',
 })
   .inputValidator(z.string().min(1))
-  .handler(async ({ data: projectId }) => {
-    return fetchHumanitarianCasesByProject(projectId)
+  .handler(async ({ data: pageId }) => {
+    return fetchHumanitarianCasesByPageId(pageId)
   })

@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
-import { ContributeDialog } from './ContributeDialog'
 import type { HumanitarianProject } from '@/types/humanitarian'
 import {
   Card,
@@ -16,10 +15,9 @@ import { getProjectIcon } from '@/lib/humanitarian-icons'
 
 interface ProjectCardProps {
   project: HumanitarianProject
-  personName?: string
 }
 
-export function ProjectCard({ project, personName }: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
   const Icon = getProjectIcon(project.icon, project.category)
 
   return (
@@ -68,30 +66,16 @@ export function ProjectCard({ project, personName }: ProjectCardProps) {
           Zakat Eligible
         </Badge>
 
-        {project.hasCases ? (
-          <Link
-            to="/humanitarian/$slug"
-            params={{ slug: project.slug }}
-            className="ml-auto"
-          >
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-              View Cases
-              <ArrowRight className="size-3.5" />
-            </Button>
-          </Link>
-        ) : (
-          <div className="ml-auto">
-            <ContributeDialog
-              trigger={
-                <Button size="sm" className="text-xs">
-                  Contribute
-                </Button>
-              }
-              projectTitle={project.title}
-              personName={personName}
-            />
-          </div>
-        )}
+        <Link
+          to="/humanitarian/$slug"
+          params={{ slug: project.slug }}
+          className="ml-auto"
+        >
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+            View Project
+            <ArrowRight className="size-3.5" />
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   )

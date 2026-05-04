@@ -109,9 +109,8 @@ function HumanitarianPage() {
               <div className="h-6 w-[3px] rounded-full bg-secondary opacity-70" />
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Click any project with{' '}
-              <span className="text-primary font-medium">"View Cases"</span> to
-              see individual sponsorable cases
+              Click any project to contribute or view individual sponsorable
+              cases
             </p>
           </div>
 
@@ -125,7 +124,6 @@ function HumanitarianPage() {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  personName={personName}
                 />
               ))}
             </div>
