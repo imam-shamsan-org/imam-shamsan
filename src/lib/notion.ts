@@ -727,13 +727,11 @@ function pageToHumanitarianProject(
 
 function pageToHumanitarianCase(page: PageObjectResponse): HumanitarianCase {
   const props = page.properties
-  const caseNumber = (getPropertyValue(props['Case Number']) as number) || 0
   const title = (getPropertyValue(props['Name']) as string) || ''
 
   return {
     id: page.id,
-    slug: `case-${caseNumber}-${slugify(title).slice(0, 60)}`,
-    caseNumber,
+    slug: slugify(title).slice(0, 80) || page.id,
     title,
     urgency: ((getPropertyValue(props['Urgency']) as string) ||
       'Ongoing') as HumanitarianCase['urgency'],
@@ -808,7 +806,6 @@ async function fetchHumanitarianCasesByPageId(
 
       const response = await queryDatabase(childDb.id, {
         filter: { property: 'Status', select: { equals: 'Published' } },
-        sorts: [{ property: 'Case Number', direction: 'ascending' }],
       })
 
       return response.results

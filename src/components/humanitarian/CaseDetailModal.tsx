@@ -35,7 +35,7 @@ export function CaseDetailModal({
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 pr-6">
           <span className="truncate">
-            Case #{c.caseNumber} — {c.title}
+            {c.title}
           </span>
         </DialogTitle>
       </DialogHeader>

@@ -21,7 +21,6 @@ export interface HumanitarianProject {
 export interface HumanitarianCase {
   id: string
   slug: string
-  caseNumber: number
   title: string
   urgency: 'Urgent' | 'High' | 'Ongoing'
   posterUrl: string | null
