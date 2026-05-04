@@ -357,6 +357,21 @@ Cases appear under a specific project when "Has Cases" is checked. Each case rep
 
 ---
 
+### How Visitors Pay via Zelle
+
+When a visitor clicks a service card or a "Contribute" / "Sponsor" button on the Humanitarian Aid page, a payment panel opens showing:
+
+- Your **Zelle email** and **phone number** (with a copy button for each)
+- Step-by-step instructions: Send Zelle → Fill in the form → You confirm
+- A contact form where they enter their name, email, and a message
+- An optional **Upload Zelle Receipt** field — they can attach the Zelle screenshot or PDF (max 3 MB, PDF or PNG format) so you have proof of payment alongside their booking request
+
+You will receive their message as an email from the website with the receipt attached (if they uploaded one).
+
+> **If your Zelle email or phone number ever changes**, ask your developer to update `src/lib/constants.ts` — it is the single place that controls what is shown in both the Services and Humanitarian Aid flows.
+
+---
+
 ### Updating Site Settings (Live Stream, Profile Image, Logo, Social Links)
 
 The Site Settings database contains key-value pairs that control parts of the website. You update these by editing the **"Value"** field of the relevant row.

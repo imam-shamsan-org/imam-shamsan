@@ -1,3 +1,6 @@
+export const ZELLE_EMAIL = 'MCCGPImamShamsan@gmail.com'
+export const ZELLE_PHONE = '+1 (661) 380-0334'
+
 export const TITLE_PREFIX = 'Dr. Imam'
 export const PERSON_NAME = `${TITLE_PREFIX} Shamsan`
 export const PERSON_NAME_FULL = `${TITLE_PREFIX} Shamsan Al-Jabi`

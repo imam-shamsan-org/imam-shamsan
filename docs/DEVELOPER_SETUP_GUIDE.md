@@ -149,8 +149,10 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 - Filters by `Status = Active`
 - Sorts by `Order` ascending
-- Each card links to `/contact?service={slug}` (pre-fills the contact form)
+- Each card opens a `ZellePaymentSheet` dialog (`src/components/shared/ZellePaymentSheet.tsx`) showing Zelle payment info on the left and a booking confirmation form (with optional PDF/PNG receipt upload) on the right
 - Services are also loaded on the `/contact` page for the dropdown
+
+**Zelle credentials** are defined in `src/lib/constants.ts` (`ZELLE_EMAIL`, `ZELLE_PHONE`). Update them there if the payment details ever change — they are used in both the Services and Humanitarian Aid flows.
 
 **Env variable:** `NOTION_SERVICES_DATABASE_ID`
 
@@ -409,7 +411,7 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `lib/youtube.ts`    | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings.                                    |
 | `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
 | `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                                                     |
-| `lib/constants.ts`  | Shared constants (categories, languages)                                                                                          |
+| `lib/constants.ts`  | Shared constants (categories, languages, `ZELLE_EMAIL`, `ZELLE_PHONE`)                                                           |
 | `lib/utils.ts`      | Utility functions (cn, formatDate, slugify)                                                                                       |
 
 ---
