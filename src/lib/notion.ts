@@ -323,6 +323,9 @@ function pageToService(page: PageObjectResponse): Service {
     order: (getPropertyValue(props['Order']) as number) || 0,
     status:
       (getPropertyValue(props['Status']) as 'Active' | 'Inactive') || 'Active',
+    inquiryOnly: (getPropertyValue(props['Inquiry Only']) as boolean) || false,
+    inquiryDescription:
+      (getPropertyValue(props['Inquiry Description']) as string) || null,
   }
 }
 

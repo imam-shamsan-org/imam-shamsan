@@ -1,3 +1,4 @@
+import { InquirySheet } from './InquirySheet'
 import type { Service } from '@/types/service'
 import { ZellePaymentSheet } from '@/components/shared/ZellePaymentSheet'
 
@@ -14,6 +15,19 @@ export function ServiceDetailDialog({
   onClose,
   personName,
 }: ServiceDetailDialogProps) {
+  if (service.inquiryOnly) {
+    return (
+      <InquirySheet
+        open={open}
+        onClose={onClose}
+        personName={personName}
+        serviceName={service.nameEn}
+        serviceNameAr={service.nameAr}
+        inquiryDescription={service.inquiryDescription}
+      />
+    )
+  }
+
   return (
     <ZellePaymentSheet
       open={open}

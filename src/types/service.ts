@@ -8,4 +8,6 @@ export interface Service {
   icon: string
   order: number
   status: 'Active' | 'Inactive'
+  inquiryOnly: boolean
+  inquiryDescription: string | null
 }
