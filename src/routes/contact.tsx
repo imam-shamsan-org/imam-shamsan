@@ -3,24 +3,14 @@ import { Facebook, Instagram, Mail, Youtube } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { getActiveServices, getSiteSettings } from '@/lib/notion'
+import { getSiteSettings } from '@/lib/notion'
 import { getBreadcrumbSchema, getContactMeta, siteConfig } from '@/lib/seo'
 import { PERSON_NAME } from '@/lib/constants'
 
-interface ContactSearch {
-  service?: string
-}
-
 export const Route = createFileRoute('/contact')({
-  validateSearch: (search: Record<string, unknown>): ContactSearch => ({
-    service: (search.service as string) || undefined,
-  }),
   loader: async () => {
-    const [services, settings] = await Promise.all([
-      getActiveServices(),
-      getSiteSettings(),
-    ])
-    return { services, settings }
+    const settings = await getSiteSettings()
+    return { settings }
   },
   head: ({ loaderData }) => {
     const { meta, links } = getContactMeta(loaderData?.settings)
@@ -42,8 +32,7 @@ export const Route = createFileRoute('/contact')({
 })
 
 function ContactPage() {
-  const { services, settings } = Route.useLoaderData()
-  const { service } = Route.useSearch()
+  const { settings } = Route.useLoaderData()
   const personName = PERSON_NAME
 
   const youtubeUrl =
@@ -83,11 +72,7 @@ function ContactPage() {
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12">
             {/* Form */}
             <div className="lg:col-span-3">
-              <ContactForm
-                services={services}
-                preselectedService={service}
-                personName={personName}
-              />
+              <ContactForm personName={personName} />
             </div>
 
             {/* Contact Info Sidebar */}
