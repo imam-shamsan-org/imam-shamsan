@@ -16,7 +16,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { submitContactForm } from '@/lib/email'
-import { PERSON_NAME, ZELLE_EMAIL, ZELLE_PHONE, ZELLE_QR_URL } from '@/lib/constants'
+import {
+  PERSON_NAME,
+  ZELLE_EMAIL,
+  ZELLE_PHONE,
+  ZELLE_QR_URL,
+} from '@/lib/constants'
 
 const MAX_FILE_BYTES = 3 * 1024 * 1024
 const ALLOWED_MIME_TYPES = ['application/pdf', 'image/png'] as const
@@ -52,34 +57,12 @@ export type ZellePaymentSheetProps = {
   personName?: string
 } & (ServiceContext | ContributionContext)
 
-type FieldErrors = Partial<Record<'name' | 'email' | 'message' | 'file', string>>
+type FieldErrors = Partial<
+  Record<'name' | 'email' | 'message' | 'file', string>
+>
 type FormStatus = 'idle' | 'sending' | 'error' | 'success'
 type CopyFeedback = { type: 'email' | 'phone'; ok: boolean } | null
 
-function buildSubject(ctx: ServiceContext | ContributionContext): string {
-  if (ctx.mode === 'service') {
-    return `Booking: ${ctx.serviceName}`.slice(0, 200)
-  }
-  const base = ctx.caseTitle
-    ? `Contribution Interest: ${ctx.caseTitle} (${ctx.projectTitle})`
-    : `Contribution Interest: ${ctx.projectTitle}`
-  return base.slice(0, 200)
-}
-
-function buildMessage(
-  ctx: ServiceContext | ContributionContext,
-  userMessage: string,
-  caseInput: string,
-): string {
-  if (ctx.mode === 'service') return userMessage.trim()
-  const resolvedCase = ctx.caseTitle ?? caseInput.trim()
-  const contextLine = resolvedCase
-    ? `Initiative: ${ctx.projectTitle}\nCase: ${resolvedCase}`
-    : `Initiative: ${ctx.projectTitle}`
-  return userMessage.trim()
-    ? `${contextLine}\n\n${userMessage.trim()}`
-    : `I am interested in contributing to:\n${contextLine}`
-}
 
 const STEPS = [
   'Send payment via Zelle using the QR code, email, or phone number',
@@ -224,14 +207,22 @@ export function ZellePaymentSheet({
     setStatus('sending')
     setErrorMessage('')
 
+    const resolvedCase =
+      ctx.mode === 'contribution' ? (ctx.caseTitle ?? caseInput.trim()) : ''
+
     try {
       const result = await submitContactForm({
         data: {
           name: name.trim(),
           email: email.trim(),
           phone: ctx.mode === 'service' ? phone || undefined : undefined,
-          service: buildSubject(ctx),
-          message: buildMessage(ctx, message, caseInput),
+          ...(ctx.mode === 'service'
+            ? { service: ctx.serviceName, message: message.trim() }
+            : {
+                project: ctx.projectTitle,
+                ...(resolvedCase ? { case: resolvedCase } : {}),
+                message: message.trim() || 'No additional message.',
+              }),
           ...(attachment ? { attachment } : {}),
         },
       })
@@ -306,7 +297,9 @@ export function ZellePaymentSheet({
               alt="Scan to pay via Zelle"
               className="w-36 h-36 rounded-lg border border-border object-contain bg-white p-1"
             />
-            <p className="text-xs text-muted-foreground">Scan with your Zelle app</p>
+            <p className="text-xs text-muted-foreground">
+              Scan with your Zelle app
+            </p>
           </div>
 
           {/* Email */}
@@ -335,7 +328,9 @@ export function ZellePaymentSheet({
                 aria-live="polite"
                 className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
               >
-                {copyFeedback.ok ? 'Copied!' : 'Copy failed — please copy manually'}
+                {copyFeedback.ok
+                  ? 'Copied!'
+                  : 'Copy failed — please copy manually'}
               </p>
             )}
           </div>
@@ -366,7 +361,9 @@ export function ZellePaymentSheet({
                 aria-live="polite"
                 className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
               >
-                {copyFeedback.ok ? 'Copied!' : 'Copy failed — please copy manually'}
+                {copyFeedback.ok
+                  ? 'Copied!'
+                  : 'Copy failed — please copy manually'}
               </p>
             )}
           </div>
@@ -407,18 +404,25 @@ export function ZellePaymentSheet({
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex h-full flex-col gap-4"
+            >
               <div className="flex items-center gap-2">
                 <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                   2
                 </span>
                 <h3 className="text-base font-semibold text-foreground">
-                  {ctx.mode === 'service' ? 'Confirm Your Booking' : 'Your Details'}
+                  {ctx.mode === 'service'
+                    ? 'Confirm Your Booking'
+                    : 'Your Details'}
                 </h3>
               </div>
 
               <div className="rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-2.5 text-sm text-foreground">
-                <span className="font-medium">After sending payment,</span> fill in your details below and attach your Zelle receipt — this helps confirm your payment quickly.
+                <span className="font-medium">After sending payment,</span> fill
+                in your details below and attach your Zelle receipt — this helps
+                confirm your payment quickly.
               </div>
 
               {/* Name */}
@@ -457,7 +461,9 @@ export function ZellePaymentSheet({
                   aria-invalid={!!fieldErrors.email}
                 />
                 {fieldErrors.email && (
-                  <p className="text-xs text-destructive">{fieldErrors.email}</p>
+                  <p className="text-xs text-destructive">
+                    {fieldErrors.email}
+                  </p>
                 )}
               </div>
 
@@ -576,7 +582,9 @@ export function ZellePaymentSheet({
                     ) : (
                       <Upload className="size-4 text-primary" />
                     )}
-                    {fileReading ? 'Reading file…' : 'Attach your Zelle receipt (click or drag)'}
+                    {fileReading
+                      ? 'Reading file…'
+                      : 'Attach your Zelle receipt (click or drag)'}
                     <input
                       id="zps-file"
                       ref={fileInputRef}

@@ -6,6 +6,8 @@ const contactFormSchema = z.object({
   email: z.string().email().max(320),
   phone: z.string().max(30).optional(),
   service: z.string().max(200).optional(),
+  project: z.string().max(200).optional(),
+  case: z.string().max(200).optional(),
   eventLocation: z.string().max(500).optional(),
   message: z.string().min(1).max(5000),
   attachment: z
@@ -29,6 +31,18 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;')
 }
 
+function buildSubject(data: ContactFormData): string {
+  if (data.project) {
+    return data.case
+      ? `New Contribution: ${data.project} — ${data.case} — from ${data.name}`
+      : `New Contribution: ${data.project} — from ${data.name}`
+  }
+  if (data.service) {
+    return `New Inquiry: ${data.service} — from ${data.name}`
+  }
+  return `New Message from ${data.name}`
+}
+
 async function sendContactEmail(
   data: ContactFormData,
 ): Promise<{ success: boolean; error?: string }> {
@@ -50,15 +64,15 @@ async function sendContactEmail(
       body: JSON.stringify({
         from: `Dr. Imam Shamsan Website <onboarding@resend.dev>`,
         to: contactEmail,
-        subject: data.service
-          ? `New Inquiry: ${escapeHtml(data.service)} - from ${escapeHtml(data.name)}`
-          : `New Message from ${escapeHtml(data.name)}`,
+        subject: buildSubject(data),
         html: `
           <h2>New Contact Form Submission</h2>
           <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
           <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
           ${data.phone ? `<p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>` : ''}
           ${data.service ? `<p><strong>Service:</strong> ${escapeHtml(data.service)}</p>` : ''}
+          ${data.project ? `<p><strong>Project / Initiative:</strong> ${escapeHtml(data.project)}</p>` : ''}
+          ${data.case ? `<p><strong>Case:</strong> ${escapeHtml(data.case)}</p>` : ''}
           ${data.eventLocation ? `<p><strong>Event Location:</strong> ${escapeHtml(data.eventLocation)}</p>` : ''}
           <p><strong>Message:</strong></p>
           <p>${escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
