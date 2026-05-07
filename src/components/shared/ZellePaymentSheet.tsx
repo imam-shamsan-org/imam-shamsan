@@ -82,9 +82,9 @@ function buildMessage(
 }
 
 const STEPS = [
-  'Send payment via Zelle',
-  'Fill in your details →',
-  'Imam confirms your booking',
+  'Send payment via Zelle using the QR code, email, or phone number',
+  'Fill in your details and attach your Zelle payment receipt',
+  'Submit — Imam will confirm your booking shortly',
 ] as const
 
 export function ZellePaymentSheet({
@@ -290,9 +290,14 @@ export function ZellePaymentSheet({
             </div>
           )}
 
-          <h3 className="text-base font-semibold text-foreground mb-4">
-            Pay via Zelle
-          </h3>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+              1
+            </span>
+            <h3 className="text-base font-semibold text-foreground">
+              Send Payment via Zelle
+            </h3>
+          </div>
 
           {/* QR code */}
           <div className="mb-5 flex flex-col items-center gap-2">
@@ -403,9 +408,18 @@ export function ZellePaymentSheet({
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4">
-              <h3 className="text-base font-semibold text-foreground">
-                {ctx.mode === 'service' ? 'Confirm Your Booking' : 'Your Details'}
-              </h3>
+              <div className="flex items-center gap-2">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                  2
+                </span>
+                <h3 className="text-base font-semibold text-foreground">
+                  {ctx.mode === 'service' ? 'Confirm Your Booking' : 'Your Details'}
+                </h3>
+              </div>
+
+              <div className="rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-2.5 text-sm text-foreground">
+                <span className="font-medium">After sending payment,</span> fill in your details below and attach your Zelle receipt — this helps confirm your payment quickly.
+              </div>
 
               {/* Name */}
               <div className="space-y-1.5">
@@ -532,9 +546,9 @@ export function ZellePaymentSheet({
               {/* Upload receipt */}
               <div className="space-y-1.5">
                 <Label htmlFor="zps-file">
-                  Zelle Receipt{' '}
+                  Payment Receipt{' '}
                   <span className="font-normal text-muted-foreground">
-                    (optional · PDF or PNG · max 3 MB)
+                    (recommended · PDF or PNG · max 3 MB)
                   </span>
                 </Label>
                 {attachment ? (
@@ -562,7 +576,7 @@ export function ZellePaymentSheet({
                     ) : (
                       <Upload className="size-4 text-primary" />
                     )}
-                    {fileReading ? 'Reading file…' : 'Click to upload or drag and drop'}
+                    {fileReading ? 'Reading file…' : 'Attach your Zelle receipt (click or drag)'}
                     <input
                       id="zps-file"
                       ref={fileInputRef}

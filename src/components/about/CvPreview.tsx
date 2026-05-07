@@ -55,7 +55,10 @@ export function CvPreview({ cvUrl }: CvPreviewProps) {
             href={cvUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'gap-2')}
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'lg' }),
+              'gap-2',
+            )}
           >
             <ExternalLink className="size-4" />
             View CV
@@ -64,7 +67,10 @@ export function CvPreview({ cvUrl }: CvPreviewProps) {
             href={downloadUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'lg' }),
+              'gap-2',
+            )}
           >
             <Download className="size-4" />
             Download

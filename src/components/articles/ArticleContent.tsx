@@ -31,7 +31,9 @@ const notionColorMap: Record<string, string> = {
  */
 function containsArabic(text: string): boolean {
   const arabicChars = (
-    text.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []
+    text.match(
+      /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g,
+    ) || []
   ).length
   const nonWhitespace = text.replace(/\s/g, '').length
   return nonWhitespace > 0 && arabicChars / nonWhitespace > 0.3
