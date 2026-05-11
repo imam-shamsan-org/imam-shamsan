@@ -30,7 +30,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 />
               </div>
             )}
-            <h1 className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold tracking-tight text-foreground sm:whitespace-nowrap">
+            <h1 className="text-center text-[clamp(1.5rem,4vw,2.5rem)] font-bold tracking-tight text-foreground sm:whitespace-nowrap">
               {titlePrefix}{' '}
               <span className="font-cinzel text-primary">
                 Shamsan&nbsp;Al-Jabi
@@ -38,7 +38,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
             </h1>
             <ArabicText
               as="h1"
-              className="mt-1 text-2xl text-secondary sm:text-3xl"
+              className="mt-2 !text-center text-secondary"
             >
               {PERSON_NAME_AR}
             </ArabicText>

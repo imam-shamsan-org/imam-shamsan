@@ -38,8 +38,8 @@ code {
 
 .font-arabic-h1 {
   font-family: 'Scheherazade New', 'Traditional Arabic', serif;
-  font-size: 2em;
-  line-height: 2;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1.8;
 }
 
 .font-arabic-h2 {
