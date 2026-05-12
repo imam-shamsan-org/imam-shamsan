@@ -34,9 +34,7 @@ export function CaseDetailModal({
     <Dialog open={open} onClose={onClose} className="max-w-2xl">
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 pr-6">
-          <span className="truncate">
-            {c.title}
-          </span>
+          <span className="truncate">{c.title}</span>
         </DialogTitle>
       </DialogHeader>
 

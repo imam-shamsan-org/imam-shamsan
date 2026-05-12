@@ -151,11 +151,7 @@ function ProjectDetailPage() {
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {cases.map((c) => (
-                  <CaseCard
-                    key={c.id}
-                    case_={c}
-                    projectSlug={project.slug}
-                  />
+                  <CaseCard key={c.id} case_={c} projectSlug={project.slug} />
                 ))}
               </div>
             </>
@@ -175,7 +171,6 @@ function ProjectDetailPage() {
           </div>
         </Container>
       </section>
-
     </>
   )
 }

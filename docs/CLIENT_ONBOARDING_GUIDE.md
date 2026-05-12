@@ -364,7 +364,8 @@ When a visitor clicks a service card or a "Contribute" / "Sponsor" button on the
 - Your **Zelle email** and **phone number** (with a copy button for each)
 - Step-by-step instructions: Send Zelle → Fill in the form → You confirm
 - A contact form where they enter their name, email, and a message
-- An optional **Upload Zelle Receipt** field — they can attach the Zelle screenshot or PDF (max 3 MB, PDF or PNG format) so you have proof of payment alongside their booking request
+- A **required Upload Zelle Receipt** field — they must attach the Zelle screenshot or PDF (max 3 MB, PDF or PNG format) before they can submit. The form will not send without it.
+- For service bookings (e.g., Ruqyah), they must also scroll through and accept the **Service Agreement & Liability Waiver** before submitting
 
 You will receive their message as an email from the website with the receipt attached (if they uploaded one).
 

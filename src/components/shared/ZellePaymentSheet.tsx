@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { submitContactForm } from '@/lib/email'
+import { cn } from '@/lib/utils'
 import {
   PERSON_NAME,
   ZELLE_EMAIL,
@@ -58,7 +59,7 @@ export type ZellePaymentSheetProps = {
 } & (ServiceContext | ContributionContext)
 
 type FieldErrors = Partial<
-  Record<'name' | 'email' | 'message' | 'file', string>
+  Record<'name' | 'email' | 'message' | 'file' | 'waiver', string>
 >
 type FormStatus = 'idle' | 'sending' | 'error' | 'success'
 type CopyFeedback = { type: 'email' | 'phone'; ok: boolean } | null
@@ -68,6 +69,59 @@ const STEPS = [
   'Send payment via Zelle using the QR code, email, or phone number',
   'Fill in your details and attach your Zelle payment receipt',
   'Submit — Imam will confirm your booking shortly',
+] as const
+
+const WAIVER_CLAUSES = [
+  {
+    n: 1,
+    title: 'Voluntary Participation',
+    body: 'I am voluntarily requesting Ruqyah services of my own free will and accept full responsibility for my participation.',
+  },
+  {
+    n: 2,
+    title: 'Nature of Service',
+    body: "I understand that Ruqyah is a religious/spiritual practice based on the Qur'an and authentic supplications. It is not a medical, psychological, or psychiatric service, and no diagnosis, treatment, or medical advice is being provided.",
+  },
+  {
+    n: 3,
+    title: 'No Medical Replacement',
+    body: 'I acknowledge that this service does not replace professional healthcare, and I agree to seek appropriate licensed medical or mental health care when needed.',
+  },
+  {
+    n: 4,
+    title: 'Assumption of Risk & Liability Waiver',
+    body: 'I assume full responsibility for any outcomes resulting from my participation. To the fullest extent permitted under Pennsylvania law, I release, waive, and hold harmless the service provider from any and all claims, liabilities, damages, or losses arising from or related to this service.',
+  },
+  {
+    n: 5,
+    title: 'No Guarantee of Results',
+    body: 'I understand that outcomes may vary and no guarantees of specific results are made.',
+  },
+  {
+    n: 6,
+    title: 'Service Fee',
+    body: 'I agree to pay a fee of $100 USD for the service provided. This fee reflects the time and effort of the practitioner and is non-refundable unless otherwise stated.',
+  },
+  {
+    n: 7,
+    title: 'Accuracy of Information',
+    body: 'I confirm that all information I provide is accurate and complete, and I accept responsibility for any false or misleading information.',
+  },
+  {
+    n: 8,
+    title: 'Privacy & Confidentiality',
+    body: "My personal information will be handled with reasonable care and used only for service-related purposes, in accordance with the website's Privacy Policy. While confidentiality is respected, I understand that absolute security of online communications cannot be guaranteed.",
+  },
+  {
+    n: 9,
+    title: 'Session Conduct',
+    body: 'I agree to behave respectfully and follow all instructions provided. The service provider reserves the right to refuse or terminate service if inappropriate behavior occurs.',
+  },
+  {
+    n: 11,
+    title: 'Governing Law',
+    body: 'This agreement shall be governed by and interpreted in accordance with the laws of the Commonwealth of Pennsylvania, USA.',
+  },
 ] as const
 
 export function ZellePaymentSheet({
@@ -83,6 +137,8 @@ export function ZellePaymentSheet({
   const [caseInput, setCaseInput] = useState('')
   const [attachment, setAttachment] = useState<Attachment | null>(null)
   const [fileReading, setFileReading] = useState(false)
+  const [waiverAccepted, setWaiverAccepted] = useState(false)
+  const [hasScrolledWaiver, setHasScrolledWaiver] = useState(false)
   const [status, setStatus] = useState<FormStatus>('idle')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [errorMessage, setErrorMessage] = useState('')
@@ -97,6 +153,8 @@ export function ZellePaymentSheet({
     setCaseInput('')
     setAttachment(null)
     setFileReading(false)
+    setWaiverAccepted(false)
+    setHasScrolledWaiver(false)
     setStatus('idle')
     setFieldErrors({})
     setErrorMessage('')
@@ -110,6 +168,14 @@ export function ZellePaymentSheet({
   function handleClose() {
     if (status === 'sending') return
     onClose()
+  }
+
+  function handleWaiverScroll(e: React.UIEvent<HTMLDivElement>) {
+    if (hasScrolledWaiver) return
+    const el = e.currentTarget
+    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 4) {
+      setHasScrolledWaiver(true)
+    }
   }
 
   async function copyToClipboard(text: string, type: 'email' | 'phone') {
@@ -183,10 +249,14 @@ export function ZellePaymentSheet({
     if (!email.trim()) errors.email = 'Email is required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       errors.email = 'Please enter a valid email'
+    if (!attachment) errors.file = 'Please upload your payment receipt'
     if (ctx.mode === 'service') {
       if (!message.trim()) errors.message = 'Message is required'
       else if (message.length > 5000)
         errors.message = 'Message is too long (max 5000 characters)'
+      if (!waiverAccepted)
+        errors.waiver =
+          'You must read and accept the service agreement to proceed'
     }
     return errors
   }
@@ -244,6 +314,13 @@ export function ZellePaymentSheet({
     ctx.mode === 'service' ? ctx.serviceName : ctx.projectTitle
   const contextLabelAr = ctx.mode === 'service' ? ctx.serviceNameAr : undefined
   const messageRequired = ctx.mode === 'service'
+
+  const canSubmit =
+    name.trim().length > 0 &&
+    email.trim().length > 0 &&
+    !!attachment &&
+    (ctx.mode !== 'service' ||
+      (message.trim().length > 0 && waiverAccepted))
 
   return (
     <Dialog open={open} onClose={handleClose} className="max-w-3xl">
@@ -421,8 +498,8 @@ export function ZellePaymentSheet({
 
               <div className="rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-2.5 text-sm text-foreground">
                 <span className="font-medium">After sending payment,</span> fill
-                in your details below and attach your Zelle receipt — this helps
-                confirm your payment quickly.
+                in your details and attach your Zelle receipt — both are
+                required to confirm your booking.
               </div>
 
               {/* Name */}
@@ -552,9 +629,9 @@ export function ZellePaymentSheet({
               {/* Upload receipt */}
               <div className="space-y-1.5">
                 <Label htmlFor="zps-file">
-                  Payment Receipt{' '}
+                  Payment Receipt *{' '}
                   <span className="font-normal text-muted-foreground">
-                    (recommended · PDF or PNG · max 3 MB)
+                    (PDF or PNG · max 3 MB)
                   </span>
                 </Label>
                 {attachment ? (
@@ -600,6 +677,97 @@ export function ZellePaymentSheet({
                 )}
               </div>
 
+              {/* Waiver (service mode only) */}
+              {ctx.mode === 'service' && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">
+                      Service Agreement & Waiver *
+                    </Label>
+                    {!hasScrolledWaiver && (
+                      <span className="text-xs text-muted-foreground">
+                        ↓ Scroll to read
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div
+                      className="max-h-44 overflow-y-auto rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed"
+                      onScroll={handleWaiverScroll}
+                    >
+                      <p className="mb-1 text-sm font-semibold text-foreground">
+                        Ruqyah Service Agreement, Consent & Liability Waiver
+                      </p>
+                      <p className="mb-3 text-muted-foreground">
+                        (Pennsylvania, USA)
+                      </p>
+                      <div className="space-y-3">
+                        {WAIVER_CLAUSES.map(({ n, title, body }) => (
+                          <div key={n}>
+                            <p className="font-medium text-foreground">
+                              {n}. {title}
+                            </p>
+                            <p className="mt-0.5 text-muted-foreground">
+                              {body}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {!hasScrolledWaiver && (
+                      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 rounded-b-lg bg-gradient-to-t from-muted/80 to-transparent" />
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-2.5 pt-0.5">
+                    <input
+                      type="checkbox"
+                      id="zps-waiver"
+                      checked={waiverAccepted}
+                      onChange={(e) => {
+                        setWaiverAccepted(e.target.checked)
+                        if (fieldErrors.waiver)
+                          setFieldErrors((f) => ({ ...f, waiver: undefined }))
+                      }}
+                      disabled={!hasScrolledWaiver}
+                      className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-40"
+                    />
+                    <div className="space-y-0.5">
+                      <label
+                        htmlFor="zps-waiver"
+                        className={cn(
+                          'text-sm leading-snug',
+                          hasScrolledWaiver
+                            ? 'cursor-pointer text-foreground'
+                            : 'cursor-not-allowed text-muted-foreground',
+                        )}
+                      >
+                        I confirm that I have read, understood, and agree to all
+                        of the above terms
+                      </label>
+                      <ArabicText
+                        as="p"
+                        className="text-xs text-muted-foreground"
+                      >
+                        قرأت الشروط وأوافق عليها
+                      </ArabicText>
+                      {!hasScrolledWaiver && (
+                        <p className="text-xs text-muted-foreground">
+                          Scroll through the agreement above to enable
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {fieldErrors.waiver && (
+                    <p className="text-xs text-destructive">
+                      {fieldErrors.waiver}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {status === 'error' && (
                 <p className="text-sm text-destructive">{errorMessage}</p>
               )}
@@ -615,7 +783,7 @@ export function ZellePaymentSheet({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={status === 'sending' || fileReading}
+                  disabled={status === 'sending' || fileReading || !canSubmit}
                   className="gap-2"
                 >
                   {status === 'sending' ? (
