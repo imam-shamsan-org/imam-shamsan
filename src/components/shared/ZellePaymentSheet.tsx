@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Check,
   Copy,
@@ -16,7 +17,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { submitContactForm } from '@/lib/email'
-import { cn } from '@/lib/utils'
 import {
   PERSON_NAME,
   ZELLE_EMAIL,
@@ -138,7 +138,7 @@ export function ZellePaymentSheet({
   const [attachment, setAttachment] = useState<Attachment | null>(null)
   const [fileReading, setFileReading] = useState(false)
   const [waiverAccepted, setWaiverAccepted] = useState(false)
-  const [hasScrolledWaiver, setHasScrolledWaiver] = useState(false)
+  const [waiverDialogOpen, setWaiverDialogOpen] = useState(false)
   const [status, setStatus] = useState<FormStatus>('idle')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [errorMessage, setErrorMessage] = useState('')
@@ -154,7 +154,7 @@ export function ZellePaymentSheet({
     setAttachment(null)
     setFileReading(false)
     setWaiverAccepted(false)
-    setHasScrolledWaiver(false)
+    setWaiverDialogOpen(false)
     setStatus('idle')
     setFieldErrors({})
     setErrorMessage('')
@@ -165,18 +165,14 @@ export function ZellePaymentSheet({
     if (!open) reset()
   }, [open, reset])
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     if (status === 'sending') return
-    onClose()
-  }
-
-  function handleWaiverScroll(e: React.UIEvent<HTMLDivElement>) {
-    if (hasScrolledWaiver) return
-    const el = e.currentTarget
-    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 4) {
-      setHasScrolledWaiver(true)
+    if (waiverDialogOpen) {
+      setWaiverDialogOpen(false)
+      return
     }
-  }
+    onClose()
+  }, [status, waiverDialogOpen, onClose])
 
   async function copyToClipboard(text: string, type: 'email' | 'phone') {
     try {
@@ -323,6 +319,7 @@ export function ZellePaymentSheet({
       (message.trim().length > 0 && waiverAccepted))
 
   return (
+    <>
     <Dialog open={open} onClose={handleClose} className="max-w-3xl">
       <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-border">
         {/* Left: Zelle info */}
@@ -679,89 +676,46 @@ export function ZellePaymentSheet({
 
               {/* Waiver (service mode only) */}
               {ctx.mode === 'service' && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm">
-                      Service Agreement & Waiver *
-                    </Label>
-                    {!hasScrolledWaiver && (
-                      <span className="text-xs text-muted-foreground">
-                        ↓ Scroll to read
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="relative">
-                    <div
-                      className="max-h-44 overflow-y-auto rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed"
-                      onScroll={handleWaiverScroll}
-                    >
-                      <p className="mb-1 text-sm font-semibold text-foreground">
-                        Ruqyah Service Agreement, Consent & Liability Waiver
-                      </p>
-                      <p className="mb-3 text-muted-foreground">
-                        (Pennsylvania, USA)
-                      </p>
-                      <div className="space-y-3">
-                        {WAIVER_CLAUSES.map(({ n, title, body }) => (
-                          <div key={n}>
-                            <p className="font-medium text-foreground">
-                              {n}. {title}
-                            </p>
-                            <p className="mt-0.5 text-muted-foreground">
-                              {body}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {!hasScrolledWaiver && (
-                      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 rounded-b-lg bg-gradient-to-t from-muted/80 to-transparent" />
-                    )}
-                  </div>
-
-                  <div className="flex items-start gap-2.5 pt-0.5">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2.5">
                     <input
                       type="checkbox"
                       id="zps-waiver"
                       checked={waiverAccepted}
-                      onChange={(e) => {
-                        setWaiverAccepted(e.target.checked)
-                        if (fieldErrors.waiver)
-                          setFieldErrors((f) => ({ ...f, waiver: undefined }))
+                      onChange={() => {}}
+                      onClick={(e) => {
+                        if (!waiverAccepted) {
+                          e.preventDefault()
+                          setWaiverDialogOpen(true)
+                        } else {
+                          setWaiverAccepted(false)
+                        }
                       }}
-                      disabled={!hasScrolledWaiver}
-                      className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-40"
+                      className="size-4 shrink-0 cursor-pointer accent-primary"
                     />
-                    <div className="space-y-0.5">
-                      <label
-                        htmlFor="zps-waiver"
-                        className={cn(
-                          'text-sm leading-snug',
-                          hasScrolledWaiver
-                            ? 'cursor-pointer text-foreground'
-                            : 'cursor-not-allowed text-muted-foreground',
-                        )}
+                    <label
+                      htmlFor="zps-waiver"
+                      className="text-sm text-foreground cursor-pointer whitespace-nowrap"
+                      onClick={(e) => {
+                        if (!waiverAccepted) {
+                          e.preventDefault()
+                          setWaiverDialogOpen(true)
+                        }
+                      }}
+                    >
+                      I accept the service waiver —{' '}
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        onClick={() => setWaiverDialogOpen(true)}
+                        className="text-primary underline underline-offset-2 hover:opacity-75 transition-opacity"
                       >
-                        I confirm that I have read, understood, and agree to all
-                        of the above terms
-                      </label>
-                      <ArabicText
-                        as="p"
-                        className="text-xs text-muted-foreground"
-                      >
-                        قرأت الشروط وأوافق عليها
-                      </ArabicText>
-                      {!hasScrolledWaiver && (
-                        <p className="text-xs text-muted-foreground">
-                          Scroll through the agreement above to enable
-                        </p>
-                      )}
-                    </div>
+                        read it
+                      </button>
+                    </label>
                   </div>
-
                   {fieldErrors.waiver && (
-                    <p className="text-xs text-destructive">
+                    <p className="text-xs text-destructive pl-6">
                       {fieldErrors.waiver}
                     </p>
                   )}
@@ -804,5 +758,68 @@ export function ZellePaymentSheet({
         </div>
       </div>
     </Dialog>
+
+      {waiverDialogOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+              onClick={() => setWaiverDialogOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="waiver-dialog-title"
+              className="relative z-10 flex w-full max-w-lg flex-col rounded-xl bg-card shadow-2xl ring-1 ring-foreground/10 animate-in fade-in zoom-in-95 duration-200 max-h-[80vh]"
+            >
+              <div className="border-b border-border px-5 py-4">
+                <h2
+                  id="waiver-dialog-title"
+                  className="text-base font-semibold text-foreground"
+                >
+                  Ruqyah Service Agreement, Consent & Liability Waiver
+                </h2>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  (Pennsylvania, USA)
+                </p>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-5 py-4 text-xs leading-relaxed space-y-3">
+                {WAIVER_CLAUSES.map(({ n, title, body }) => (
+                  <div key={n}>
+                    <p className="font-medium text-foreground">
+                      {n}. {title}
+                    </p>
+                    <p className="mt-0.5 text-muted-foreground">{body}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end gap-3 border-t border-border px-5 py-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setWaiverDialogOpen(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setWaiverAccepted(true)
+                    setFieldErrors((f) => ({ ...f, waiver: undefined }))
+                    setWaiverDialogOpen(false)
+                  }}
+                >
+                  I Accept
+                </Button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+    </>
   )
 }
