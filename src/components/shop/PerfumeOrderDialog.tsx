@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
-import { submitContactForm } from '@/lib/email'
+import { submitShopOrder } from '@/lib/email'
 import {
   PERSON_NAME,
   ZELLE_EMAIL,
@@ -187,25 +187,24 @@ export function PerfumeOrderDialog(props: PerfumeOrderDialogProps) {
     setStatus('sending')
     setErrorMessage('')
 
-    const service =
-      props.mode === 'signature'
-        ? `Perfume Order – ${props.perfume.name}`
-        : `Perfume Order – Custom Blend`
+    const item =
+      props.mode === 'signature' ? props.perfume.name : 'Custom Blend'
 
-    const message =
+    const details =
       props.mode === 'signature'
-        ? `Signature scent: ${props.perfume.name} (${props.perfume.nameAr})`
-        : `Custom blend notes: ${props.selectedNotes.map((n) => n.nameEn).join(', ')}`
+        ? `${props.perfume.name} (${props.perfume.nameAr})`
+        : `Selected notes: ${props.selectedNotes.map((n) => n.nameEn).join(', ')}`
 
     try {
-      const result = await submitContactForm({
+      const result = await submitShopOrder({
         data: {
           name: name.trim(),
           email: email.trim(),
           phone: phone || undefined,
-          service,
-          message,
-          attachment: attachment ?? undefined,
+          category: 'Perfumes',
+          item,
+          details,
+          attachment: attachment!,
         },
       })
       if (result.success) {

@@ -112,3 +112,84 @@ export const submitContactForm = createServerFn({
   .handler(async ({ data }) => {
     return sendContactEmail(data)
   })
+
+// ── Shop Orders ──────────────────────────────────────────────
+
+const shopOrderSchema = z.object({
+  name: z.string().min(1).max(200),
+  email: z.string().email().max(320),
+  phone: z.string().max(30).optional(),
+  category: z.string().max(100),
+  item: z.string().max(300),
+  details: z.string().max(1000),
+  attachment: z.object({
+    filename: z.string().max(255),
+    content: z.string(),
+    mimeType: z.enum(['application/pdf', 'image/png']),
+  }),
+})
+
+type ShopOrderData = z.infer<typeof shopOrderSchema>
+
+async function sendShopOrderEmail(
+  data: ShopOrderData,
+): Promise<{ success: boolean; error?: string }> {
+  const resendApiKey = process.env.RESEND_API_KEY
+  const contactEmail = process.env.CONTACT_EMAIL || 'mccgpimamshamsan@gmail.com'
+
+  if (!resendApiKey) {
+    console.error('RESEND_API_KEY not configured')
+    return { success: false, error: 'Email service not configured' }
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: `Dr. Imam Shamsan Website <onboarding@resend.dev>`,
+        to: contactEmail,
+        subject: `New Shop Order – ${escapeHtml(data.item)} — from ${escapeHtml(data.name)}`,
+        html: `
+          <h2>New Shop Order</h2>
+          <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+          ${data.phone ? `<p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>` : ''}
+          <p><strong>Category:</strong> ${escapeHtml(data.category)}</p>
+          <p><strong>Item:</strong> ${escapeHtml(data.item)}</p>
+          <p><strong>Details:</strong> ${escapeHtml(data.details)}</p>
+          <p><em>Receipt: ${escapeHtml(data.attachment.filename)}</em></p>
+        `,
+        reply_to: data.email,
+        attachments: [
+          {
+            filename: data.attachment.filename,
+            content: data.attachment.content,
+          },
+        ],
+      }),
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('Resend API error:', error)
+      return { success: false, error: 'Failed to send email' }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error sending shop order email:', error)
+    return { success: false, error: 'Failed to send email' }
+  }
+}
+
+export const submitShopOrder = createServerFn({
+  method: 'POST',
+})
+  .inputValidator(shopOrderSchema)
+  .handler(async ({ data }) => {
+    return sendShopOrderEmail(data)
+  })
