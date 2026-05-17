@@ -141,7 +141,10 @@ export function InquirySheet({
               {inquiryDescription}
             </p>
 
-            <div aria-hidden="true" className="mt-6 flex items-center gap-3 opacity-30">
+            <div
+              aria-hidden="true"
+              className="mt-6 flex items-center gap-3 opacity-30"
+            >
               <div className="h-px flex-1 bg-secondary" />
               <div className="size-1.5 rounded-full bg-secondary" />
               <div className="h-px flex-1 bg-secondary" />
@@ -197,10 +200,7 @@ export function InquirySheet({
               </Button>
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {/* Name */}
               <div className="space-y-1.5">
                 <Label htmlFor="inq-name">

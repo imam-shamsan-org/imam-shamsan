@@ -17,6 +17,7 @@ import type {
   HumanitarianCase,
   HumanitarianProject,
 } from '@/types/humanitarian'
+import type { PerfumeProduct } from '@/types/perfume'
 import { slugify } from '@/lib/utils'
 
 /** Response shape from Notion's POST /databases/{id}/query endpoint */
@@ -821,6 +822,90 @@ async function fetchHumanitarianCasesByPageId(
   })
 }
 
+// ── Shop — Perfumes ──────────────────────────────────────────
+
+function pageToPerfume(page: PageObjectResponse): PerfumeProduct {
+  const props = page.properties
+
+  const ingredientsEnRaw =
+    (getPropertyValue(props['Ingredients EN']) as string) || ''
+  const ingredientsArRaw =
+    (getPropertyValue(props['Ingredients AR']) as string) || ''
+
+  const ingredientsEn = ingredientsEnRaw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const ingredientsAr = ingredientsArRaw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const colorAccentRaw =
+    (getPropertyValue(props['Color Accent']) as string) || ''
+
+  const validColorAccents = [
+    'yellow',
+    'brown',
+    'orange',
+    'teal',
+    'pink',
+    'red',
+    'green',
+    'blue',
+  ] as const
+
+  const colorAccent: PerfumeProduct['colorAccent'] = (
+    validColorAccents as ReadonlyArray<string>
+  ).includes(colorAccentRaw)
+    ? (colorAccentRaw as PerfumeProduct['colorAccent'])
+    : 'yellow'
+
+  const photoUrl = getImageUrl(props, 'Photo')
+
+  return {
+    id: page.id,
+    name: (getPropertyValue(props['Name']) as string) || '',
+    nameAr: (getPropertyValue(props['Arabic Name']) as string) || '',
+    taglineEn: (getPropertyValue(props['Tagline EN']) as string) || '',
+    taglineAr: (getPropertyValue(props['Tagline AR']) as string) || '',
+    ingredientsEn,
+    ingredientsAr,
+    moodEn: (getPropertyValue(props['Mood EN']) as string) || '',
+    moodAr: (getPropertyValue(props['Mood AR']) as string) || '',
+    colorAccent,
+    photo: photoUrl || null,
+    sortOrder: (getPropertyValue(props['Sort Order']) as number) || 0,
+  }
+}
+
+async function fetchPublishedPerfumes(): Promise<Array<PerfumeProduct>> {
+  const databaseId = getDbId('NOTION_SHOP_DATABASE_ID')
+  if (!isNotionConfigured() || !databaseId) return []
+
+  return withCache('shop:perfumes', async () => {
+    try {
+      const response = await queryDatabase(databaseId, {
+        filter: {
+          and: [
+            { property: 'Status', select: { equals: 'Published' } },
+            { property: 'Category', select: { equals: 'Perfumes' } },
+          ],
+        },
+        sorts: [{ property: 'Sort Order', direction: 'ascending' }],
+      })
+
+      return response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map(pageToPerfume)
+    } catch (error) {
+      console.error('Error fetching perfumes:', error)
+      return []
+    }
+  })
+}
+
 export const getHumanitarianProjects = createServerFn({
   method: 'GET',
 }).handler(async () => {
@@ -842,3 +927,9 @@ export const getHumanitarianCasesByProject = createServerFn({
   .handler(async ({ data: pageId }) => {
     return fetchHumanitarianCasesByPageId(pageId)
   })
+
+export const getPublishedPerfumes = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return fetchPublishedPerfumes()
+})

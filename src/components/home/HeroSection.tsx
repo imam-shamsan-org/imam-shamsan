@@ -36,10 +36,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
                 Shamsan&nbsp;Al-Jabi
               </span>
             </h1>
-            <ArabicText
-              as="h1"
-              className="mt-2 !text-center text-secondary"
-            >
+            <ArabicText as="h1" className="mt-2 !text-center text-secondary">
               {PERSON_NAME_AR}
             </ArabicText>
             <p className="mt-4 text-lg text-muted-foreground md:text-xl">

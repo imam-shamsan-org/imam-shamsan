@@ -64,7 +64,6 @@ type FieldErrors = Partial<
 type FormStatus = 'idle' | 'sending' | 'error' | 'success'
 type CopyFeedback = { type: 'email' | 'phone'; ok: boolean } | null
 
-
 const STEPS = [
   'Send payment via Zelle using the QR code, email, or phone number',
   'Fill in your details and attach your Zelle payment receipt',
@@ -315,449 +314,461 @@ export function ZellePaymentSheet({
     name.trim().length > 0 &&
     email.trim().length > 0 &&
     !!attachment &&
-    (ctx.mode !== 'service' ||
-      (message.trim().length > 0 && waiverAccepted))
+    (ctx.mode !== 'service' || (message.trim().length > 0 && waiverAccepted))
 
   return (
     <>
-    <Dialog open={open} onClose={handleClose} className="max-w-3xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-border">
-        {/* Left: Zelle info */}
-        <div className="relative overflow-hidden rounded-t-xl md:rounded-l-xl md:rounded-tr-none p-6 bg-primary/5 ring-1 ring-primary/15">
-          <BorderBeam size={150} duration={6} />
+      <Dialog open={open} onClose={handleClose} className="max-w-3xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-border">
+          {/* Left: Zelle info */}
+          <div className="relative overflow-hidden rounded-t-xl md:rounded-l-xl md:rounded-tr-none p-6 bg-primary/5 ring-1 ring-primary/15">
+            <BorderBeam size={150} duration={6} />
 
-          {/* Context badge */}
-          <div className="mb-5">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
-              {ctx.mode === 'service' ? 'Service' : 'Initiative'}
-            </p>
-            <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-semibold text-secondary">
-              {contextLabel}
-            </span>
-            {contextLabelAr && (
-              <ArabicText as="p" className="text-sm text-muted-foreground mt-1">
-                {contextLabelAr}
-              </ArabicText>
-            )}
-          </div>
-
-          {/* Price (service mode) */}
-          {ctx.mode === 'service' && ctx.priceDisplay && (
-            <div className="mb-5 rounded-lg bg-secondary/10 px-3 py-2">
-              <span className="text-sm font-semibold text-secondary">
-                {ctx.priceDisplay}
+            {/* Context badge */}
+            <div className="mb-5">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                {ctx.mode === 'service' ? 'Service' : 'Initiative'}
+              </p>
+              <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-semibold text-secondary">
+                {contextLabel}
               </span>
-              {ctx.priceNote && (
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {ctx.priceNote}
-                </p>
+              {contextLabelAr && (
+                <ArabicText
+                  as="p"
+                  className="text-sm text-muted-foreground mt-1"
+                >
+                  {contextLabelAr}
+                </ArabicText>
               )}
             </div>
-          )}
 
-          <div className="flex items-center gap-2 mb-4">
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-              1
-            </span>
-            <h3 className="text-base font-semibold text-foreground">
-              Send Payment via Zelle
-            </h3>
-          </div>
-
-          {/* QR code */}
-          <div className="mb-5 flex flex-col items-center gap-2">
-            <img
-              src={ZELLE_QR_URL}
-              alt="Scan to pay via Zelle"
-              className="w-36 h-36 rounded-lg border border-border object-contain bg-white p-1"
-            />
-            <p className="text-xs text-muted-foreground">
-              Scan with your Zelle app
-            </p>
-          </div>
-
-          {/* Email */}
-          <div className="mb-3">
-            <p className="text-xs text-muted-foreground mb-1.5">Email</p>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 truncate rounded bg-card/70 px-2 py-1 text-sm font-medium text-foreground">
-                {ZELLE_EMAIL}
-              </code>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(ZELLE_EMAIL, 'email')}
-                aria-label="Copy Zelle email address"
-                className="shrink-0 cursor-pointer rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                {copyFeedback?.type === 'email' && copyFeedback.ok ? (
-                  <Check className="size-3.5 text-primary" />
-                ) : (
-                  <Copy className="size-3.5" />
-                )}
-              </button>
-            </div>
-            {copyFeedback?.type === 'email' && (
-              <p
-                role="status"
-                aria-live="polite"
-                className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
-              >
-                {copyFeedback.ok
-                  ? 'Copied!'
-                  : 'Copy failed — please copy manually'}
-              </p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div className="mb-6">
-            <p className="text-xs text-muted-foreground mb-1.5">Phone</p>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 rounded bg-card/70 px-2 py-1 text-sm font-medium text-foreground">
-                {ZELLE_PHONE}
-              </code>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(ZELLE_PHONE, 'phone')}
-                aria-label="Copy Zelle phone number"
-                className="shrink-0 cursor-pointer rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                {copyFeedback?.type === 'phone' && copyFeedback.ok ? (
-                  <Check className="size-3.5 text-primary" />
-                ) : (
-                  <Copy className="size-3.5" />
-                )}
-              </button>
-            </div>
-            {copyFeedback?.type === 'phone' && (
-              <p
-                role="status"
-                aria-live="polite"
-                className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
-              >
-                {copyFeedback.ok
-                  ? 'Copied!'
-                  : 'Copy failed — please copy manually'}
-              </p>
-            )}
-          </div>
-
-          {/* Steps */}
-          <ol className="space-y-2.5">
-            {STEPS.map((step) => (
-              <li
-                key={step}
-                className="flex items-start gap-2.5 text-sm text-muted-foreground"
-              >
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                  {STEPS.indexOf(step) + 1}
+            {/* Price (service mode) */}
+            {ctx.mode === 'service' && ctx.priceDisplay && (
+              <div className="mb-5 rounded-lg bg-secondary/10 px-3 py-2">
+                <span className="text-sm font-semibold text-secondary">
+                  {ctx.priceDisplay}
                 </span>
-                {step}
-              </li>
-            ))}
-          </ol>
-        </div>
+                {ctx.priceNote && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {ctx.priceNote}
+                  </p>
+                )}
+              </div>
+            )}
 
-        {/* Right: Form */}
-        <div className="p-6">
-          {status === 'success' ? (
-            <div className="flex h-full flex-col items-center justify-center py-8 text-center gap-4">
-              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-                <Check className="size-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {ctx.mode === 'service' ? 'Booking Sent!' : 'Message Sent!'}
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {personName} will be in touch with you soon, insha'Allah.
-                </p>
-              </div>
-              <Button variant="outline" onClick={handleClose} className="mt-2">
-                Done
-              </Button>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                1
+              </span>
+              <h3 className="text-base font-semibold text-foreground">
+                Send Payment via Zelle
+              </h3>
             </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="flex h-full flex-col gap-4"
-            >
+
+            {/* QR code */}
+            <div className="mb-5 flex flex-col items-center gap-2">
+              <img
+                src={ZELLE_QR_URL}
+                alt="Scan to pay via Zelle"
+                className="w-36 h-36 rounded-lg border border-border object-contain bg-white p-1"
+              />
+              <p className="text-xs text-muted-foreground">
+                Scan with your Zelle app
+              </p>
+            </div>
+
+            {/* Email */}
+            <div className="mb-3">
+              <p className="text-xs text-muted-foreground mb-1.5">Email</p>
               <div className="flex items-center gap-2">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                  2
-                </span>
-                <h3 className="text-base font-semibold text-foreground">
-                  {ctx.mode === 'service'
-                    ? 'Confirm Your Booking'
-                    : 'Your Details'}
-                </h3>
-              </div>
-
-              <div className="rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-2.5 text-sm text-foreground">
-                <span className="font-medium">After sending payment,</span> fill
-                in your details and attach your Zelle receipt — both are
-                required to confirm your booking.
-              </div>
-
-              {/* Name */}
-              <div className="space-y-1.5">
-                <Label htmlFor="zps-name">Name *</Label>
-                <Input
-                  id="zps-name"
-                  autoFocus
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value)
-                    if (fieldErrors.name)
-                      setFieldErrors((f) => ({ ...f, name: undefined }))
-                  }}
-                  placeholder="Your full name"
-                  aria-invalid={!!fieldErrors.name}
-                />
-                {fieldErrors.name && (
-                  <p className="text-xs text-destructive">{fieldErrors.name}</p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div className="space-y-1.5">
-                <Label htmlFor="zps-email">Email *</Label>
-                <Input
-                  id="zps-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    if (fieldErrors.email)
-                      setFieldErrors((f) => ({ ...f, email: undefined }))
-                  }}
-                  placeholder="you@example.com"
-                  aria-invalid={!!fieldErrors.email}
-                />
-                {fieldErrors.email && (
-                  <p className="text-xs text-destructive">
-                    {fieldErrors.email}
-                  </p>
-                )}
-              </div>
-
-              {/* Phone (service mode only) */}
-              {ctx.mode === 'service' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="zps-phone">
-                    Phone{' '}
-                    <span className="font-normal text-muted-foreground">
-                      (optional)
-                    </span>
-                  </Label>
-                  <Input
-                    id="zps-phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="(555) 123-4567"
-                  />
-                </div>
-              )}
-
-              {/* Case — pre-filled pill */}
-              {ctx.mode === 'contribution' && ctx.caseTitle && (
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground">Case</p>
-                  <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-medium text-secondary">
-                    {ctx.caseTitle}
-                  </span>
-                </div>
-              )}
-
-              {/* Case — optional input */}
-              {ctx.mode === 'contribution' && !ctx.caseTitle && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="zps-case">
-                    Specific Case{' '}
-                    <span className="font-normal text-muted-foreground">
-                      (optional)
-                    </span>
-                  </Label>
-                  <Input
-                    id="zps-case"
-                    value={caseInput}
-                    onChange={(e) => setCaseInput(e.target.value)}
-                    placeholder="e.g. Case #3 — Ahmad's family"
-                  />
-                </div>
-              )}
-
-              {/* Message */}
-              <div className="space-y-1.5">
-                <Label htmlFor="zps-message">
-                  Message{' '}
-                  {messageRequired ? (
-                    '*'
+                <code className="flex-1 truncate rounded bg-card/70 px-2 py-1 text-sm font-medium text-foreground">
+                  {ZELLE_EMAIL}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(ZELLE_EMAIL, 'email')}
+                  aria-label="Copy Zelle email address"
+                  className="shrink-0 cursor-pointer rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  {copyFeedback?.type === 'email' && copyFeedback.ok ? (
+                    <Check className="size-3.5 text-primary" />
                   ) : (
-                    <span className="font-normal text-muted-foreground">
-                      (optional)
-                    </span>
+                    <Copy className="size-3.5" />
                   )}
-                </Label>
-                <Textarea
-                  id="zps-message"
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value)
-                    if (fieldErrors.message)
-                      setFieldErrors((f) => ({ ...f, message: undefined }))
-                  }}
-                  placeholder={
-                    ctx.mode === 'service'
-                      ? 'Tell us about your booking needs...'
-                      : 'Any questions or details about your contribution...'
-                  }
-                  rows={3}
-                  aria-invalid={!!fieldErrors.message}
-                />
-                {fieldErrors.message && (
-                  <p className="text-xs text-destructive">
-                    {fieldErrors.message}
-                  </p>
-                )}
+                </button>
               </div>
+              {copyFeedback?.type === 'email' && (
+                <p
+                  role="status"
+                  aria-live="polite"
+                  className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
+                >
+                  {copyFeedback.ok
+                    ? 'Copied!'
+                    : 'Copy failed — please copy manually'}
+                </p>
+              )}
+            </div>
 
-              {/* Upload receipt */}
-              <div className="space-y-1.5">
-                <Label htmlFor="zps-file">
-                  Payment Receipt *{' '}
-                  <span className="font-normal text-muted-foreground">
-                    (PDF or PNG · max 3 MB)
+            {/* Phone */}
+            <div className="mb-6">
+              <p className="text-xs text-muted-foreground mb-1.5">Phone</p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 rounded bg-card/70 px-2 py-1 text-sm font-medium text-foreground">
+                  {ZELLE_PHONE}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(ZELLE_PHONE, 'phone')}
+                  aria-label="Copy Zelle phone number"
+                  className="shrink-0 cursor-pointer rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  {copyFeedback?.type === 'phone' && copyFeedback.ok ? (
+                    <Check className="size-3.5 text-primary" />
+                  ) : (
+                    <Copy className="size-3.5" />
+                  )}
+                </button>
+              </div>
+              {copyFeedback?.type === 'phone' && (
+                <p
+                  role="status"
+                  aria-live="polite"
+                  className={`mt-1 text-xs ${copyFeedback.ok ? 'text-primary' : 'text-destructive'}`}
+                >
+                  {copyFeedback.ok
+                    ? 'Copied!'
+                    : 'Copy failed — please copy manually'}
+                </p>
+              )}
+            </div>
+
+            {/* Steps */}
+            <ol className="space-y-2.5">
+              {STEPS.map((step) => (
+                <li
+                  key={step}
+                  className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                >
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                    {STEPS.indexOf(step) + 1}
                   </span>
-                </Label>
-                {attachment ? (
-                  <div className="flex items-center gap-2 rounded-lg border border-border bg-accent/30 px-3 py-2">
-                    <FileText className="size-4 shrink-0 text-primary" />
-                    <span className="flex-1 truncate text-sm text-foreground">
-                      {attachment.filename}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={removeAttachment}
-                      aria-label="Remove attachment"
-                      className="shrink-0 cursor-pointer rounded p-1 text-muted-foreground transition-colors hover:text-destructive"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
-                  </div>
-                ) : (
-                  <label
-                    htmlFor="zps-file"
-                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-accent/30"
-                  >
-                    {fileReading ? (
-                      <Loader2 className="size-4 animate-spin text-primary" />
-                    ) : (
-                      <Upload className="size-4 text-primary" />
-                    )}
-                    {fileReading
-                      ? 'Reading file…'
-                      : 'Attach your Zelle receipt (click or drag)'}
-                    <input
-                      id="zps-file"
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".pdf,.png,application/pdf,image/png"
-                      onChange={handleFileChange}
-                      className="sr-only"
-                    />
-                  </label>
-                )}
-                {fieldErrors.file && (
-                  <p className="text-xs text-destructive">{fieldErrors.file}</p>
-                )}
-              </div>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
 
-              {/* Waiver (service mode only) */}
-              {ctx.mode === 'service' && (
+          {/* Right: Form */}
+          <div className="p-6">
+            {status === 'success' ? (
+              <div className="flex h-full flex-col items-center justify-center py-8 text-center gap-4">
+                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
+                  <Check className="size-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {ctx.mode === 'service' ? 'Booking Sent!' : 'Message Sent!'}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {personName} will be in touch with you soon, insha'Allah.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={handleClose}
+                  className="mt-2"
+                >
+                  Done
+                </Button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="flex h-full flex-col gap-4"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    2
+                  </span>
+                  <h3 className="text-base font-semibold text-foreground">
+                    {ctx.mode === 'service'
+                      ? 'Confirm Your Booking'
+                      : 'Your Details'}
+                  </h3>
+                </div>
+
+                <div className="rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-2.5 text-sm text-foreground">
+                  <span className="font-medium">After sending payment,</span>{' '}
+                  fill in your details and attach your Zelle receipt — both are
+                  required to confirm your booking.
+                </div>
+
+                {/* Name */}
                 <div className="space-y-1.5">
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      id="zps-waiver"
-                      checked={waiverAccepted}
-                      onChange={() => {}}
-                      onClick={(e) => {
-                        if (!waiverAccepted) {
-                          e.preventDefault()
-                          setWaiverDialogOpen(true)
-                        } else {
-                          setWaiverAccepted(false)
-                        }
-                      }}
-                      className="size-4 shrink-0 cursor-pointer accent-primary"
-                    />
-                    <label
-                      htmlFor="zps-waiver"
-                      className="text-sm text-foreground cursor-pointer whitespace-nowrap"
-                      onClick={(e) => {
-                        if (!waiverAccepted) {
-                          e.preventDefault()
-                          setWaiverDialogOpen(true)
-                        }
-                      }}
-                    >
-                      I accept the service waiver —{' '}
-                      <button
-                        type="button"
-                        tabIndex={-1}
-                        onClick={() => setWaiverDialogOpen(true)}
-                        className="text-primary underline underline-offset-2 hover:opacity-75 transition-opacity"
-                      >
-                        read it
-                      </button>
-                    </label>
-                  </div>
-                  {fieldErrors.waiver && (
-                    <p className="text-xs text-destructive pl-6">
-                      {fieldErrors.waiver}
+                  <Label htmlFor="zps-name">Name *</Label>
+                  <Input
+                    id="zps-name"
+                    autoFocus
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      if (fieldErrors.name)
+                        setFieldErrors((f) => ({ ...f, name: undefined }))
+                    }}
+                    placeholder="Your full name"
+                    aria-invalid={!!fieldErrors.name}
+                  />
+                  {fieldErrors.name && (
+                    <p className="text-xs text-destructive">
+                      {fieldErrors.name}
                     </p>
                   )}
                 </div>
-              )}
 
-              {status === 'error' && (
-                <p className="text-sm text-destructive">{errorMessage}</p>
-              )}
-
-              <div className="mt-auto flex justify-end gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  disabled={status === 'sending'}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={status === 'sending' || fileReading || !canSubmit}
-                  className="gap-2"
-                >
-                  {status === 'sending' ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      Sending…
-                    </>
-                  ) : (
-                    <>
-                      <Send className="size-4" />
-                      {ctx.mode === 'service' ? 'Send Booking' : 'Send Message'}
-                    </>
+                {/* Email */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="zps-email">Email *</Label>
+                  <Input
+                    id="zps-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (fieldErrors.email)
+                        setFieldErrors((f) => ({ ...f, email: undefined }))
+                    }}
+                    placeholder="you@example.com"
+                    aria-invalid={!!fieldErrors.email}
+                  />
+                  {fieldErrors.email && (
+                    <p className="text-xs text-destructive">
+                      {fieldErrors.email}
+                    </p>
                   )}
-                </Button>
-              </div>
-            </form>
-          )}
+                </div>
+
+                {/* Phone (service mode only) */}
+                {ctx.mode === 'service' && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="zps-phone">
+                      Phone{' '}
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
+                    </Label>
+                    <Input
+                      id="zps-phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                )}
+
+                {/* Case — pre-filled pill */}
+                {ctx.mode === 'contribution' && ctx.caseTitle && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Case</p>
+                    <span className="inline-flex items-center rounded-full bg-secondary/15 px-3 py-1 text-sm font-medium text-secondary">
+                      {ctx.caseTitle}
+                    </span>
+                  </div>
+                )}
+
+                {/* Case — optional input */}
+                {ctx.mode === 'contribution' && !ctx.caseTitle && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="zps-case">
+                      Specific Case{' '}
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
+                    </Label>
+                    <Input
+                      id="zps-case"
+                      value={caseInput}
+                      onChange={(e) => setCaseInput(e.target.value)}
+                      placeholder="e.g. Case #3 — Ahmad's family"
+                    />
+                  </div>
+                )}
+
+                {/* Message */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="zps-message">
+                    Message{' '}
+                    {messageRequired ? (
+                      '*'
+                    ) : (
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
+                    )}
+                  </Label>
+                  <Textarea
+                    id="zps-message"
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value)
+                      if (fieldErrors.message)
+                        setFieldErrors((f) => ({ ...f, message: undefined }))
+                    }}
+                    placeholder={
+                      ctx.mode === 'service'
+                        ? 'Tell us about your booking needs...'
+                        : 'Any questions or details about your contribution...'
+                    }
+                    rows={3}
+                    aria-invalid={!!fieldErrors.message}
+                  />
+                  {fieldErrors.message && (
+                    <p className="text-xs text-destructive">
+                      {fieldErrors.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Upload receipt */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="zps-file">
+                    Payment Receipt *{' '}
+                    <span className="font-normal text-muted-foreground">
+                      (PDF or PNG · max 3 MB)
+                    </span>
+                  </Label>
+                  {attachment ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-border bg-accent/30 px-3 py-2">
+                      <FileText className="size-4 shrink-0 text-primary" />
+                      <span className="flex-1 truncate text-sm text-foreground">
+                        {attachment.filename}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={removeAttachment}
+                        aria-label="Remove attachment"
+                        className="shrink-0 cursor-pointer rounded p-1 text-muted-foreground transition-colors hover:text-destructive"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="zps-file"
+                      className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-accent/30"
+                    >
+                      {fileReading ? (
+                        <Loader2 className="size-4 animate-spin text-primary" />
+                      ) : (
+                        <Upload className="size-4 text-primary" />
+                      )}
+                      {fileReading
+                        ? 'Reading file…'
+                        : 'Attach your Zelle receipt (click or drag)'}
+                      <input
+                        id="zps-file"
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.png,application/pdf,image/png"
+                        onChange={handleFileChange}
+                        className="sr-only"
+                      />
+                    </label>
+                  )}
+                  {fieldErrors.file && (
+                    <p className="text-xs text-destructive">
+                      {fieldErrors.file}
+                    </p>
+                  )}
+                </div>
+
+                {/* Waiver (service mode only) */}
+                {ctx.mode === 'service' && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="checkbox"
+                        id="zps-waiver"
+                        checked={waiverAccepted}
+                        onChange={() => {}}
+                        onClick={(e) => {
+                          if (!waiverAccepted) {
+                            e.preventDefault()
+                            setWaiverDialogOpen(true)
+                          } else {
+                            setWaiverAccepted(false)
+                          }
+                        }}
+                        className="size-4 shrink-0 cursor-pointer accent-primary"
+                      />
+                      <label
+                        htmlFor="zps-waiver"
+                        className="text-sm text-foreground cursor-pointer whitespace-nowrap"
+                        onClick={(e) => {
+                          if (!waiverAccepted) {
+                            e.preventDefault()
+                            setWaiverDialogOpen(true)
+                          }
+                        }}
+                      >
+                        I accept the service waiver —{' '}
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          onClick={() => setWaiverDialogOpen(true)}
+                          className="text-primary underline underline-offset-2 hover:opacity-75 transition-opacity"
+                        >
+                          read it
+                        </button>
+                      </label>
+                    </div>
+                    {fieldErrors.waiver && (
+                      <p className="text-xs text-destructive pl-6">
+                        {fieldErrors.waiver}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {status === 'error' && (
+                  <p className="text-sm text-destructive">{errorMessage}</p>
+                )}
+
+                <div className="mt-auto flex justify-end gap-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleClose}
+                    disabled={status === 'sending'}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={status === 'sending' || fileReading || !canSubmit}
+                    className="gap-2"
+                  >
+                    {status === 'sending' ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        <Send className="size-4" />
+                        {ctx.mode === 'service'
+                          ? 'Send Booking'
+                          : 'Send Message'}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
 
       {waiverDialogOpen &&
         typeof document !== 'undefined' &&

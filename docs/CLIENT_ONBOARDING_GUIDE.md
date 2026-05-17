@@ -14,6 +14,7 @@ Welcome! This guide walks you through the accounts needed for your website and s
   - [Managing Gallery Photos](#managing-gallery-photos)
   - [Managing Recitations](#managing-recitations)
   - [Managing Humanitarian Aid](#managing-humanitarian-aid)
+  - [Managing the Shop (المتجر)](#managing-the-shop-المتجر)
   - [Updating Site Settings (Live Stream, Profile Image, Logo)](#updating-site-settings-live-stream-profile-image-logo)
   - [Uploading Images to Cloudinary](#uploading-images-to-cloudinary)
 - [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
@@ -142,19 +143,20 @@ Once the website is built, you will manage content through **two tools**:
 - **Notion** — for all text content, metadata, and links
 - **Cloudinary** — for uploading photos and images
 
-Your website has **9 Notion databases**:
+Your website has **10 Notion databases**:
 
-| Database              | What It Controls                                    |
-| --------------------- | --------------------------------------------------- |
-| Articles              | Writings/articles on the Writings page              |
-| Services              | Services listed on the Services page                |
-| Sermon Summaries      | Written khutbah summaries on the Sermons page       |
-| Gallery               | Individual photos on the Gallery page               |
-| Recitations           | Qur'anic recitation videos on the Media page        |
-| About Page            | Your biography, education, and background           |
-| Site Settings         | Live stream URL, profile image, logo                |
-| Humanitarian Projects | Initiative categories on the Humanitarian Aid page  |
-| Humanitarian Cases    | Individual sponsorable cases within each initiative |
+| Database              | What It Controls                                                        |
+| --------------------- | ----------------------------------------------------------------------- |
+| Articles              | Writings/articles on the Writings page                                  |
+| Services              | Services listed on the Services page                                    |
+| Sermon Summaries      | Written khutbah summaries on the Sermons page                           |
+| Gallery               | Individual photos on the Gallery page                                   |
+| Recitations           | Qur'anic recitation videos on the Media page                            |
+| About Page            | Your biography, education, and background                               |
+| Site Settings         | Live stream URL, profile image, logo                                    |
+| Humanitarian Projects | Initiative categories on the Humanitarian Aid page                      |
+| Humanitarian Cases    | Individual sponsorable cases within each initiative                     |
+| Shop Products         | Products listed on the Shop page (perfumes, and other items when ready) |
 
 ### Arabic & English
 
@@ -357,6 +359,59 @@ Cases appear under a specific project when "Has Cases" is checked. Each case rep
 
 ---
 
+### Managing the Shop (المتجر)
+
+The Shop page lets visitors browse and enquire about products. Everything is managed from a single Notion database called **"Shop Products"** — one database holds all categories (Perfumes, Hats, Thoubs, Honey, Coffee, and Leather Socks). Products are separated by their **Category** field.
+
+**At launch, only Perfumes are content-ready.** The other five categories (Hats, Thoubs, Honey, Coffee, Leather Socks) will automatically show a "Coming Soon" message on the site until you add entries with the matching Category. You do not need to do anything special — just add products when you are ready.
+
+---
+
+#### Adding a new Perfume product
+
+1. First, take a clear product photo and upload it to Cloudinary in the **`shop/`** folder (see "Uploading Images to Cloudinary" below). Copy the image URL.
+2. Open Notion and go to the **"Shop Products"** database
+3. Click **"+ New"** to create a new entry
+4. Fill in the properties (see the field guide below)
+5. Set **Status** to `Published` — the product will appear on the Shop page immediately
+
+---
+
+#### Field-by-field guide
+
+| Field              | What to enter                                                                                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Name**           | The product name in English (e.g., "Shamsan Fresh Bloom")                                                                                                                                      |
+| **Category**       | Select the product type — choose `Perfumes` for a perfume                                                                                                                                      |
+| **Arabic Name**    | The product name written in Arabic                                                                                                                                                             |
+| **Tagline EN**     | A short one-line description in English (e.g., "A fresh, uplifting scent for everyday wear")                                                                                                   |
+| **Tagline AR**     | The same short line written in Arabic                                                                                                                                                          |
+| **Ingredients EN** | _(Perfumes only)_ The scent notes, separated by commas (e.g., "Jasmine, Lemon, White Musk"). Leave blank for other categories.                                                                 |
+| **Ingredients AR** | _(Perfumes only)_ The same scent notes written in Arabic, separated by commas. Leave blank for other categories.                                                                               |
+| **Mood EN**        | _(Perfumes only)_ A short tag describing the occasion or character of the scent (e.g., "Fresh, daily use"). Leave blank for other categories.                                                  |
+| **Mood AR**        | _(Perfumes only)_ The mood written in Arabic (e.g., "خفيف – مناسب للمسجد والعمل"). Leave blank for other categories.                                                                           |
+| **Color Accent**   | Choose a colour that best matches the product's feel — this controls the accent colour shown on the product card on the website. Options: yellow, brown, orange, teal, pink, red, green, blue. |
+| **Photo**          | Paste the Cloudinary URL of the product photo (uploaded to the `shop/` folder)                                                                                                                 |
+| **Status**         | Set to `Published` to show on the website. Keep as `Draft` while you are still preparing the entry.                                                                                            |
+| **Sort Order**     | A number that controls the order products appear on the page (1 appears first, 2 second, and so on)                                                                                            |
+
+> **Tip for Ingredients and Mood:** These fields are for perfumes only. If you are adding a Hat, Thoub, or other product in the future, simply leave **Ingredients EN/AR** and **Mood EN/AR** blank — the website will not show those sections for non-perfume products.
+
+---
+
+#### Adding products from other categories (Hats, Thoubs, Honey, Coffee, Leather Socks)
+
+When you are ready to list products in any of the other categories, the process is exactly the same as above. Simply select the correct **Category** (e.g., `Honey`) and fill in the fields that apply. Once at least one entry with that Category is set to `Published`, the "Coming Soon" message for that category will automatically disappear and your products will appear instead.
+
+---
+
+#### Hiding or removing a product
+
+- To temporarily hide a product: change its **Status** to `Draft`
+- To permanently remove it: delete the row from the database
+
+---
+
 ### How Visitors Pay via Zelle
 
 When a visitor clicks a service card or a "Contribute" / "Sponsor" button on the Humanitarian Aid page, a payment panel opens showing:
@@ -439,6 +494,7 @@ Your Cloudinary account is organized into folders that match the sections of you
 | `writings/`     | Cover images for articles                              |
 | `sermons/`      | Cover images for sermon summaries                      |
 | `humanitarian/` | Patient and family photos for humanitarian cases       |
+| `shop/`         | Product photos for the Shop page                       |
 | `profile/`      | Your personal portraits and photos of yourself         |
 | `site/`         | Logo and other website brand assets (rarely changes)   |
 
@@ -509,6 +565,17 @@ To upload into a specific folder: in the Media Library, click into that folder f
 5. Paste the Cloudinary URL in "Patient Photo"
 6. Write the case story in the page body
 7. Set Status to "Published"
+
+### "I want to add a new perfume product"
+
+1. Upload the product photo to Cloudinary > `shop/` folder, copy the URL
+2. Open Notion > Shop Products database
+3. Click "+ New"
+4. Set Category to `Perfumes`
+5. Fill in Name, Arabic Name, Tagline EN, Tagline AR, Ingredients EN/AR, Mood EN/AR, Color Accent
+6. Paste the Cloudinary URL in "Photo"
+7. Set Sort Order (1 = appears first)
+8. Set Status to "Published"
 
 ### "I want to mark a case as fully funded"
 

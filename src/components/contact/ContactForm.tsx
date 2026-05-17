@@ -32,7 +32,9 @@ function validateForm(state: {
   return errors
 }
 
-export function ContactForm({ personName = 'Dr. Imam Shamsan' }: ContactFormProps) {
+export function ContactForm({
+  personName = 'Dr. Imam Shamsan',
+}: ContactFormProps) {
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -40,7 +42,9 @@ export function ContactForm({ personName = 'Dr. Imam Shamsan' }: ContactFormProp
     eventLocation: '',
     message: '',
   })
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle',
+  )
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
 
@@ -67,7 +71,13 @@ export function ContactForm({ personName = 'Dr. Imam Shamsan' }: ContactFormProp
 
       if (result.success) {
         setStatus('sent')
-        setFormState({ name: '', email: '', phone: '', eventLocation: '', message: '' })
+        setFormState({
+          name: '',
+          email: '',
+          phone: '',
+          eventLocation: '',
+          message: '',
+        })
         setFieldErrors({})
       } else {
         setStatus('error')

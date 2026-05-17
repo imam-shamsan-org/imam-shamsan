@@ -1,6 +1,6 @@
 # Developer Setup Guide — Imam Shamsan Website
 
-This guide covers how to set up the project locally, configure the 7 Notion databases and Cloudinary, and deploy to Vercel.
+This guide covers how to set up the project locally, configure the 9 Notion databases and Cloudinary, and deploy to Vercel.
 
 ---
 
@@ -78,7 +78,7 @@ npm run dev                   # starts dev server on port 3005
 
 ### Share Databases with the Integration
 
-Each of the 7 databases must be explicitly shared with the integration:
+Each of the 9 databases must be explicitly shared with the integration:
 
 - Open the database page in Notion
 - Click **"..."** (top right) > **"Connections"** > search for your integration name > **"Confirm"**
@@ -291,6 +291,55 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 ---
 
+### Database 8: Humanitarian Projects
+
+> Initiative categories for the Humanitarian Aid page. Each project is a container for individual sponsorable cases. Displayed on `/humanitarian`.
+
+| Property Name | Type      | Purpose                                                                                      |
+| ------------- | --------- | -------------------------------------------------------------------------------------------- |
+| Name          | Title     | Initiative name in English                                                                   |
+| Name (Arabic) | Rich text | Initiative name in Arabic                                                                    |
+| Description   | Rich text | Short description (2–3 sentences)                                                            |
+| Description (Arabic) | Rich text | Arabic description                                                                  |
+| Category      | Select    | Options: `Medical`, `Food`, `Water`, `Education`, `Family`, `Religious`                      |
+| Icon          | Rich text | Lucide icon keyword (e.g., `heart`, `stethoscope`)                                           |
+| Sort Order    | Number    | Display order on the page                                                                    |
+| Status        | Select    | Options: `Active`, `Completed`, `Paused`                                                     |
+
+**How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Each project page fetches its child database (cases) via the page's block children.
+
+**Env variable:** `NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID`
+
+---
+
+### Database 9: Shop Products
+
+> All shop products across all categories in a single database. The `Category` field distinguishes product types. At launch, only the Perfumes category has content — other categories show "Coming Soon" until entries are added.
+
+| Property Name  | Type   | Purpose                                                                             |
+| -------------- | ------ | ----------------------------------------------------------------------------------- |
+| Name           | Title  | English product name (e.g., "Shamsan Fresh Bloom")                                  |
+| Category       | Select | Options: `Perfumes`, `Hats`, `Thoubs`, `Honey`, `Coffee`, `Leather Socks`          |
+| Arabic Name    | Rich text | Arabic product name                                                              |
+| Tagline EN     | Rich text | Short one-liner in English                                                       |
+| Tagline AR     | Rich text | Short one-liner in Arabic                                                        |
+| Ingredients EN | Rich text | Comma-separated notes (Perfumes only, e.g., `Jasmine, Lemon, White Musk`)       |
+| Ingredients AR | Rich text | Arabic comma-separated notes (Perfumes only)                                     |
+| Mood EN        | Rich text | Occasion/character tag (Perfumes only, e.g., `Fresh, daily use`)                |
+| Mood AR        | Rich text | Arabic mood tag (Perfumes only)                                                  |
+| Color Accent   | Select | Options: `yellow`, `brown`, `orange`, `teal`, `pink`, `red`, `green`, `blue` — card dot |
+| Photo          | Files  | Cloudinary-uploaded product image                                                   |
+| Status         | Select | Options: `Published`, `Draft`                                                       |
+| Sort Order     | Number | Display order within a category                                                     |
+
+**How the code uses it:** `getPublishedPerfumes` filters `Status = Published` AND `Category = Perfumes`, sorted by `Sort Order`. Available perfume notes for the "Create Your Own" flow are hardcoded in `src/lib/perfume-notes.ts` — they are not stored in Notion.
+
+**Seed data:** Use `data/shop-perfumes.csv` to populate the 10 Signature Collection perfumes.
+
+**Env variable:** `NOTION_SHOP_DATABASE_ID`
+
+---
+
 ## 4. Cloudinary Setup
 
 ### What Cloudinary Does
@@ -337,6 +386,8 @@ NOTION_GALLERY_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_RECITATIONS_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_ABOUT_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_SETTINGS_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NOTION_SHOP_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # Cloudinary (cloud name only — no API key needed)
 CLOUDINARY_CLOUD_NAME=xxxxxxxxx
@@ -370,6 +421,8 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `/gallery`        | Gallery        | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
 | `/media`          | Media          | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
 | `/contact`        | Contact        | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
+| `/humanitarian`   | Humanitarian Aid | Humanitarian Projects                                   | Initiative categories with sponsorable cases; Zelle contribution flow                                                                                                                    |
+| `/shop`           | Shop           | Shop Products (perfumes)                                  | Category tab filter; Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders                               |
 
 ### Key Components
 
@@ -412,6 +465,7 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
 | `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                                                     |
 | `lib/constants.ts`  | Shared constants (categories, languages, `ZELLE_EMAIL`, `ZELLE_PHONE`)                                                            |
+| `lib/perfume-notes.ts` | Hardcoded `AVAILABLE_NOTES` and `NOTE_CATEGORIES` for the "Create Your Own" perfume flow (21 notes across 7 categories)      |
 | `lib/utils.ts`      | Utility functions (cn, formatDate, slugify)                                                                                       |
 
 ---
