@@ -21,7 +21,13 @@ interface PerfumeCardProps {
 
 export function PerfumeCard({ perfume, onOrder }: PerfumeCardProps) {
   return (
-    <div className="group ring-1 ring-foreground/10 bg-card rounded-xl overflow-hidden hover:ring-primary/30 hover:shadow-lg transition-all duration-200 flex flex-col cursor-pointer">
+    <div
+      className="group ring-1 ring-foreground/10 bg-card rounded-xl overflow-hidden hover:ring-primary/30 hover:shadow-lg transition-all duration-200 flex flex-col cursor-pointer"
+      onClick={onOrder}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onOrder()}
+    >
       <div
         className="h-1 w-full shrink-0"
         style={{ backgroundColor: COLOR_HEX_MAP[perfume.colorAccent] }}
@@ -72,7 +78,7 @@ export function PerfumeCard({ perfume, onOrder }: PerfumeCardProps) {
           <ArabicText as="span">{perfume.moodAr}</ArabicText>
         </span>
 
-        <Button onClick={onOrder} className="mt-auto w-full" size="sm">
+        <Button onClick={(e) => { e.stopPropagation(); onOrder() }} className="mt-auto w-full" size="sm">
           Order Now | اطلب الآن
         </Button>
       </div>
