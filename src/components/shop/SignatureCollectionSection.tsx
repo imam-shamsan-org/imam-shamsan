@@ -20,7 +20,7 @@ export function SignatureCollectionSection({
           <h2 className="text-3xl font-bold tracking-tight">
             Signature Collection
           </h2>
-          <ArabicText as="p" className="text-xl text-muted-foreground mt-1">
+          <ArabicText as="p" className="text-xl text-muted-foreground mt-1 text-center">
             تشكيلة شمسان المميزة
           </ArabicText>
           <p className="mt-3 text-muted-foreground text-sm max-w-xl mx-auto">

@@ -9,16 +9,19 @@ export type ImagePreset =
   | 'avatar'
   | 'favicon'
   | 'apple-touch-icon'
+  | 'perfume-card'
 
 interface PresetConfig {
   width: number
   height?: number
   crop?: 'fill' | 'fit' | 'scale'
+  gravity?: 'auto' | 'face' | 'center'
 }
 
 const presets: Record<ImagePreset, PresetConfig> = {
   thumbnail: { width: 400, height: 300, crop: 'fill' },
   card: { width: 600, height: 400, crop: 'fill' },
+  'perfume-card': { width: 400, height: 500, crop: 'fill', gravity: 'auto' },
   hero: { width: 1200, height: 800, crop: 'fill' },
   'article-cover': { width: 1200, height: 630, crop: 'fill' },
   'article-body': { width: 720 },
@@ -75,6 +78,7 @@ export function getOptimizedUrl(url: string, preset: ImagePreset): string {
   const transforms = [`w_${config.width}`]
   if (config.height) transforms.push(`h_${config.height}`)
   if (config.crop) transforms.push(`c_${config.crop}`)
+  if (config.gravity) transforms.push(`g_${config.gravity}`)
   transforms.push('q_auto', 'f_auto')
 
   return buildUrl(parsed.cloudName, parsed.imagePath, transforms)
@@ -100,6 +104,7 @@ export function getSrcSet(url: string, preset: ImagePreset): string {
       if (config.height)
         transforms.push(`h_${Math.round(config.height * (w / config.width))}`)
       if (config.crop) transforms.push(`c_${config.crop}`)
+      if (config.gravity) transforms.push(`g_${config.gravity}`)
       transforms.push('q_auto', 'f_auto')
       return `${buildUrl(parsed.cloudName, parsed.imagePath, transforms)} ${w}w`
     })
