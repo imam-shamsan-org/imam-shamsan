@@ -1,6 +1,6 @@
 # Developer Setup Guide — Imam Shamsan Website
 
-This guide covers how to set up the project locally, configure the 9 Notion databases and Cloudinary, and deploy to Vercel.
+This guide covers how to set up the project locally, configure the 10 Notion databases and Cloudinary, and deploy to Vercel.
 
 ---
 
@@ -78,7 +78,7 @@ npm run dev                   # starts dev server on port 3005
 
 ### Share Databases with the Integration
 
-Each of the 9 databases must be explicitly shared with the integration:
+Each of the 10 databases must be explicitly shared with the integration:
 
 - Open the database page in Notion
 - Click **"..."** (top right) > **"Connections"** > search for your integration name > **"Confirm"**
@@ -273,6 +273,7 @@ Create each database as a **full-page database** in Notion. Property names must 
 | live_stream_title | `Friday Khutbah - Week of Feb 14`                          | —                                                                                                                                                               |
 | profile_img       | `https://res.cloudinary.com/.../profile.jpg`               | —                                                                                                                                                               |
 | logo              | `https://res.cloudinary.com/.../logo.jpg`                  | —                                                                                                                                                               |
+| cv_url            | `https://res.cloudinary.com/.../cv.pdf`                    | — (Cloudinary URL of the imam's CV — PDF or image. When set, renders a `CvPreview` section at the bottom of the About page with View and Download buttons.)    |
 | youtube_url       | `https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg` | —                                                                                                                                                               |
 | facebook_url      | `https://www.facebook.com/shamsan.aljabi.2025`             | —                                                                                                                                                               |
 | instagram_url     | `https://www.instagram.com/dr.sham_san/`                   | —                                                                                                                                                               |
@@ -295,18 +296,19 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 > Initiative categories for the Humanitarian Aid page. Each project is a container for individual sponsorable cases. Displayed on `/humanitarian`.
 
-| Property Name | Type      | Purpose                                                                                      |
-| ------------- | --------- | -------------------------------------------------------------------------------------------- |
-| Name          | Title     | Initiative name in English                                                                   |
-| Name (Arabic) | Rich text | Initiative name in Arabic                                                                    |
-| Description   | Rich text | Short description (2–3 sentences)                                                            |
-| Description (Arabic) | Rich text | Arabic description                                                                  |
-| Category      | Select    | Options: `Medical`, `Food`, `Water`, `Education`, `Family`, `Religious`                      |
-| Icon          | Rich text | Lucide icon keyword (e.g., `heart`, `stethoscope`)                                           |
-| Sort Order    | Number    | Display order on the page                                                                    |
-| Status        | Select    | Options: `Active`, `Completed`, `Paused`                                                     |
+| Property Name        | Type      | Purpose                                                                                                    |
+| -------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
+| Name                 | Title     | Initiative name in English                                                                                 |
+| Slug                 | Rich text | URL-friendly identifier (e.g., `medical-aid`). Used for `/humanitarian/$slug` routes.                      |
+| Name (Arabic)        | Rich text | Initiative name in Arabic                                                                                  |
+| Description          | Rich text | Short description (2–3 sentences)                                                                          |
+| Description (Arabic) | Rich text | Arabic description                                                                                         |
+| Category             | Select    | Options: `Medical`, `Food`, `Water`, `Education`, `Family`, `Religious`, `Qurbani`                         |
+| Icon                 | Rich text | Lucide icon keyword — see `src/lib/humanitarian-icons.ts` for the full list of 27 supported keys           |
+| Sort Order           | Number    | Display order on the page                                                                                  |
+| Status               | Select    | Options: `Active`, `Completed`, `Paused`                                                                   |
 
-**How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Each project page fetches its child database (cases) via the page's block children.
+**How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Each project page fetches its child database (cases) via the page's block children — see Database 10 below.
 
 **Env variable:** `NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID`
 
@@ -337,6 +339,27 @@ Create each database as a **full-page database** in Notion. Property names must 
 **Seed data:** Use `data/shop-perfumes.csv` to populate the 10 Signature Collection perfumes.
 
 **Env variable:** `NOTION_SHOP_DATABASE_ID`
+
+---
+
+### Database 10: Humanitarian Cases (child database — no separate env var)
+
+> Individual sponsorable cases within a humanitarian project. **Not a standalone Notion database** — each case database lives as an inline/child database embedded directly inside its parent project's Notion page. The code finds it by fetching the project page's block children and locating the first block of type `child_database`.
+
+**How to create it in Notion:** Open a Humanitarian Project page, type `/database` → select **"Table — Inline"**. Share this child database with the integration (click the `...` menu inside the inline database > Connections > add integration).
+
+| Property Name | Type      | Purpose                                                    |
+| ------------- | --------- | ---------------------------------------------------------- |
+| Name          | Title     | Case name / family identifier (e.g., "Um Khalid — Mother of 5") |
+| Urgency       | Select    | Options: `Urgent`, `High`, `Ongoing`                       |
+| Poster URL    | URL       | Cloudinary URL of the case poster — supports both images (JPG/PNG) and PDFs. The case detail page renders images as `<img>` and PDFs as a full-viewport `<iframe>`. |
+| Status        | Select    | Options: `Published`, `Funded`, `Draft`                    |
+
+> **No Slug property:** The case slug is auto-generated from `Name` via `slugify()` in `pageToHumanitarianCase`. Do not add a Slug property to the child database.
+
+**How the code uses it:** `fetchHumanitarianCasesByPageId(pageId)` fetches the project page's block children, finds the first `child_database` block, and queries it with `Status = Published`. The case detail page (`/humanitarian/$slug/$caseSlug`) shows the poster full-viewport with a "Sponsor This Case" `ContributeDialog` (Zelle flow).
+
+**No env variable** — queried by page ID, not a named database.
 
 ---
 
@@ -421,8 +444,10 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `/gallery`        | Gallery        | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
 | `/media`          | Media          | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
 | `/contact`        | Contact        | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
-| `/humanitarian`   | Humanitarian Aid | Humanitarian Projects                                   | Initiative categories with sponsorable cases; Zelle contribution flow                                                                                                                    |
-| `/shop`           | Shop           | Shop Products (perfumes)                                  | Category tab filter; Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders                               |
+| `/humanitarian`                   | Humanitarian Aid     | Humanitarian Projects                     | Initiative categories grid; each project card links to its cases page                                                                                                                        |
+| `/humanitarian/$slug`             | Project cases list   | Humanitarian Project + child cases DB     | Lists all `Published` cases for the project with urgency badges; each case links to its detail page                                                                                           |
+| `/humanitarian/$slug/$caseSlug`   | Case detail          | Same loader as above (cached)             | Shows the case poster full-viewport (image or PDF iframe) with "Sponsor This Case" `ContributeDialog` (Zelle flow)                                                                            |
+| `/shop`                           | Shop                 | Shop Products (perfumes)                  | Category tab filter; Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders                                    |
 
 ### Key Components
 
@@ -465,8 +490,9 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
 | `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                                                     |
 | `lib/constants.ts`  | Shared constants (categories, languages, `ZELLE_EMAIL`, `ZELLE_PHONE`)                                                            |
-| `lib/perfume-notes.ts` | Hardcoded `AVAILABLE_NOTES` and `NOTE_CATEGORIES` for the "Create Your Own" perfume flow (21 notes across 7 categories)      |
-| `lib/utils.ts`      | Utility functions (cn, formatDate, slugify)                                                                                       |
+| `lib/perfume-notes.ts`        | Hardcoded `AVAILABLE_NOTES` and `NOTE_CATEGORIES` for the "Create Your Own" perfume flow (21 notes across 7 categories)      |
+| `lib/humanitarian-icons.ts`   | Maps the Notion `Icon` text field to Lucide icons. Registry of 27 supported keywords: `stethoscope`, `droplets`, `utensils`, `graduation-cap`, `home`, `book-open`, `truck`, `heart`, `users`, `hand-heart`, `wheat`, `chef-hat`, `shield-alert`, `baby`, `moon`, `star`, `building`, `shirt`, `syringe`, `heart-pulse`, `tent`, `soup`, `drill`, `scroll`, `rings`, `medical-bag`, `sunrise`. Falls back to a category-based default icon if the key is unrecognised. |
+| `lib/utils.ts`                | Utility functions (cn, formatDate, slugify)                                                                                       |
 
 ---
 
