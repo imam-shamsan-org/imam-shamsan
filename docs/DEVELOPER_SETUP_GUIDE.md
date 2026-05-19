@@ -1,6 +1,6 @@
 # Developer Setup Guide — Imam Shamsan Website
 
-This guide covers how to set up the project locally, configure the 10 Notion databases and Cloudinary, and deploy to Vercel.
+This guide covers how to set up the project locally, configure the 9 Notion databases and Cloudinary, and deploy to Vercel.
 
 ---
 
@@ -29,7 +29,7 @@ This guide covers how to set up the project locally, configure the 10 Notion dat
 ### Install & Run
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/imam-shamsan-org/imam-shamsan.git
 cd imam-shamsan
 npm install
 cp .env.example .env.local   # then fill in the values
@@ -78,7 +78,7 @@ npm run dev                   # starts dev server on port 3005
 
 ### Share Databases with the Integration
 
-Each of the 10 databases must be explicitly shared with the integration:
+Each of the 9 databases must be explicitly shared with the integration:
 
 - Open the database page in Notion
 - Click **"..."** (top right) > **"Connections"** > search for your integration name > **"Confirm"**
@@ -294,7 +294,7 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 ### Database 8: Humanitarian Projects
 
-> Initiative categories for the Humanitarian Aid page. Each project is a container for individual sponsorable cases. Displayed on `/humanitarian`.
+> Initiative cards for the Humanitarian Aid page. Each card represents one initiative. Displayed on `/humanitarian`.
 
 | Property Name        | Type      | Purpose                                                                                                    |
 | -------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
@@ -308,7 +308,7 @@ Create each database as a **full-page database** in Notion. Property names must 
 | Sort Order           | Number    | Display order on the page                                                                                  |
 | Status               | Select    | Options: `Active`, `Completed`, `Paused`                                                                   |
 
-**How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Each project page fetches its child database (cases) via the page's block children — see Database 10 below.
+**How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Rendered as a grid of `ProjectCard` components on `/humanitarian`. Each card opens the Zelle `ContributeDialog` flow.
 
 **Env variable:** `NOTION_HUMANITARIAN_PROJECTS_DATABASE_ID`
 
@@ -330,7 +330,7 @@ Create each database as a **full-page database** in Notion. Property names must 
 | Mood EN        | Rich text | Occasion/character tag (Perfumes only, e.g., `Fresh, daily use`)                |
 | Mood AR        | Rich text | Arabic mood tag (Perfumes only)                                                  |
 | Color Accent   | Select | Options: `yellow`, `brown`, `orange`, `teal`, `pink`, `red`, `green`, `blue` — card dot |
-| Photo          | Files  | Cloudinary-uploaded product image                                                   |
+| Photo          | URL    | Cloudinary URL of the product image (paste URL — do not upload directly to Notion)  |
 | Status         | Select | Options: `Published`, `Draft`                                                       |
 | Sort Order     | Number | Display order within a category                                                     |
 
@@ -339,27 +339,6 @@ Create each database as a **full-page database** in Notion. Property names must 
 **Seed data:** Use `data/shop-perfumes.csv` to populate the 10 Signature Collection perfumes.
 
 **Env variable:** `NOTION_SHOP_DATABASE_ID`
-
----
-
-### Database 10: Humanitarian Cases (child database — no separate env var)
-
-> Individual sponsorable cases within a humanitarian project. **Not a standalone Notion database** — each case database lives as an inline/child database embedded directly inside its parent project's Notion page. The code finds it by fetching the project page's block children and locating the first block of type `child_database`.
-
-**How to create it in Notion:** Open a Humanitarian Project page, type `/database` → select **"Table — Inline"**. Share this child database with the integration (click the `...` menu inside the inline database > Connections > add integration).
-
-| Property Name | Type      | Purpose                                                    |
-| ------------- | --------- | ---------------------------------------------------------- |
-| Name          | Title     | Case name / family identifier (e.g., "Um Khalid — Mother of 5") |
-| Urgency       | Select    | Options: `Urgent`, `High`, `Ongoing`                       |
-| Poster URL    | URL       | Cloudinary URL of the case poster — supports both images (JPG/PNG) and PDFs. The case detail page renders images as `<img>` and PDFs as a full-viewport `<iframe>`. |
-| Status        | Select    | Options: `Published`, `Funded`, `Draft`                    |
-
-> **No Slug property:** The case slug is auto-generated from `Name` via `slugify()` in `pageToHumanitarianCase`. Do not add a Slug property to the child database.
-
-**How the code uses it:** `fetchHumanitarianCasesByPageId(pageId)` fetches the project page's block children, finds the first `child_database` block, and queries it with `Status = Published`. The case detail page (`/humanitarian/$slug/$caseSlug`) shows the poster full-viewport with a "Sponsor This Case" `ContributeDialog` (Zelle flow).
-
-**No env variable** — queried by page ID, not a named database.
 
 ---
 
@@ -397,7 +376,7 @@ No folder structure is required. The code works with any valid Cloudinary URL re
 Add these to `.env.local` locally or in Vercel project settings:
 
 ```env
-# Site
+# Site — update to the custom domain once Namecheap is purchased; currently a Vercel subdomain
 SITE_URL=https://imamshamsan.com
 
 # Notion
@@ -444,9 +423,7 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `/gallery`        | Gallery        | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
 | `/media`          | Media          | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
 | `/contact`        | Contact        | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
-| `/humanitarian`                   | Humanitarian Aid     | Humanitarian Projects                     | Initiative categories grid; each project card links to its cases page                                                                                                                        |
-| `/humanitarian/$slug`             | Project cases list   | Humanitarian Project + child cases DB     | Lists all `Published` cases for the project with urgency badges; each case links to its detail page                                                                                           |
-| `/humanitarian/$slug/$caseSlug`   | Case detail          | Same loader as above (cached)             | Shows the case poster full-viewport (image or PDF iframe) with "Sponsor This Case" `ContributeDialog` (Zelle flow)                                                                            |
+| `/humanitarian`                   | Humanitarian Aid     | Humanitarian Projects                     | Grid of initiative cards; each card opens the Zelle `ContributeDialog` flow                                                                                                                   |
 | `/shop`                           | Shop                 | Shop Products (perfumes)                  | Category tab filter; Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders                                    |
 
 ### Key Components
@@ -484,7 +461,7 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `lib/notion.ts`     | All Notion API queries + server functions (with in-memory TTL cache)                                                              |
 | `lib/parsers.ts`    | Notion block → `ContentBlock` parser                                                                                              |
 | `lib/cloudinary.ts` | Cloudinary URL transformation helpers (presets, srcSet, blur placeholders)                                                        |
-| `lib/email.ts`      | Resend API integration for contact form (zod-validated). Supports optional PDF/PNG attachment forwarded via Resend `attachments`. |
+| `lib/email.ts`      | Resend API integration — handles contact form submissions and shop order emails (both zod-validated). Contact form supports optional PDF/PNG attachment; shop orders include selected perfume notes. |
 | `lib/seo.ts`        | SEO meta tags, Open Graph, JSON-LD schemas                                                                                        |
 | `lib/youtube.ts`    | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings.                                    |
 | `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
@@ -571,39 +548,41 @@ The imam manages content through two interfaces:
 
 ### GitHub Repository Setup
 
-The repository should be hosted under a **GitHub Organization** so both the developer and the client have access. This allows the client to connect the repo to their own Vercel account for automatic deployments.
+> **Done.** The repository is live at `https://github.com/imam-shamsan-org/imam-shamsan` under the `imam-shamsan-org` GitHub Organization. Both the developer (`Usmansagemode`) and the client are org members.
 
-**Steps:**
+The org structure is needed because Vercel requires admin-level GitHub access to install its webhook for automatic deployments — a personal-repo collaborator cannot grant this.
 
-1. Create a GitHub Organization (free tier)
-2. Transfer or create the repo under the org
-3. Add both developer and client as org members
-4. The client connects the org repo to their Vercel account
+### Vercel Project Setup
 
-> **Why an org?** Vercel requires admin-level access to install its GitHub webhook for automatic deployments. A collaborator on a personal repo cannot do this. A GitHub Organization gives both parties the access needed.
+> **Done.** The Vercel project is connected to the GitHub org repository and deploys automatically on every push to `main`. All environment variables are configured in Vercel.
 
-### Vercel Project Settings
+_For reference — settings used:_
 
 1. **Framework Preset:** Other (TanStack Start uses Nitro/Vinxi under the hood)
 2. **Build Command:** `npm run build`
 3. **Output Directory:** `.output` (auto-detected)
 4. **Node.js Version:** 18.x or 20.x
-5. **Environment Variables:** Add all variables from Section 5 for Production, Preview, and Development
+5. **Environment Variables:** All variables from Section 5 added for Production, Preview, and Development
 
 ### Custom Domain
 
-1. In Vercel: **Settings** > **Domains** > Add `imamshamsan.com` (or the chosen domain)
-2. In Namecheap: Update DNS to point to Vercel's nameservers (Vercel provides these)
-3. Vercel will auto-provision an SSL certificate
+> **Pending — optional.** No custom domain has been purchased yet. The site is currently live on a Vercel-generated subdomain. When the client purchases a domain on Namecheap:
+
+1. In Vercel: **Settings** > **Domains** > Add the chosen domain (e.g., `imamshamsan.com`)
+2. In Namecheap: Update DNS to point to Vercel's nameservers (Vercel provides these after step 1)
+3. Vercel auto-provisions an SSL certificate
+4. Update `SITE_URL` in Vercel environment variables to the new domain
+5. Complete Resend domain verification (see below)
 
 ### Resend Domain Verification
 
-For the contact form email to work in production:
+> **Pending — blocked on custom domain.** The contact and shop order emails currently send from `onboarding@resend.dev` (Resend's sandbox address). This works for testing but should be updated once a domain is live.
 
-1. Go to [https://resend.com/domains](https://resend.com/domains)
-2. Add the production domain (e.g., `imamshamsan.com`)
-3. Add the DNS records Resend provides to Namecheap
-4. Once verified, update the `from` address in `src/lib/email.ts` from `onboarding@resend.dev` to your verified domain
+When a domain is ready:
+
+1. Go to [https://resend.com/domains](https://resend.com/domains) and add the production domain
+2. Add the DNS records Resend provides to Namecheap
+3. Once verified, update the `from` address in `src/lib/email.ts` from `onboarding@resend.dev` to a verified address (e.g., `noreply@imamshamsan.com`)
 
 ---
 
