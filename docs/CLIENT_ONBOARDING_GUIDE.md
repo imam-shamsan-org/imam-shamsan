@@ -556,3 +556,12 @@ To upload into a specific folder: in the Media Library, click into that folder f
 ### Need help?
 
 Contact your developer at: `usmansagemode@gmail.com`
+
+---
+
+## Developer
+
+This website was designed and built by **Usman Khalid Mian**.
+
+- Portfolio: [portfolio.usmankm.com](https://portfolio.usmankm.com/)
+- Email: `usmansagemode@gmail.com`
