@@ -7,11 +7,13 @@ import { PerfumeGrid } from '@/components/shop/PerfumeGrid'
 interface SignatureCollectionSectionProps {
   perfumes: Array<PerfumeProduct>
   onOrder: (perfume: PerfumeProduct) => void
+  onCreateYourOwn: () => void
 }
 
 export function SignatureCollectionSection({
   perfumes,
   onOrder,
+  onCreateYourOwn,
 }: SignatureCollectionSectionProps) {
   return (
     <section id="perfumes" className="py-16">
@@ -20,7 +22,10 @@ export function SignatureCollectionSection({
           <h2 className="text-3xl font-bold tracking-tight">
             Signature Collection
           </h2>
-          <ArabicText as="p" className="text-xl text-muted-foreground mt-1 text-center">
+          <ArabicText
+            as="p"
+            className="text-xl text-muted-foreground mt-1 text-center"
+          >
             تشكيلة شمسان المميزة
           </ArabicText>
           <p className="mt-3 text-muted-foreground text-sm max-w-xl mx-auto">
@@ -28,7 +33,11 @@ export function SignatureCollectionSection({
             skin-safe
           </p>
         </FadeIn>
-        <PerfumeGrid perfumes={perfumes} onOrder={onOrder} />
+        <PerfumeGrid
+          perfumes={perfumes}
+          onOrder={onOrder}
+          onCreateYourOwn={onCreateYourOwn}
+        />
       </Container>
     </section>
   )

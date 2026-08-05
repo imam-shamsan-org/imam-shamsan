@@ -33,3 +33,6 @@ todos.md
 # Claude Code local settings (MCP config, worktrees)
 .claude/settings.local.json
 .claude/worktrees/
+
+# Private notes/drafts (not part of the client-facing docs)
+docs/private/

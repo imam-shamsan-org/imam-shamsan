@@ -129,8 +129,24 @@ export function Footer({ settings }: FooterProps) {
           <div className="size-1.5 rounded-full bg-secondary" />
           <div className="h-px w-16 bg-secondary" />
         </div>
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} {personName}. All rights reserved.
+        <div className="mt-4 flex flex-col items-center gap-2 text-center text-sm text-muted-foreground sm:flex-row sm:justify-center sm:gap-4">
+          <span>
+            &copy; {new Date().getFullYear()} {personName}. All rights reserved.
+          </span>
+          <span className="flex gap-4">
+            <Link
+              to="/terms"
+              className="hover:text-foreground transition-colors"
+            >
+              Terms & Conditions
+            </Link>
+            <Link
+              to="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy Policy
+            </Link>
+          </span>
         </div>
       </Container>
     </footer>

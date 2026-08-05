@@ -48,7 +48,9 @@ export function PerfumeCard({ perfume, onOrder }: PerfumeCardProps) {
 
       <div className="flex flex-col gap-4 p-5 flex-1">
         <div>
-          <h3 className="font-semibold text-base leading-snug">{perfume.name}</h3>
+          <h3 className="font-semibold text-base leading-snug">
+            {perfume.name}
+          </h3>
           <ArabicText
             as="p"
             className="text-sm text-muted-foreground mt-0.5 text-right"
@@ -78,7 +80,14 @@ export function PerfumeCard({ perfume, onOrder }: PerfumeCardProps) {
           <ArabicText as="span">{perfume.moodAr}</ArabicText>
         </span>
 
-        <Button onClick={(e) => { e.stopPropagation(); onOrder() }} className="mt-auto w-full" size="sm">
+        <Button
+          onClick={(e) => {
+            e.stopPropagation()
+            onOrder()
+          }}
+          className="mt-auto w-full"
+          size="sm"
+        >
           Order Now | اطلب الآن
         </Button>
       </div>
