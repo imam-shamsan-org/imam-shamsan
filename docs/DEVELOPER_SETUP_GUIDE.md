@@ -234,11 +234,12 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 > Single-entry database for the About page. The imam writes the full about page content in the **Notion page body** using headings, paragraphs, lists, etc. Displayed on the `/about` page.
 
-| Property Name | Type      | Purpose                                   |
-| ------------- | --------- | ----------------------------------------- |
-| Title         | Title     | Page heading (e.g., "About Imam Shamsan") |
-| Subtitle AR   | Rich text | Arabic subtitle shown under the heading   |
-| Status        | Select    | Options: `Draft`, `Published`             |
+| Property Name | Type      | Purpose                                                                                                                                                    |
+| ------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Title         | Title     | Page heading (e.g., "About Imam Shamsan")                                                                                                                 |
+| Name EN       | Rich text | English name used on the About page. Falls back to a hardcoded default if left empty.                                       |
+| Subtitle AR   | Rich text | Arabic subtitle shown under the heading on the About page. Falls back to a hardcoded default if left empty. |
+| Status        | Select    | Options: `Draft`, `Published`                                                                                                                             |
 
 **Body content:** The imam writes the entire about page content — biography, education, specializations, etc. — using Notion's built-in formatting (headings, paragraphs, bullet lists, quotes, images via Cloudinary Embed link).
 
@@ -249,6 +250,7 @@ Create each database as a **full-page database** in Notion. Property names must 
 - Renders using the existing `ArticleContent` block renderer
 - Falls back to hardcoded content if the database is not configured or empty
 - Profile image comes from Site Settings (`profile_img`), not this database
+- The homepage hero title no longer reads from this database — it's driven entirely by Site Settings (`hero_title_eng`, `hero_title_ar`)
 
 **Env variable:** `NOTION_ABOUT_DATABASE_ID`
 
@@ -271,22 +273,34 @@ Create each database as a **full-page database** in Notion. Property names must 
 | ----------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | live_stream_url   | `https://www.youtube.com/watch?v=xxxxx`                    | `4` (hours — how long the stream shows as LIVE after the URL was last updated. Defaults to 4 if blank. Use `8` or `24` for all-day events like Friday khutbah.) |
 | live_stream_title | `Friday Khutbah - Week of Feb 14`                          | —                                                                                                                                                               |
+| hero_title_eng    | `Dr. Imam Shamsan Al-Jabi`                                  | — (Homepage hero title in English. Falls back to a hardcoded default (`PERSON_NAME_FULL` in `src/lib/constants.ts`) if left empty.) |
+| hero_title_ar     | `الشيخ الدكتور شمسان الجابي`                                | — (Homepage hero title in Arabic, shown under the English title. Falls back to a hardcoded default (`PERSON_NAME_AR` in `src/lib/constants.ts`) if left empty.) |
 | profile_img       | `https://res.cloudinary.com/.../profile.jpg`               | —                                                                                                                                                               |
 | logo              | `https://res.cloudinary.com/.../logo.jpg`                  | —                                                                                                                                                               |
-| cv_url            | `https://res.cloudinary.com/.../cv.pdf`                    | — (Cloudinary URL of the imam's CV — PDF or image. When set, renders a `CvPreview` section at the bottom of the About page with View and Download buttons.)    |
+| og_image          | `https://res.cloudinary.com/.../og-image.jpg`               | — (Cloudinary URL used sitewide as the social-preview image — `og:image`/`twitter:image` — shown when a page is shared on Facebook, Twitter/X, WhatsApp, etc. Must be a Cloudinary URL, not a raw Notion file URL — Notion URLs expire after 1 hour, same caveat as `profile_img`. Optional — leave blank to omit the social-preview image entirely rather than show a broken one.) |
+| cv_url            | `https://res.cloudinary.com/.../cv.pdf`                    | — (Cloudinary URL of the imam's CV — PDF or image. When set, renders a `CvPreview` section at the bottom of the About page with View and Download buttons.)     |
 | youtube_url       | `https://www.youtube.com/channel/UCHsyLCyXVM8L25qwS7h9Gjg` | —                                                                                                                                                               |
 | facebook_url      | `https://www.facebook.com/shamsan.aljabi.2025`             | —                                                                                                                                                               |
 | instagram_url     | `https://www.instagram.com/dr.sham_san/`                   | —                                                                                                                                                               |
+| shop_category_bg_perfumes       | `https://res.cloudinary.com/.../perfumes-banner.jpg`       | — (Cloudinary URL for the banner image shown on the Shop page's Perfumes tab. Must be a Cloudinary URL, not a raw Notion file URL — Notion URLs expire after 1 hour, same caveat as `profile_img`. Optional — leave blank to show no banner.) |
+| shop_category_bg_hats           | `https://res.cloudinary.com/.../hats-banner.jpg`           | — (Same as above, for the Hats tab.)                                                                                                                             |
+| shop_category_bg_thoubs         | `https://res.cloudinary.com/.../thoubs-banner.jpg`         | — (Same as above, for the Thoubs tab.)                                                                                                                           |
+| shop_category_bg_honey          | `https://res.cloudinary.com/.../honey-banner.jpg`          | — (Same as above, for the Honey tab.)                                                                                                                            |
+| shop_category_bg_coffee         | `https://res.cloudinary.com/.../coffee-banner.jpg`         | — (Same as above, for the Coffee tab.)                                                                                                                           |
+| shop_category_bg_leather_socks  | `https://res.cloudinary.com/.../leather-socks-banner.jpg`  | — (Same as above, for the Leather Socks tab.)                                                                                                                    |
 
 **How the code uses it:**
 
 - Settings are loaded in the root layout (`__root.tsx`) and passed to Header (logo) and Footer (social links)
 - The homepage (`index.tsx`) passes settings to `HeroSection`, `MediaHighlight`, and computes `isLive` to conditionally reorder sections
+- `HeroSection` (`src/components/home/HeroSection.tsx`) reads `hero_title_eng` and `hero_title_ar` for the homepage title, falling back to hardcoded constants when unset
 - The about page uses `profile_img`
 - The media page uses `live_stream_url`, `live_stream_title`, and `youtube_url`
 - The contact page uses `youtube_url`, `facebook_url`, and `instagram_url`
 - The footer uses `youtube_url`, `facebook_url`, and `instagram_url`
 - `live_stream_url.Duration` controls the active window for `getStreamStatus()` — how many hours after a URL update the stream is considered LIVE (default: 4)
+- The shop page (`shop.tsx`) fetches Settings and maps each `shop_category_bg_*` key to the currently active category tab (`CATEGORY_BG_KEYS` in `src/routes/shop.tsx`), rendering it via the new `CategoryBanner` component (`src/components/shop/CategoryBanner.tsx`) beneath the tabs, above the category content. All 6 keys are optional and independent — none are seeded by default, so the page looks unchanged until a value is added. `CategoryBanner` silently renders nothing if the URL is missing or fails to load (no broken-image placeholder).
+- `og_image` is read via `getSettingsOgImage()` in `src/lib/seo.ts` and used as the `og:image`/`twitter:image` fallback across every page (homepage, about, services, writings, sermons, media, gallery, contact, terms, privacy, and individual article/sermon detail pages). Article detail pages prefer the article's own `Cover Image` when set, falling back to `og_image` otherwise. When `og_image` is unset, the tags are simply omitted rather than pointing at a broken image.
 
 **Env variable:** `NOTION_SETTINGS_DATABASE_ID`
 
@@ -296,17 +310,17 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 > Initiative cards for the Humanitarian Aid page. Each card represents one initiative. Displayed on `/humanitarian`.
 
-| Property Name        | Type      | Purpose                                                                                                    |
-| -------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
-| Name                 | Title     | Initiative name in English                                                                                 |
-| Slug                 | Rich text | URL-friendly identifier (e.g., `medical-aid`). Used for `/humanitarian/$slug` routes.                      |
-| Name (Arabic)        | Rich text | Initiative name in Arabic                                                                                  |
-| Description          | Rich text | Short description (2–3 sentences)                                                                          |
-| Description (Arabic) | Rich text | Arabic description                                                                                         |
-| Category             | Select    | Options: `Medical`, `Food`, `Water`, `Education`, `Family`, `Religious`, `Qurbani`                         |
-| Icon                 | Rich text | Lucide icon keyword — see `src/lib/humanitarian-icons.ts` for the full list of 27 supported keys           |
-| Sort Order           | Number    | Display order on the page                                                                                  |
-| Status               | Select    | Options: `Active`, `Completed`, `Paused`                                                                   |
+| Property Name        | Type      | Purpose                                                                                          |
+| -------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| Name                 | Title     | Initiative name in English                                                                       |
+| Slug                 | Rich text | URL-friendly identifier (e.g., `medical-aid`). Used for `/humanitarian/$slug` routes.            |
+| Name (Arabic)        | Rich text | Initiative name in Arabic                                                                        |
+| Description          | Rich text | Short description (2–3 sentences)                                                                |
+| Description (Arabic) | Rich text | Arabic description                                                                               |
+| Category             | Select    | Options: `Medical`, `Food`, `Water`, `Education`, `Family`, `Religious`, `Qurbani`               |
+| Icon                 | Rich text | Lucide icon keyword — see `src/lib/humanitarian-icons.ts` for the full list of 27 supported keys |
+| Sort Order           | Number    | Display order on the page                                                                        |
+| Status               | Select    | Options: `Active`, `Completed`, `Paused`                                                         |
 
 **How the code uses it:** Filters by `Status = Active`, sorts by `Sort Order`. Rendered as a grid of `ProjectCard` components on `/humanitarian`. Each card opens the Zelle `ContributeDialog` flow.
 
@@ -318,21 +332,21 @@ Create each database as a **full-page database** in Notion. Property names must 
 
 > All shop products across all categories in a single database. The `Category` field distinguishes product types. At launch, only the Perfumes category has content — other categories show "Coming Soon" until entries are added.
 
-| Property Name  | Type   | Purpose                                                                             |
-| -------------- | ------ | ----------------------------------------------------------------------------------- |
-| Name           | Title  | English product name (e.g., "Shamsan Fresh Bloom")                                  |
-| Category       | Select | Options: `Perfumes`, `Hats`, `Thoubs`, `Honey`, `Coffee`, `Leather Socks`          |
-| Arabic Name    | Rich text | Arabic product name                                                              |
-| Tagline EN     | Rich text | Short one-liner in English                                                       |
-| Tagline AR     | Rich text | Short one-liner in Arabic                                                        |
-| Ingredients EN | Rich text | Comma-separated notes (Perfumes only, e.g., `Jasmine, Lemon, White Musk`)       |
-| Ingredients AR | Rich text | Arabic comma-separated notes (Perfumes only)                                     |
-| Mood EN        | Rich text | Occasion/character tag (Perfumes only, e.g., `Fresh, daily use`)                |
-| Mood AR        | Rich text | Arabic mood tag (Perfumes only)                                                  |
-| Color Accent   | Select | Options: `yellow`, `brown`, `orange`, `teal`, `pink`, `red`, `green`, `blue` — card dot |
-| Photo          | URL    | Cloudinary URL of the product image (paste URL — do not upload directly to Notion)  |
-| Status         | Select | Options: `Published`, `Draft`                                                       |
-| Sort Order     | Number | Display order within a category                                                     |
+| Property Name  | Type      | Purpose                                                                                 |
+| -------------- | --------- | --------------------------------------------------------------------------------------- |
+| Name           | Title     | English product name (e.g., "Shamsan Fresh Bloom")                                      |
+| Category       | Select    | Options: `Perfumes`, `Hats`, `Thoubs`, `Honey`, `Coffee`, `Leather Socks`               |
+| Arabic Name    | Rich text | Arabic product name                                                                     |
+| Tagline EN     | Rich text | Short one-liner in English                                                              |
+| Tagline AR     | Rich text | Short one-liner in Arabic                                                               |
+| Ingredients EN | Rich text | Comma-separated notes (Perfumes only, e.g., `Jasmine, Lemon, White Musk`)               |
+| Ingredients AR | Rich text | Arabic comma-separated notes (Perfumes only)                                            |
+| Mood EN        | Rich text | Occasion/character tag (Perfumes only, e.g., `Fresh, daily use`)                        |
+| Mood AR        | Rich text | Arabic mood tag (Perfumes only)                                                         |
+| Color Accent   | Select    | Options: `yellow`, `brown`, `orange`, `teal`, `pink`, `red`, `green`, `blue` — card dot |
+| Photo          | URL       | Cloudinary URL of the product image (paste URL — do not upload directly to Notion)      |
+| Status         | Select    | Options: `Published`, `Draft`                                                           |
+| Sort Order     | Number    | Display order within a category                                                         |
 
 **How the code uses it:** `getPublishedPerfumes` filters `Status = Published` AND `Category = Perfumes`, sorted by `Sort Order`. Available perfume notes for the "Create Your Own" flow are hardcoded in `src/lib/perfume-notes.ts` — they are not stored in Notion.
 
@@ -376,8 +390,8 @@ No folder structure is required. The code works with any valid Cloudinary URL re
 Add these to `.env.local` locally or in Vercel project settings:
 
 ```env
-# Site — update to the custom domain once Namecheap is purchased; currently a Vercel subdomain
-SITE_URL=https://imamshamsan.com
+# Site — currently the live Vercel subdomain; update to the custom domain once Namecheap is purchased
+SITE_URL=https://imam-shamsan.vercel.app
 
 # Notion
 NOTION_API_KEY=secret_xxxxxxxxxxxxxxxxxxxxxxxx
@@ -411,20 +425,28 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
 
 The site uses TanStack Router's file-based routing. All routes are in `src/routes/`.
 
-| Route             | Page           | Data Source                                               | Key Features                                                                                                                                                                              |
-| ----------------- | -------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`               | Homepage       | Services, Latest Articles, Settings, Featured Recitations | Hero; section order is conditional: when live stream is active → Live Stream → Featured Recitations → Services → Writings; otherwise → Services → Writings → Featured Recitations → Media |
-| `/about`          | About          | About Page + Settings (profile image)                     | Notion page body rendered with block parser, hardcoded fallback                                                                                                                           |
-| `/writings`       | Writings list  | Articles                                                  | Language + category client-side filtering                                                                                                                                                 |
-| `/writings/$slug` | Article detail | Article + page blocks                                     | Full body rendered from Notion blocks, RTL support                                                                                                                                        |
-| `/sermons`        | Sermons list   | Sermon Summaries                                          | Grid of sermon cards                                                                                                                                                                      |
-| `/sermons/$slug`  | Sermon detail  | Sermon + page blocks                                      | YouTube embed + written summary                                                                                                                                                           |
-| `/services`       | Services       | Services                                                  | Service cards with pricing                                                                                                                                                                |
-| `/gallery`        | Gallery        | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
-| `/media`          | Media          | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
-| `/contact`        | Contact        | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
-| `/humanitarian`                   | Humanitarian Aid     | Humanitarian Projects                     | Grid of initiative cards; each card opens the Zelle `ContributeDialog` flow                                                                                                                   |
-| `/shop`                           | Shop                 | Shop Products (perfumes)                  | Category tab filter; Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders                                    |
+| Route             | Page               | Data Source                                               | Key Features                                                                                                                                                                              |
+| ----------------- | ------------------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`               | Homepage           | Services, Latest Articles, Settings, Featured Recitations | Hero title comes from Site Settings' `hero_title_eng`/`hero_title_ar` (falls back to hardcoded defaults if empty); section order is conditional: when live stream is active → Live Stream → Featured Recitations → Services → Writings; otherwise → Services → Writings → Featured Recitations → Media |
+| `/about`          | About              | About Page + Settings (profile image)                     | Notion page body rendered with block parser, hardcoded fallback                                                                                                                           |
+| `/writings`       | Writings list      | Articles                                                  | Language + category client-side filtering                                                                                                                                                 |
+| `/writings/$slug` | Article detail     | Article + page blocks                                     | Full body rendered from Notion blocks, RTL support                                                                                                                                        |
+| `/sermons`        | Sermons list       | Sermon Summaries                                          | Grid of sermon cards                                                                                                                                                                      |
+| `/sermons/$slug`  | Sermon detail      | Sermon + page blocks                                      | YouTube embed + written summary                                                                                                                                                           |
+| `/services`       | Services           | Services                                                  | Service cards with pricing                                                                                                                                                                |
+| `/gallery`        | Gallery            | Gallery                                                   | Category filter, lightbox on click                                                                                                                                                        |
+| `/media`          | Media              | Recitations, Settings                                     | Live stream embed, recitation grid, YouTube channel link                                                                                                                                  |
+| `/contact`        | Contact            | Services                                                  | Contact form (Resend email), service pre-selection via `?service=`                                                                                                                        |
+| `/humanitarian`   | Humanitarian Aid   | Humanitarian Projects                                     | Grid of initiative cards; each card opens the Zelle `ContributeDialog` flow                                                                                                               |
+| `/shop`           | Shop               | Shop Products (perfumes), Settings (category banners)     | Category tab filter; optional `CategoryBanner` image beneath the tabs per active category (from `shop_category_bg_*` Settings keys); Perfumes: signature grid + "Create Your Own" notes selector; other categories show Coming Soon; `PerfumeOrderDialog` for Zelle orders with an optional customer note included in the order email                                |
+| `/terms`          | Terms & Conditions | Static (hardcoded)                                        | Explains the Shop/Humanitarian Aid flows are manual and Zelle-based — no online checkout or payment processing happens on the site                                                        |
+| `/privacy`        | Privacy Policy     | Static (hardcoded)                                        | Explains form submissions (Contact, Shop, Humanitarian) are emailed via Resend and not stored in a database; no cookies/analytics are used                                                |
+| `/sitemap.xml`    | Sitemap            | Static (code-generated)                                   | XML sitemap of the static top-level pages, generated in `src/routes/sitemap[.]xml.ts`; excludes Notion-backed dynamic detail pages (articles, sermons, humanitarian cases) by design         |
+| `/robots.txt`     | Robots file        | Static (code-generated)                                   | Search-engine crawl instructions, generated in `src/routes/robots[.]txt.ts`; points crawlers to `/sitemap.xml`                                                                             |
+
+`/terms` and `/privacy` are intentionally static — legal copy that describes how the site behaves, not content the imam edits. If the Shop or Humanitarian Aid flows change (e.g., real online payments are added), update both pages to match.
+
+`/sitemap.xml` and `/robots.txt` are also generated entirely from code, not Notion — there's nothing for the imam to configure. Both list only the static top-level pages (home, about, services, writings, sermons, contact, gallery, media, shop, humanitarian, privacy, terms); Notion-backed dynamic detail routes are intentionally excluded to keep the sitemap basic and scoped to main navigable pages.
 
 ### Key Components
 
@@ -450,26 +472,27 @@ The site uses TanStack Router's file-based routing. All routes are in `src/route
 | `gallery/GalleryGrid.tsx`      | Masonry-style gallery grid                                                                                   |
 | `gallery/GalleryLightbox.tsx`  | Full-screen image lightbox                                                                                   |
 | `contact/ContactForm.tsx`      | Contact form with service dropdown and optional PDF/PNG file upload (max 5MB, forwarded as email attachment) |
-| `shared/CloudinaryImage.tsx`   | Image component with Cloudinary URL transforms                                                               |
+| `shop/CategoryBanner.tsx`      | Optional banner image shown on the Shop page beneath the category tabs, driven by the active category's `shop_category_bg_*` Settings key; renders nothing if unset or the image fails to load |
+| `shared/CloudinaryImage.tsx`   | Image component with Cloudinary URL transforms (accepts a forwarded `ref`)                                   |
 | `shared/ArabicText.tsx`        | Wrapper for Arabic text (RTL + font)                                                                         |
 | `shared/TagList.tsx`           | Tag badge list                                                                                               |
 
 ### Key Library Files
 
-| File                | Purpose                                                                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/notion.ts`     | All Notion API queries + server functions (with in-memory TTL cache)                                                              |
-| `lib/parsers.ts`    | Notion block → `ContentBlock` parser                                                                                              |
-| `lib/cloudinary.ts` | Cloudinary URL transformation helpers (presets, srcSet, blur placeholders)                                                        |
-| `lib/email.ts`      | Resend API integration — handles contact form submissions and shop order emails (both zod-validated). Contact form supports optional PDF/PNG attachment; shop orders include selected perfume notes. |
-| `lib/seo.ts`        | SEO meta tags, Open Graph, JSON-LD schemas                                                                                        |
-| `lib/youtube.ts`    | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings.                                    |
-| `lib/theme.tsx`     | Theme context provider (dark/light mode)                                                                                          |
-| `lib/content.ts`    | Content layout utilities (section splitting, card extraction)                                                                     |
-| `lib/constants.ts`  | Shared constants (categories, languages, `ZELLE_EMAIL`, `ZELLE_PHONE`)                                                            |
-| `lib/perfume-notes.ts`        | Hardcoded `AVAILABLE_NOTES` and `NOTE_CATEGORIES` for the "Create Your Own" perfume flow (21 notes across 7 categories)      |
-| `lib/humanitarian-icons.ts`   | Maps the Notion `Icon` text field to Lucide icons. Registry of 27 supported keywords: `stethoscope`, `droplets`, `utensils`, `graduation-cap`, `home`, `book-open`, `truck`, `heart`, `users`, `hand-heart`, `wheat`, `chef-hat`, `shield-alert`, `baby`, `moon`, `star`, `building`, `shirt`, `syringe`, `heart-pulse`, `tent`, `soup`, `drill`, `scroll`, `rings`, `medical-bag`, `sunrise`. Falls back to a category-based default icon if the key is unrecognised. |
-| `lib/utils.ts`                | Utility functions (cn, formatDate, slugify)                                                                                       |
+| File                        | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/notion.ts`             | All Notion API queries + server functions (with in-memory TTL cache)                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `lib/parsers.ts`            | Notion block → `ContentBlock` parser                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `lib/cloudinary.ts`         | Cloudinary URL transformation helpers (presets, srcSet, blur placeholders)                                                                                                                                                                                                                                                                                                                                                                                             |
+| `lib/email.ts`              | Resend API integration — handles contact form submissions and shop order emails (both zod-validated). Contact form supports optional PDF/PNG attachment; shop orders include selected perfume notes and an optional customer note (capped at `SHOP_NOTE_MAX_LENGTH`, see `lib/constants.ts`), included in the order email when the customer fills it in.                                                                                                                                                                                                                                                                   |
+| `lib/seo.ts`                | SEO meta tags, Open Graph, JSON-LD schemas                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `lib/youtube.ts`            | YouTube URL utilities (embed, thumbnail, stream status). Channel URL comes from Site Settings.                                                                                                                                                                                                                                                                                                                                                                         |
+| `lib/theme.tsx`             | Theme context provider (dark/light mode)                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `lib/content.ts`            | Content layout utilities (section splitting, card extraction)                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `lib/constants.ts`          | Shared constants (categories, languages, `ZELLE_EMAIL`, `ZELLE_PHONE`, `SHOP_NOTE_MAX_LENGTH`)                                                                                                                                                                                                                                                                                                                                                                         |
+| `lib/perfume-notes.ts`      | Hardcoded `AVAILABLE_NOTES` and `NOTE_CATEGORIES` for the "Create Your Own" perfume flow (21 notes across 7 categories)                                                                                                                                                                                                                                                                                                                                                |
+| `lib/humanitarian-icons.ts` | Maps the Notion `Icon` text field to Lucide icons. Registry of 27 supported keywords: `stethoscope`, `droplets`, `utensils`, `graduation-cap`, `home`, `book-open`, `truck`, `heart`, `users`, `hand-heart`, `wheat`, `chef-hat`, `shield-alert`, `baby`, `moon`, `star`, `building`, `shirt`, `syringe`, `heart-pulse`, `tent`, `soup`, `drill`, `scroll`, `rings`, `medical-bag`, `sunrise`. Falls back to a category-based default icon if the key is unrecognised. |
+| `lib/utils.ts`              | Utility functions (cn, formatDate, slugify)                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ---
 
@@ -602,7 +625,9 @@ Social media links are managed via the **Site Settings** Notion database (`youtu
 
 The site includes:
 
-- **Open Graph + Twitter Card** meta tags on every page (`src/lib/seo.ts`)
+- **Open Graph + Twitter Card** meta tags on every page (`src/lib/seo.ts`). `og:image`/`twitter:image` are sourced sitewide from the Site Settings `og_image` field (via `getSettingsOgImage()`), with graceful omission — the tags are simply left out and the Twitter card degrades to `summary` — when it's unset. This replaces a previous hardcoded `/og-image.jpg` fallback that didn't exist on disk and 404'd on every single page. `sermons/$slug.tsx` and `writings/$slug.tsx` now also fetch Site Settings in their loaders so their detail pages can use `og_image` too (they previously didn't fetch settings at all).
 - **JSON-LD schemas:** Person schema (homepage, about), Article schema (article detail), BreadcrumbList schema (all pages)
 - **Canonical URLs** on every page
+- **Sitemap & robots:** `/sitemap.xml` and `/robots.txt` (`src/routes/sitemap[.]xml.ts`, `src/routes/robots[.]txt.ts`) — code-generated, not Notion-driven. See [Route & Page Structure](#6-route--page-structure) for details.
+- **Google Search Console:** verified via `public/google6d2a306e7c072158.html` (a static verification file Google issues per-property). Do not delete this file — removing it will fail Google's re-verification checks. If the site ever moves to a custom domain, Search Console will need a separate verification for that domain (this file only verifies the current Vercel subdomain).
 - **Dark mode** support with `localStorage` persistence and flash-prevention script in `<head>`

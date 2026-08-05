@@ -3,16 +3,24 @@ import { ArrowLeft, Calendar } from 'lucide-react'
 import { Container } from '@/components/layout/Container'
 import { SermonContent } from '@/components/sermons/SermonContent'
 import { formatDate } from '@/lib/utils'
-import { getSermonBySlug } from '@/lib/notion'
-import { getBreadcrumbSchema, getPageMeta, siteConfig } from '@/lib/seo'
+import { getSermonBySlug, getSiteSettings } from '@/lib/notion'
+import {
+  getBreadcrumbSchema,
+  getPageMeta,
+  getSettingsOgImage,
+  siteConfig,
+} from '@/lib/seo'
 
 export const Route = createFileRoute('/sermons/$slug')({
   loader: async ({ params }) => {
-    const sermon = await getSermonBySlug({ data: params.slug })
+    const [sermon, settings] = await Promise.all([
+      getSermonBySlug({ data: params.slug }),
+      getSiteSettings(),
+    ])
     if (!sermon) {
       throw new Error('Sermon not found')
     }
-    return { sermon }
+    return { sermon, settings }
   },
   head: ({ loaderData }) => {
     if (!loaderData?.sermon) return { meta: [] }
@@ -22,6 +30,7 @@ export const Route = createFileRoute('/sermons/$slug')({
       description: sermon.description || `Sermon summary: ${sermon.title}`,
       canonicalUrl: `${siteConfig.url}/sermons/${sermon.slug}`,
       ogType: 'article',
+      ogImage: getSettingsOgImage(loaderData.settings),
     })
     return {
       meta,

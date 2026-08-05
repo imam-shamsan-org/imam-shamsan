@@ -11,6 +11,7 @@ interface CloudinaryImageProps extends Omit<
   alt: string
   preset?: ImagePreset
   sizes?: string
+  ref?: React.Ref<HTMLImageElement>
 }
 
 export function CloudinaryImage({

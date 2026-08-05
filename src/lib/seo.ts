@@ -1,17 +1,28 @@
 import type { Article, ArticleSummary } from '@/types/article'
 import type { SiteSettings } from '@/types/settings'
 import { PERSON_NAME, PERSON_NAME_AR, PERSON_NAME_FULL } from '@/lib/constants'
+import { getOptimizedUrl } from '@/lib/cloudinary'
 
 export const siteConfig = {
   name: PERSON_NAME_FULL,
   description: `Official website of ${PERSON_NAME_FULL} - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.`,
-  url: process.env.SITE_URL || 'https://imamshamsan.com',
+  url: process.env.SITE_URL || 'https://imam-shamsan.vercel.app',
   author: PERSON_NAME_FULL,
   locale: 'en_US',
   youtubeChannel: 'UCHsyLCyXVM8L25qwS7h9Gjg',
 }
 
-const defaultOgImage = `${siteConfig.url}/og-image.jpg`
+/**
+ * Resolve the Notion-managed site-wide OG image (Settings database `og_image`
+ * field) into an optimized Cloudinary URL, or undefined when unset.
+ */
+export function getSettingsOgImage(
+  settings?: SiteSettings,
+): string | undefined {
+  const raw = settings?.og_image?.value
+  if (!raw) return undefined
+  return getOptimizedUrl(raw, 'article-cover')
+}
 
 interface MetaTag {
   name?: string
@@ -59,7 +70,7 @@ export function getPageMeta(options: {
     title,
     description,
     canonicalUrl,
-    ogImage = defaultOgImage,
+    ogImage,
     ogType = 'website',
     noIndex = false,
   } = options
@@ -79,14 +90,17 @@ export function getPageMeta(options: {
     { property: 'og:title', content: fullTitle },
     { property: 'og:description', content: description },
     { property: 'og:url', content: url },
-    { property: 'og:image', content: ogImage },
+    ...(ogImage ? [{ property: 'og:image', content: ogImage }] : []),
     { property: 'og:locale', content: siteConfig.locale },
 
     // Twitter Card
-    { name: 'twitter:card', content: 'summary_large_image' },
+    {
+      name: 'twitter:card',
+      content: ogImage ? 'summary_large_image' : 'summary',
+    },
     { name: 'twitter:title', content: fullTitle },
     { name: 'twitter:description', content: description },
-    { name: 'twitter:image', content: ogImage },
+    ...(ogImage ? [{ name: 'twitter:image', content: ogImage }] : []),
   ]
 
   const links: Array<LinkTag> = [{ rel: 'canonical', href: url }]
@@ -94,79 +108,107 @@ export function getPageMeta(options: {
   return { meta, links }
 }
 
-export function getHomeMeta(_settings?: SiteSettings): HeadConfig {
+export function getHomeMeta(settings?: SiteSettings): HeadConfig {
   const description = `Official website of ${PERSON_NAME_FULL} - Islamic scholar, educator, and community leader. Explore writings, sermons, services, and more.`
   return getPageMeta({
     title: PERSON_NAME_FULL,
     description,
     canonicalUrl: siteConfig.url,
     ogType: 'website',
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getAboutMeta(_settings?: SiteSettings): HeadConfig {
+export function getAboutMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'About',
     description: `Learn about ${PERSON_NAME_FULL} - his education, ijazaat, specializations, and journey as an Islamic scholar and community leader.`,
     canonicalUrl: `${siteConfig.url}/about`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getServicesMeta(_settings?: SiteSettings): HeadConfig {
+export function getServicesMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Services',
     description: `Book services with ${PERSON_NAME_FULL} - Nikah ceremonies, funeral services, Quran tutoring, counseling, and more.`,
     canonicalUrl: `${siteConfig.url}/services`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getWritingsListMeta(_settings?: SiteSettings): HeadConfig {
+export function getWritingsListMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Writings',
     description: `Writings and reflections by ${PERSON_NAME_FULL} on Islamic knowledge, Quran commentary, and spiritual guidance.`,
     canonicalUrl: `${siteConfig.url}/writings`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getSermonsListMeta(_settings?: SiteSettings): HeadConfig {
+export function getSermonsListMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Sermon Summaries',
     description: `Written summaries of Friday khutbahs and sermons by ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/sermons`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getMediaMeta(_settings?: SiteSettings): HeadConfig {
+export function getMediaMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Media',
     description: `Watch sermons, recitations, and live streams from ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/media`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getGalleryMeta(_settings?: SiteSettings): HeadConfig {
+export function getGalleryMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Gallery',
     description: `Photos from events, conferences, community programs, and more with ${PERSON_NAME_FULL}.`,
     canonicalUrl: `${siteConfig.url}/gallery`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
-export function getContactMeta(_settings?: SiteSettings): HeadConfig {
+export function getContactMeta(settings?: SiteSettings): HeadConfig {
   return getPageMeta({
     title: 'Contact',
     description: `Get in touch with ${PERSON_NAME_FULL} for bookings, inquiries, or community services.`,
     canonicalUrl: `${siteConfig.url}/contact`,
+    ogImage: getSettingsOgImage(settings),
+  })
+}
+
+export function getTermsMeta(settings?: SiteSettings): HeadConfig {
+  return getPageMeta({
+    title: 'Terms & Conditions',
+    description: `Terms of use for ${PERSON_NAME_FULL}'s website, including how Shop orders and Humanitarian Aid contributions are handled.`,
+    canonicalUrl: `${siteConfig.url}/terms`,
+    ogImage: getSettingsOgImage(settings),
+  })
+}
+
+export function getPrivacyMeta(settings?: SiteSettings): HeadConfig {
+  return getPageMeta({
+    title: 'Privacy Policy',
+    description: `Privacy policy for ${PERSON_NAME_FULL}'s website, explaining what information is collected and how it is used.`,
+    canonicalUrl: `${siteConfig.url}/privacy`,
+    ogImage: getSettingsOgImage(settings),
   })
 }
 
 export function getArticleMeta(
   article: Article | ArticleSummary,
-  _settings?: SiteSettings,
+  settings?: SiteSettings,
 ): HeadConfig {
   const description =
     article.description || `Read "${article.title}" by ${PERSON_NAME_FULL}.`
-  const ogImage = article.coverImage || defaultOgImage
+  const ogImage = article.coverImage
+    ? getOptimizedUrl(article.coverImage, 'article-cover')
+    : getSettingsOgImage(settings)
   const canonicalUrl = `${siteConfig.url}/writings/${article.slug}`
 
   return getPageMeta({

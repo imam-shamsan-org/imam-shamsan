@@ -25,13 +25,13 @@ This guide covers the accounts that power your website and explains how to manag
 
 Your website runs on 5 services. All are already configured — this section is a reference so you know what each one does and how to access it.
 
-| Account    | Purpose                       | Status                          |
-| ---------- | ----------------------------- | ------------------------------- |
-| Notion     | Managing your website content | Done — log in with your Gmail   |
-| Cloudinary | Hosting your photos           | Done — log in with your Gmail   |
-| GitHub     | Storing your website code     | Done — you own the repository   |
-| Vercel     | Hosting your live website     | Done — connected to GitHub      |
-| Namecheap  | Your custom domain name       | Optional — not yet purchased    |
+| Account    | Purpose                       | Status                        |
+| ---------- | ----------------------------- | ----------------------------- |
+| Notion     | Managing your website content | Done — log in with your Gmail |
+| Cloudinary | Hosting your photos           | Done — log in with your Gmail |
+| GitHub     | Storing your website code     | Done — you own the repository |
+| Vercel     | Hosting your live website     | Done — connected to GitHub    |
+| Namecheap  | Your custom domain name       | Optional — not yet purchased  |
 
 ---
 
@@ -136,7 +136,11 @@ Your website has **9 Notion databases**:
 
 **Handle Notion with care.** Your Notion workspace is your website's database — what you see in Notion is what appears on the site. If you accidentally delete a page or a row, that content disappears from the live website immediately. If you delete an entire database, the corresponding page on the site will stop working. Stick to the structure that is already in place: add new rows, edit existing ones, and change Status fields. Do not rename databases, delete columns, or restructure pages unless you have discussed it with your developer first.
 
+**Never rename a dropdown option.** Fields like `Status`, `Category`, and `Language` use fixed dropdown options behind the scenes (e.g., `Published`, `Draft`, `Active`, `Perfumes`). The website looks for these exact words. If you edit the text of an existing option in Notion (even just fixing a typo or changing capitalization), everything using that option will silently disappear from the site — with no error shown anywhere. Always pick from the existing options; never rename one. If you think an option is wrong or needs to change, ask your developer first.
+
 **Keep Cloudinary organised.** Cloudinary has a generous free tier, but it is not unlimited — and a cluttered media library quickly becomes impossible to manage. Before uploading, think about where a file belongs. A good rule of thumb is: one folder per page, one sub-folder per post or entry using the same slug you use in Notion, and all related files inside that sub-folder. For example, an article with the slug `ramadan-2025` would have its assets in `writings/ramadan-2025/`. This makes it easy to find files, update them, and remove old ones when they are no longer needed. Being proactive about this from the start will save you a lot of time later.
+
+**Don't delete, rename, or move an image that's already in use.** Once you paste a Cloudinary URL into Notion, it is a fixed link — Notion does not stay in sync with Cloudinary. If you later delete, rename, or move that file in Cloudinary, the image will break wherever it was used on the site. If a photo needs to be replaced, upload the new version as a new file and update the URL in Notion rather than reusing or renaming the old one.
 
 ---
 
@@ -264,8 +268,11 @@ The About page shows your biography, education, specializations, and background.
 **Properties at the top:**
 
 - **Title** — The page heading (e.g., "About Imam Shamsan")
-- **Subtitle AR** — Arabic subtitle shown under the heading (e.g., "الدكتور. شمسان الجابي")
+- **Name EN** — Your English name as shown in the hero section at the top of the homepage (e.g., "Shamsan Al-Jabi"). Leave blank to keep the current default name.
+- **Subtitle AR** — Arabic subtitle shown under the heading (e.g., "الدكتور. شمسان الجابي"). This also appears as your Arabic name in the homepage hero. Leave blank to keep the current default.
 - **Status** — Set to `Published` to show on the website
+
+> **Changing the name on the homepage:** The bold name shown at the top of the homepage (in the hero section, next to your photo) comes from these same two fields — **Name EN** for the English name and **Subtitle AR** for the Arabic name. Just edit them here and the homepage updates automatically. If you leave either one blank, the website falls back to the existing default name so the hero never looks empty.
 
 > **A note on layout:** The About page uses a structured layout — it reads your headings and automatically arranges content into sections, card grids (for things like Specializations), and prose blocks. This works best when you organise your content with clear **Heading 2** sections. Short bullet-point sections (2–3 items) will be displayed as cards; longer prose will flow naturally below. If you add a very large amount of unstructured text or significantly change the heading structure, the layout may not look as intended. For any major structural changes to the About page, check with your developer first so the presentation can be adjusted in the code if needed.
 
@@ -380,9 +387,15 @@ When a visitor clicks a service card or a "Contribute" / "Sponsor" button on the
 - A **required Upload Zelle Receipt** field — they must attach the Zelle screenshot or PDF (max 3 MB, PDF or PNG format) before they can submit. The form will not send without it.
 - For service bookings (e.g., Ruqyah), they must also scroll through and accept the **Service Agreement & Liability Waiver** before submitting
 
+For Shop orders specifically (both buying a signature perfume and "Create Your Own"), customers also see an optional **Note** field where they can add any extra details or requests (up to 500 characters). If they fill it in, it will show up in the order email you receive, right after their phone number — no action needed from you, it's just there so you have any extra context they wanted to share.
+
 You will receive their message as an email from the website with the receipt attached (if they uploaded one).
 
 > **If your Zelle email or phone number ever changes**, ask your developer to update `src/lib/constants.ts` — it is the single place that controls what is shown in both the Services and Humanitarian Aid flows.
+
+**What this is — and isn't.** This is not an online store or a payment processor. The website never touches anyone's money — it only displays your Zelle details and a form. A visitor sends payment on their own, directly to your personal Zelle account, completely outside the website. The form then emails you their name, contact details, order/contribution info, and their receipt — that's it. Nothing is charged, confirmed, or fulfilled automatically. It's built for a friendly, trust-based environment: people who already know you place an order or contribution and pay you directly, then you personally review the email and follow up with them (by email or phone) to confirm and arrange delivery or fulfillment. Treat every submission as a heads-up that someone paid you, not as a completed, guaranteed sale.
+
+The site's **Terms & Conditions** (`/terms`) and **Privacy Policy** (`/privacy`) pages spell this out for visitors, so there's no confusion about how ordering, payment, and your role in confirming things actually works. You don't need to maintain these — they're static pages your developer wrote to match how the Shop and Humanitarian Aid flows really work. If either flow ever changes (e.g., you add real online payments), ask your developer to update those pages too.
 
 ---
 
@@ -390,16 +403,25 @@ You will receive their message as an email from the website with the receipt att
 
 The Site Settings database contains key-value pairs that control parts of the website. You update these by editing the **"Value"** field of the relevant row.
 
-| Setting             | What It Controls                                                                |
-| ------------------- | ------------------------------------------------------------------------------- |
-| `live_stream_url`   | YouTube link shown on the homepage and Media page                               |
-| `live_stream_title` | Title displayed above the live stream (e.g., "Friday Khutbah - Week of Feb 14") |
-| `profile_img`       | Your profile photo shown on the About page                                      |
-| `logo`              | The logo displayed in the website header                                        |
+| Setting             | What It Controls                                                                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `live_stream_url`   | YouTube link shown on the homepage and Media page                                                                                                                                |
+| `live_stream_title` | Title displayed above the live stream (e.g., "Friday Khutbah - Week of Feb 14")                                                                                                  |
+| `hero_title_eng`    | Homepage title in English (e.g., "Dr. Imam Shamsan Al-Jabi"). Leave blank to use the default.                                                                                    |
+| `hero_title_ar`     | Homepage title in Arabic, shown under the English title. Leave blank to use the default.                                                                                         |
+| `profile_img`       | Your profile photo shown on the About page                                                                                                                                       |
+| `logo`              | The logo displayed in the website header                                                                                                                                         |
+| `og_image`          | The preview image shown when your website is shared on social media (Facebook, WhatsApp, Twitter/X) or in Google search results                                                |
 | `cv_url`            | Cloudinary URL of your CV (PDF or image). When set, a "Curriculum Vitae" section appears at the bottom of the About page with View and Download buttons. Leave blank to hide it. |
-| `youtube_url`       | Your YouTube channel link (shown in footer, contact, and media pages)           |
-| `facebook_url`      | Your Facebook page link (shown in footer and contact page)                      |
-| `instagram_url`     | Your Instagram profile link (shown in footer and contact page)                  |
+| `youtube_url`       | Your YouTube channel link (shown in footer, contact, and media pages)                                                                                                            |
+| `facebook_url`      | Your Facebook page link (shown in footer and contact page)                                                                                                                       |
+| `instagram_url`     | Your Instagram profile link (shown in footer and contact page)                                                                                                                   |
+| `shop_category_bg_perfumes`      | Banner image shown on the Shop page's **Perfumes** tab                                                                                                                  |
+| `shop_category_bg_hats`          | Banner image shown on the Shop page's **Hats** tab                                                                                                                      |
+| `shop_category_bg_thoubs`        | Banner image shown on the Shop page's **Thoubs** tab                                                                                                                    |
+| `shop_category_bg_honey`         | Banner image shown on the Shop page's **Honey** tab                                                                                                                     |
+| `shop_category_bg_coffee`        | Banner image shown on the Shop page's **Coffee** tab                                                                                                                    |
+| `shop_category_bg_leather_socks` | Banner image shown on the Shop page's **Leather Socks** tab                                                                                                             |
 
 **To update the weekly live stream:**
 
@@ -411,6 +433,13 @@ The Site Settings database contains key-value pairs that control parts of the we
 
 > **Note on homepage order:** When the live stream is active, the website automatically moves it to the top of the homepage (right after the hero section), followed by Featured Recitations, Services, and Writings. When there is no active stream, the order returns to: Services, Writings, Featured Recitations, Media.
 
+**To update the homepage title:**
+
+1. Open Notion > **Site Settings** database
+2. Find the `hero_title_eng` and `hero_title_ar` rows
+3. Replace the **"Value"** with the new text for each row you want to change
+4. Leave a row's **"Value"** blank to fall back to the site's default text
+
 **To update your profile photo or logo:**
 
 1. Upload the new image to Cloudinary
@@ -419,11 +448,38 @@ The Site Settings database contains key-value pairs that control parts of the we
 4. Find the `profile_img` or `logo` row
 5. Replace the **"Value"** with the new Cloudinary URL
 
+**To update the image that shows up when your website is shared on social media:**
+
+This is the image people see when your site link is shared on Facebook, WhatsApp, or Twitter/X, or when it shows up in Google search results.
+
+1. Upload the image to Cloudinary
+2. Copy the Cloudinary URL
+3. Open Notion > **Site Settings** database
+4. Find the `og_image` row
+5. Replace the **"Value"** with the new Cloudinary URL
+
+> **Important:** Just like the profile photo and logo, this must be a **Cloudinary URL**, not a raw Notion file link — Notion's own file links expire after 1 hour and the preview image would break. If you leave `og_image` blank, the site simply shows no preview image — it won't show a broken one.
+
+**To add a background image to a shop category:**
+
+Each tab on the Shop page (Perfumes, Hats, Thoubs, Honey, Coffee, Leather Socks) can show a wide banner image just below the tabs. This is entirely optional — if you don't set one, the page simply looks as it does today, with no banner.
+
+1. Upload the banner image to Cloudinary (see "Uploading Images to Cloudinary" below)
+2. Copy the Cloudinary URL
+3. Open Notion > **Site Settings** database
+4. Find the row for the category you want (see the table above for which key matches which tab, e.g. `shop_category_bg_perfumes` for the Perfumes tab)
+5. Replace the **"Value"** with the new Cloudinary URL
+6. The banner appears on the Shop page as soon as you save — only when that tab is the one currently selected
+
+> **Important:** Just like the profile photo and logo, this must be a **Cloudinary URL**, not a raw Notion file link — Notion's own file links expire after 1 hour and the banner would break.
+
 **To update your social media links:**
 
 1. Open Notion > **Site Settings** database
 2. Find the row for the platform you want to update (`youtube_url`, `facebook_url`, or `instagram_url`)
 3. Replace the **"Value"** with the new link
+
+> **Note:** Your website automatically provides a sitemap (`/sitemap.xml`) and a search-engine instructions file (`/robots.txt`) that help Google and other search engines find and index your pages correctly. These are generated automatically by the code — there's nothing for you to set up or maintain in Notion.
 
 ---
 
@@ -532,6 +588,29 @@ To upload into a specific folder: in the Media Library, click into that folder f
 3. Edit the page body (headings, paragraphs, lists, etc.)
 4. Changes go live automatically
 
+### "I want to change the name on the homepage"
+
+1. Open Notion > About Page database
+2. Click the existing entry
+3. Edit **Name EN** (English name) and/or **Subtitle AR** (Arabic name)
+4. Leave either blank to keep the current default name
+5. Changes go live automatically
+
+### "I want to add a background image to a shop category"
+
+1. Upload the banner image to Cloudinary, copy the URL
+2. Open Notion > Site Settings database
+3. Find the row matching the category (e.g., `shop_category_bg_perfumes` for Perfumes — see the full list of 6 keys in "Updating Site Settings")
+4. Paste the Cloudinary URL into "Value"
+5. The banner appears on the Shop page when that category's tab is selected
+
+### "I want to change the image that shows up when the website is shared on social media / Google"
+
+1. Upload the image to Cloudinary, copy the URL
+2. Open Notion > Site Settings database
+3. Find the `og_image` row
+4. Paste the Cloudinary URL into "Value"
+
 ### "I want to add a photo inside an article or sermon"
 
 1. Upload the image to Cloudinary first
@@ -557,11 +636,6 @@ To upload into a specific folder: in the Media Library, click into that folder f
 
 Contact your developer at: `usmansagemode@gmail.com`
 
----
-
-## Developer
-
 This website was designed and built by **Usman Khalid Mian**.
 
 - Portfolio: [portfolio.usmankm.com](https://portfolio.usmankm.com/)
-- Email: `usmansagemode@gmail.com`

@@ -6,7 +6,7 @@ import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { Badge } from '@/components/ui/badge'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { formatDate } from '@/lib/utils'
-import { getArticleBySlug } from '@/lib/notion'
+import { getArticleBySlug, getSiteSettings } from '@/lib/notion'
 import {
   getArticleMeta,
   getArticleSchema,
@@ -16,15 +16,21 @@ import {
 
 export const Route = createFileRoute('/writings/$slug')({
   loader: async ({ params }) => {
-    const article = await getArticleBySlug({ data: params.slug })
+    const [article, settings] = await Promise.all([
+      getArticleBySlug({ data: params.slug }),
+      getSiteSettings(),
+    ])
     if (!article) {
       throw new Error('Article not found')
     }
-    return { article }
+    return { article, settings }
   },
   head: ({ loaderData }) => {
     if (!loaderData?.article) return { meta: [] }
-    const { meta, links } = getArticleMeta(loaderData.article)
+    const { meta, links } = getArticleMeta(
+      loaderData.article,
+      loaderData.settings,
+    )
     return {
       meta,
       links,

@@ -5,10 +5,11 @@ import type { AvailableNote, PerfumeProduct } from '@/types/perfume'
 import { Container } from '@/components/layout/Container'
 import { FadeIn } from '@/components/shared/FadeIn'
 import { SignatureCollectionSection } from '@/components/shop/SignatureCollectionSection'
-import { CreateYourOwnSection } from '@/components/shop/CreateYourOwnSection'
+import { CreateYourOwnDialog } from '@/components/shop/CreateYourOwnDialog'
+import { CategoryBanner } from '@/components/shop/CategoryBanner'
 import { WhyShamsan } from '@/components/shop/WhyShamsan'
 import { PerfumeOrderDialog } from '@/components/shop/PerfumeOrderDialog'
-import { getPublishedPerfumes } from '@/lib/notion'
+import { getPublishedPerfumes, getSiteSettings } from '@/lib/notion'
 import { getBreadcrumbSchema, siteConfig } from '@/lib/seo'
 
 const CATEGORIES = [
@@ -27,10 +28,22 @@ const CATEGORIES = [
 
 type CategoryId = (typeof CATEGORIES)[number]['id']
 
+const CATEGORY_BG_KEYS: Record<CategoryId, string> = {
+  perfumes: 'shop_category_bg_perfumes',
+  hats: 'shop_category_bg_hats',
+  thoubs: 'shop_category_bg_thoubs',
+  honey: 'shop_category_bg_honey',
+  coffee: 'shop_category_bg_coffee',
+  'leather-socks': 'shop_category_bg_leather_socks',
+}
+
 export const Route = createFileRoute('/shop')({
   loader: async () => {
-    const perfumes = await getPublishedPerfumes()
-    return { perfumes }
+    const [perfumes, settings] = await Promise.all([
+      getPublishedPerfumes(),
+      getSiteSettings(),
+    ])
+    return { perfumes, settings }
   },
   head: () => ({
     meta: [
@@ -57,7 +70,7 @@ export const Route = createFileRoute('/shop')({
 type DialogMode = 'signature' | 'custom' | null
 
 function ShopPage() {
-  const { perfumes } = Route.useLoaderData()
+  const { perfumes, settings } = Route.useLoaderData()
 
   const [activeCategory, setActiveCategory] = useState<CategoryId>('perfumes')
   const [dialogMode, setDialogMode] = useState<DialogMode>(null)
@@ -66,6 +79,7 @@ function ShopPage() {
   )
   const [selectedNotes, setSelectedNotes] = useState<Array<AvailableNote>>([])
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [createYourOwnOpen, setCreateYourOwnOpen] = useState(false)
 
   function handleSignatureOrder(perfume: PerfumeProduct) {
     setDialogMode('signature')
@@ -74,6 +88,7 @@ function ShopPage() {
   }
 
   function handleCustomOrder(notes: Array<AvailableNote>) {
+    setCreateYourOwnOpen(false)
     setDialogMode('custom')
     setSelectedNotes(notes)
     setDialogOpen(true)
@@ -130,7 +145,11 @@ function ShopPage() {
                 ].join(' ')}
               >
                 {cat.labelEn}
-                <span dir="rtl" lang="ar" className="font-arabic text-xs opacity-75">
+                <span
+                  dir="rtl"
+                  lang="ar"
+                  className="font-arabic text-xs opacity-75"
+                >
                   {cat.labelAr}
                 </span>
               </button>
@@ -139,14 +158,20 @@ function ShopPage() {
         </Container>
       </section>
 
+      {/* Category banner */}
+      <CategoryBanner
+        key={activeCategory}
+        imageUrl={settings[CATEGORY_BG_KEYS[activeCategory]]?.value ?? null}
+      />
+
       {/* Active category content */}
       {activeCategory === 'perfumes' ? (
         <>
           <SignatureCollectionSection
             perfumes={perfumes}
             onOrder={handleSignatureOrder}
+            onCreateYourOwn={() => setCreateYourOwnOpen(true)}
           />
-          <CreateYourOwnSection onOrder={handleCustomOrder} />
           <WhyShamsan />
         </>
       ) : (
@@ -162,7 +187,11 @@ function ShopPage() {
                     <h2 className="text-xl font-semibold text-foreground">
                       {cat.labelEn}
                     </h2>
-                    <p dir="rtl" lang="ar" className="font-arabic mt-1 text-lg text-muted-foreground">
+                    <p
+                      dir="rtl"
+                      lang="ar"
+                      className="font-arabic mt-1 text-lg text-muted-foreground"
+                    >
                       {cat.labelAr}
                     </p>
                     <p className="mt-3 text-sm text-muted-foreground">
@@ -178,6 +207,13 @@ function ShopPage() {
           )
         })()
       )}
+
+      {/* Create Your Own wizard — rendered once at route level */}
+      <CreateYourOwnDialog
+        open={createYourOwnOpen}
+        onClose={() => setCreateYourOwnOpen(false)}
+        onConfirm={handleCustomOrder}
+      />
 
       {/* Order dialog — rendered once at route level */}
       {dialogOpen && dialogMode === 'signature' && selectedPerfume && (

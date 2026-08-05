@@ -13,11 +13,13 @@ import { Dialog } from '@/components/ui/dialog'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { submitShopOrder } from '@/lib/email'
 import {
   PERSON_NAME,
+  SHOP_NOTE_MAX_LENGTH,
   ZELLE_EMAIL,
   ZELLE_PHONE,
   ZELLE_QR_URL,
@@ -67,6 +69,7 @@ export function PerfumeOrderDialog(props: PerfumeOrderDialogProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [customerNote, setCustomerNote] = useState('')
   const [attachment, setAttachment] = useState<Attachment | null>(null)
   const [fileReading, setFileReading] = useState(false)
   const [status, setStatus] = useState<FormStatus>('idle')
@@ -79,6 +82,7 @@ export function PerfumeOrderDialog(props: PerfumeOrderDialogProps) {
     setName('')
     setEmail('')
     setPhone('')
+    setCustomerNote('')
     setAttachment(null)
     setFileReading(false)
     setStatus('idle')
@@ -201,6 +205,7 @@ export function PerfumeOrderDialog(props: PerfumeOrderDialogProps) {
           name: name.trim(),
           email: email.trim(),
           phone: phone || undefined,
+          note: customerNote.trim() || undefined,
           category: 'Perfumes',
           item,
           details,
@@ -462,6 +467,32 @@ export function PerfumeOrderDialog(props: PerfumeOrderDialogProps) {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="(555) 123-4567"
                 />
+              </div>
+
+              {/* Note */}
+              <div className="space-y-1.5">
+                <Label htmlFor="pod-note">
+                  Note{' '}
+                  <span className="font-normal text-muted-foreground">
+                    (optional)
+                  </span>
+                </Label>
+                <Textarea
+                  id="pod-note"
+                  value={customerNote}
+                  onChange={(e) => setCustomerNote(e.target.value)}
+                  placeholder="Any additional details or requests..."
+                  rows={3}
+                  maxLength={SHOP_NOTE_MAX_LENGTH}
+                  aria-describedby="pod-note-count"
+                />
+                <p
+                  id="pod-note-count"
+                  aria-live="polite"
+                  className="text-xs text-muted-foreground text-right"
+                >
+                  {customerNote.length}/{SHOP_NOTE_MAX_LENGTH}
+                </p>
               </div>
 
               {/* Upload receipt */}

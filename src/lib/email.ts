@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import { SHOP_NOTE_MAX_LENGTH } from '@/lib/constants'
 
 const contactFormSchema = z.object({
   name: z.string().min(1).max(200),
@@ -122,6 +123,7 @@ const shopOrderSchema = z.object({
   category: z.string().max(100),
   item: z.string().max(300),
   details: z.string().max(1000),
+  note: z.string().trim().max(SHOP_NOTE_MAX_LENGTH).optional(),
   attachment: z.object({
     filename: z.string().max(255),
     content: z.string(),
@@ -161,6 +163,7 @@ async function sendShopOrderEmail(
           <p><strong>Category:</strong> ${escapeHtml(data.category)}</p>
           <p><strong>Item:</strong> ${escapeHtml(data.item)}</p>
           <p><strong>Details:</strong> ${escapeHtml(data.details)}</p>
+          ${data.note ? `<p><strong>Note:</strong> ${escapeHtml(data.note).replace(/\n/g, '<br>')}</p>` : ''}
           <p><em>Receipt: ${escapeHtml(data.attachment.filename)}</em></p>
         `,
         reply_to: data.email,

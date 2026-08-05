@@ -579,6 +579,7 @@ async function fetchAboutPage(): Promise<AboutPage | null> {
       return {
         id: p.id,
         title: (getPropertyValue(props['Title']) as string) || '',
+        nameEn: ((getPropertyValue(props['Name EN']) as string) || '').trim(),
         subtitleAr: (getPropertyValue(props['Subtitle AR']) as string) || '',
         content,
       }

@@ -1,3 +1,6 @@
+/** Max length for the shop order customer note (client + server enforced) */
+export const SHOP_NOTE_MAX_LENGTH = 500
+
 export const ZELLE_EMAIL = 'MCCGPImamShamsan@gmail.com'
 export const ZELLE_PHONE = '+1 (661) 380-0334'
 export const ZELLE_QR_URL = '/QR_Code.png'

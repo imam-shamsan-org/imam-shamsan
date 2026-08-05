@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ArabicText } from '@/components/shared/ArabicText'
 import { CloudinaryImage } from '@/components/shared/CloudinaryImage'
 import { FadeIn } from '@/components/shared/FadeIn'
-import { PERSON_NAME_AR, TITLE_PREFIX } from '@/lib/constants'
+import { PERSON_NAME_AR, PERSON_NAME_FULL } from '@/lib/constants'
 
 interface HeroSectionProps {
   settings: SiteSettings
@@ -14,7 +14,8 @@ interface HeroSectionProps {
 
 export function HeroSection({ settings }: HeroSectionProps) {
   const profileImage = settings.profile_img?.value
-  const titlePrefix = TITLE_PREFIX
+  const heroTitleEn = settings.hero_title_eng?.value || PERSON_NAME_FULL
+  const heroTitleAr = settings.hero_title_ar?.value || PERSON_NAME_AR
   return (
     <section className="bg-gradient-to-b from-primary/15 via-accent/40 to-background py-10 md:py-16">
       <Container>
@@ -24,20 +25,17 @@ export function HeroSection({ settings }: HeroSectionProps) {
               <div className="mb-4 flex justify-center">
                 <CloudinaryImage
                   src={profileImage}
-                  alt={`${titlePrefix} Shamsan Al-Jabi`}
+                  alt={heroTitleEn}
                   preset="avatar"
                   className="size-36 rounded-full ring-2 ring-secondary/50 sm:size-44"
                 />
               </div>
             )}
-            <h1 className="text-center text-[clamp(1.5rem,4vw,2.5rem)] font-bold tracking-tight text-foreground sm:whitespace-nowrap">
-              {titlePrefix}{' '}
-              <span className="font-cinzel text-primary">
-                Shamsan&nbsp;Al-Jabi
-              </span>
+            <h1 className="text-center text-[clamp(1.5rem,4vw,2.5rem)] font-bold tracking-tight text-foreground text-balance">
+              {heroTitleEn}
             </h1>
             <ArabicText as="h1" className="mt-2 !text-center text-secondary">
-              {PERSON_NAME_AR}
+              {heroTitleAr}
             </ArabicText>
             <p className="mt-4 text-lg text-muted-foreground md:text-xl">
               Serving the Muslim community as an Imam and religious director for

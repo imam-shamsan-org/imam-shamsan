@@ -26,7 +26,12 @@ export const Route = createFileRoute('/')({
         getSiteSettings(),
         getFeaturedRecitations(),
       ])
-    return { services, latestArticles, settings, featuredRecitations }
+    return {
+      services,
+      latestArticles,
+      settings,
+      featuredRecitations,
+    }
   },
   head: ({ loaderData }) => {
     const { meta, links } = getHomeMeta(loaderData?.settings)
